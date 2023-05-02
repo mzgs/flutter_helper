@@ -1,6 +1,7 @@
 name: flutter_helper
 description: Flutter helper library
 version: 0.0.1
+
 homepage: https://github.com/mzgs/flutter_helper
 
 environment:

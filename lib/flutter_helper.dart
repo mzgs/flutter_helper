@@ -19,6 +19,12 @@ bool isAndroid = Platform.isAndroid;
 
 late GetStorage getStorage;
 
+class MzgsTest {
+  static printText() {
+    print("object text 222");
+  }
+}
+
 class Helper {
   static Future init() async {
     await GetStorage.init();

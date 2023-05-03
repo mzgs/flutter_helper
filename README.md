@@ -11,8 +11,8 @@ use of package
 ## Usage
  
 
-```dart
-const like = 'sample';
+``` 
+dart pub add mzgs_flutter_helper
 ```
 
 ## Additional information

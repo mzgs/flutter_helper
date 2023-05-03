@@ -12,6 +12,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+
+import 'inapp_purchase_helper.dart';
 
 // mzgs_flutter_helper:
 //       path: /Users/mustafa/Developer/Flutter/flutter_helper
@@ -51,64 +54,6 @@ class Helper {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  static void shareFile(String path, String shareText) {
-    Share.shareXFiles([XFile(path)], subject: shareText);
-  }
-
-// saveFilePath /image.jpg
-  static Future downloadFile(String url, String saveFilePath,
-      Function(double) onProgress, Function() onFinished,
-      {Function(Object e)? onError}) async {
-    Dio dio = Dio();
-// Download the file
-    var _appDocDir = await getAppDataPath();
-    try {
-      await dio.download(url, _appDocDir + saveFilePath,
-          onReceiveProgress: (received, total) {
-        if (total != -1) {
-          var progress = received / total;
-          onProgress(progress);
-
-          if (progress == 1) {
-            onFinished();
-          }
-        }
-      });
-    } catch (e) {
-      onError ?? (e);
-    }
-  }
-
-  static Future<void> deleteAllFilesInFolder(String path) async {
-    Directory directory = Directory(path);
-    if (await directory.exists()) {
-      List<FileSystemEntity> files = directory.listSync();
-      for (FileSystemEntity file in files) {
-        if (file is File) {
-          await file.delete();
-        }
-      }
-    }
-  }
-
-  static Future<String> getAppDataPath() async {
-    final Directory _appDocDir = await getApplicationDocumentsDirectory();
-    return _appDocDir.path;
-  }
-
-  static Future<List<FileSystemEntity>> getFiles(
-      {String folderPath = ""}) async {
-    var appPath = await getAppDataPath();
-    Directory directory = Directory("$appPath/$folderPath");
-    List<FileSystemEntity> files =
-        directory.listSync(recursive: true, followLinks: false);
-    return files;
-  }
-
-  static List<String> convertDynamicListToStringList(List<dynamic> list) {
-    return list.map((item) => item as String).toList();
-  }
-
   static bool isFirstOpen() {
     if (!Pref.get("is_first_open", false)) {
       Pref.set("is_first_open", true);
@@ -128,6 +73,10 @@ class HttpHelper {
 // return parsed json
   static Future<dynamic> getJsonFromUrl(String url) async {
     return jsonDecode(await getStringFromUrl(url));
+  }
+
+  static List<String> convertDynamicListToStringList(List<dynamic> list) {
+    return list.map((item) => item as String).toList();
   }
 
   static getBody(http.Response response) {
@@ -470,6 +419,187 @@ class DailyCredits {
   }
 }
 
+class FileHelper {
+  static void shareFile(String path, String shareText) {
+    Share.shareXFiles([XFile(path)], subject: shareText);
+  }
+
+// saveFilePath /image.jpg
+  static Future downloadFile(String url, String saveFilePath,
+      Function(double) onProgress, Function() onFinished,
+      {Function(Object e)? onError}) async {
+    Dio dio = Dio();
+// Download the file
+    var _appDocDir = await getAppDataPath();
+    try {
+      await dio.download(url, _appDocDir + saveFilePath,
+          onReceiveProgress: (received, total) {
+        if (total != -1) {
+          var progress = received / total;
+          onProgress(progress);
+
+          if (progress == 1) {
+            onFinished();
+          }
+        }
+      });
+    } catch (e) {
+      onError ?? (e);
+    }
+  }
+
+  static Future<void> deleteAllFilesInFolder(String path) async {
+    Directory directory = Directory(path);
+    if (await directory.exists()) {
+      List<FileSystemEntity> files = directory.listSync();
+      for (FileSystemEntity file in files) {
+        if (file is File) {
+          await file.delete();
+        }
+      }
+    }
+  }
+
+  static Future<String> getAppDataPath({String file = ""}) async {
+    final Directory _appDocDir = await getApplicationDocumentsDirectory();
+    return _appDocDir.path + file;
+  }
+
+  static Future<List<FileSystemEntity>> getFiles(
+      {String folderPath = ""}) async {
+    var appPath = await getAppDataPath();
+    Directory directory = Directory("$appPath/$folderPath");
+    List<FileSystemEntity> files =
+        directory.listSync(recursive: true, followLinks: false);
+    return files;
+  }
+}
+
+class PurchaseHelper {
+  static var isPremium = false;
+  static Map<String, IAPItem> products = {};
+
+  static String YEARLY_ID = "";
+  static String MONTH6_ID = "";
+  static String MONTHLY_ID = "";
+
+  static Future<void> init({
+    String monthlyID = "",
+    String month6ID = "",
+    String yearlyID = "",
+  }) async {
+    MONTHLY_ID = monthlyID;
+    MONTH6_ID = month6ID;
+    YEARLY_ID = yearlyID;
+
+    await FlutterInappPurchase.instance.initialize();
+    await PurchaseHelper.checkSubscription();
+  }
+
+  static Future<Map<String, IAPItem>> getPurchaseProducts() async {
+    var products = <String, IAPItem>{};
+
+    List<IAPItem> items = await FlutterInappPurchase.instance
+        .getSubscriptions([YEARLY_ID, MONTH6_ID, MONTHLY_ID]);
+
+    for (var item in items) {
+      var key = "monthly";
+
+      if (item.subscriptionPeriodNumberIOS == "6" ||
+          item.subscriptionPeriodAndroid == "P6M") {
+        key = "month6";
+      }
+      if (item.subscriptionPeriodUnitIOS == "YEAR" ||
+          item.subscriptionPeriodAndroid == "P1Y") {
+        key = "yearly";
+      }
+
+      products[key] = item;
+    }
+
+    return products;
+  }
+
+  static Future<bool> checkSubscription() async {
+    try {
+      var montly =
+          await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
+      var month6 =
+          await FlutterInappPurchase.instance.checkSubscribed(sku: MONTH6_ID);
+      var yearly =
+          await FlutterInappPurchase.instance.checkSubscribed(sku: YEARLY_ID);
+      var hasSubscription = montly || month6 || yearly;
+      isPremium = hasSubscription;
+
+      return hasSubscription;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<void> setProducts() async {
+    products = await getPurchaseProducts();
+  }
+
+  static void showPaywall() async {
+    if (isPremium) {
+      return;
+    }
+    if (products.isEmpty) {
+      await setProducts();
+    }
+
+    if (products.isEmpty) {
+      return;
+    }
+
+    Get.to(() => const PurchasePage(), arguments: {'products': products});
+  }
+
+  static void showPaywallOnce() {
+    if (isPremium) {
+      return;
+    }
+    bool isShowedPurchaseFirstTime =
+        Pref.get("isShowedPurchaseFirstTime", false);
+
+    if (!isShowedPurchaseFirstTime) {
+      Pref.set("isShowedPurchaseFirstTime", true);
+      showPaywall();
+    }
+  }
+}
+
+class RemoteConfig {
+  // COUNTERS
+  static var _counterValues = {};
+  static var app = {};
+
+  static Future init(String iosAppID) async {
+    var package_name = await Helper.getPackageName();
+    if (isApple) {
+      package_name = iosAppID;
+    }
+    app = (await HttpHelper.getJsonFromUrl(
+                "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
+            package_name] ??
+        {};
+  }
+
+  static get(String key, defaultValue) {
+    return app[key] ?? defaultValue;
+  }
+
+  static void showInterstitialCounter(String name, {int defaultValue = 3}) {
+    _counterValues[name] = _counterValues[name] ?? 0;
+
+    if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
+      print("interstitial showed: $name");
+      // ShowInterstitial(name:  "INTERSTITIAL_" + name);
+    }
+  }
+}
+
 extension BuildContextExt on BuildContext {
   ThemeData get theme => Theme.of(this);
 
@@ -503,36 +633,6 @@ extension BuildContextExt on BuildContext {
       Navigator.of(this, rootNavigator: true).pop();
     } else {
       SystemNavigator.pop();
-    }
-  }
-}
-
-class RemoteConfig {
-  // COUNTERS
-  static var _counterValues = {};
-  static var app = {};
-
-  static Future init(String iosAppID) async {
-    var package_name = await Helper.getPackageName();
-    if (isApple) {
-      package_name = iosAppID;
-    }
-    app = (await HttpHelper.getJsonFromUrl(
-                "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
-            package_name] ??
-        {};
-  }
-
-  static get(String key, defaultValue) {
-    return app[key] ?? defaultValue;
-  }
-
-  static void showInterstitialCounter(String name, {int defaultValue = 3}) {
-    _counterValues[name] = _counterValues[name] ?? 0;
-
-    if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
-      print("interstitial showed: $name");
-      // ShowInterstitial(name:  "INTERSTITIAL_" + name);
     }
   }
 }

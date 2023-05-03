@@ -153,10 +153,12 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            'assets/appicon.png',
-            fit: BoxFit.cover,
-            width: context.heightPercent(20),
+          ClipOval(
+            child: Image.asset(
+              'assets/appicon.png',
+              fit: BoxFit.cover,
+              width: context.heightPercent(20),
+            ),
           ),
           SizedBox(height: context.heightPercent(2)),
           Column(

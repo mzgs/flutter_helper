@@ -14,6 +14,9 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:package_info/package_info.dart';
 
+// mzgs_flutter_helper:
+//       path: /Users/mustafa/Developer/Flutter/flutter_helper
+
 bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
 
@@ -325,7 +328,7 @@ class UI {
     );
   }
 
-  static void showSuccessDialog(String title, String message) {
+  static void showSuccessDialog(String message, {String title = "Successful"}) {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -383,7 +386,7 @@ class UI {
     );
   }
 
-  static void showErrorDialog(String title, String message) {
+  static void showErrorDialog(String message, {String title = "Error"}) {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -506,33 +509,31 @@ extension BuildContextExt on BuildContext {
 }
 
 class RemoteConfig {
-  static bool SHOW_ADS = true;
-  static bool SHOW_ADS_ON_START = true;
-  static int DOWNLOAD_INTERVAL_ADS = 2;
-
   // COUNTERS
   static var _counterValues = {};
+  static var app = {};
 
-  static Future init() async {
+  static Future init(String iosAppID) async {
     var package_name = await Helper.getPackageName();
     if (isApple) {
-      // package_name = Config.appID;
+      package_name = iosAppID;
     }
-    var app = (await HttpHelper.getJsonFromUrl(
-            "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
-        package_name];
-
-    SHOW_ADS = app["SHOW_ADS"];
-    SHOW_ADS_ON_START = app["SHOW_ADS_ON_START"];
-    DOWNLOAD_INTERVAL_ADS = app["DOWNLOAD_INTERVAL_ADS"];
+    app = (await HttpHelper.getJsonFromUrl(
+                "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
+            package_name] ??
+        {};
   }
 
-  static void showInterstitialCounter(int intervalValue, String name) {
-    name = "INTERSTITIAL_" + name;
+  static get(String key, defaultValue) {
+    return app[key] ?? defaultValue;
+  }
+
+  static void showInterstitialCounter(String name, {int defaultValue = 3}) {
     _counterValues[name] = _counterValues[name] ?? 0;
 
-    if (++_counterValues[name] % intervalValue == 0) {
-      // ShowInterstitial(name: name);
+    if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
+      print("interstitial showed: $name");
+      // ShowInterstitial(name:  "INTERSTITIAL_" + name);
     }
   }
 }

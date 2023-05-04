@@ -1,21 +1,15 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-
 import 'package:get/get.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
-const MONTHLY_ID = "repost_monthly";
-const MONTH6_ID = "repost_month6";
-const YEARLY_ID = "repost_yearly";
+var mainColor = PurchaseHelper.purchaseConfig.mainColor;
+var textColor = PurchaseHelper.purchaseConfig.textColor;
 
-const mainColor = Color.fromARGB(255, 192, 0, 154);
-const textColor = Color.fromARGB(255, 30, 50, 79);
 var pageBgGradientColors = [
-  Color.fromARGB(255, 235, 200, 236),
-  Color.fromARGB(255, 226, 83, 239)
+  PurchaseHelper.purchaseConfig.gradientColor1,
+  PurchaseHelper.purchaseConfig.gradientColor2
 ];
 
 List<Map<String, dynamic>> _cardData = [];
@@ -149,23 +143,22 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var img = Image.asset(
+      'assets/${PurchaseHelper.purchaseConfig.image}',
+      fit: BoxFit.cover,
+      width: context.heightPercent(20),
+    );
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ClipOval(
-            child: Image.asset(
-              'assets/appicon.png',
-              fit: BoxFit.cover,
-              width: context.heightPercent(20),
-            ),
-          ),
+          PurchaseHelper.purchaseConfig.iconIsOval ? ClipOval(child: img) : img,
           SizedBox(height: context.heightPercent(2)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Premium',
+                PurchaseHelper.purchaseConfig.title,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: context.width * 0.075,
@@ -173,7 +166,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                     fontWeight: FontWeight.w700),
               ),
               Text(
-                '✓ No ads\n✓ Unlimited Repost\n✓ Unlimited save for later\n✓ stories - igtv - reels - posts',
+                PurchaseHelper.purchaseConfig.description,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: context.widthPercent(context.isTablet ? 3 : 4.5),

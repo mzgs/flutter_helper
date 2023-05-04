@@ -478,12 +478,14 @@ class FileHelper {
 class PurchaseHelper {
   static var isPremium = false;
   static Map<String, IAPItem> products = {};
+  static PurchaseConfig purchaseConfig = PurchaseConfig();
 
   static String YEARLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
 
-  static Future<void> init({
+  static Future<void> init(
+    PurchaseConfig _purchaseConfig, {
     String monthlyID = "",
     String month6ID = "",
     String yearlyID = "",
@@ -491,6 +493,7 @@ class PurchaseHelper {
     MONTHLY_ID = monthlyID;
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
+    purchaseConfig = _purchaseConfig;
 
     await FlutterInappPurchase.instance.initialize();
     await PurchaseHelper.checkSubscription();
@@ -568,6 +571,28 @@ class PurchaseHelper {
       showPaywall();
     }
   }
+}
+
+class PurchaseConfig {
+  String title;
+  String description;
+  Color mainColor;
+  Color textColor;
+  Color gradientColor1;
+  Color gradientColor2;
+  bool iconIsOval;
+  String image;
+
+  PurchaseConfig({
+    this.title = 'Premium',
+    this.description = '✓ Unlimited Genarate\n✓ No Ads',
+    this.mainColor = const Color.fromARGB(255, 16, 190, 36),
+    this.textColor = const Color.fromARGB(255, 30, 50, 79),
+    this.gradientColor1 = const Color.fromARGB(255, 244, 255, 198),
+    this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
+    this.iconIsOval = true,
+    this.image = 'app.png',
+  });
 }
 
 class RemoteConfig {

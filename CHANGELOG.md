@@ -1,3 +1,6 @@
+## 0.0.5
+* lots of helpers
+
 ## 0.0.3
 * add purchase helper
 

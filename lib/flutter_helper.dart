@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:launch_review/launch_review.dart';
 
 import 'inapp_purchase_helper.dart';
 
@@ -23,12 +24,6 @@ bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
 
 late GetStorage getStorage;
-
-class MzgsTest {
-  static printText() {
-    print("object text 222");
-  }
-}
 
 class Helper {
   static Future init() async {
@@ -60,6 +55,21 @@ class Helper {
       return true;
     }
     return false;
+  }
+
+  static void shareApp(String isoAppID,
+      {String message = "Check out this amazing app at"}) async {
+    String appLink = 'https://apps.apple.com/app/id$isoAppID';
+    if (isAndroid) {
+      var package_name = await Helper.getPackageName();
+
+      appLink = "https://play.google.com/store/apps/details?id=$package_name";
+    }
+    Share.share('$message $appLink');
+  }
+
+  static void rateApp(String iosAppID) {
+    LaunchReview.launch(iOSAppId: iosAppID);
   }
 }
 
@@ -389,6 +399,96 @@ class UI {
         ),
       ),
       barrierDismissible: false,
+    );
+  }
+
+  static Widget DailyLimitRemainingCard(
+      int totalDailyLimit, int remaining, String message,
+      {Color color = Colors.blue}) {
+    return Card(
+      elevation: 4,
+      color: Colors.grey[200],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Daily Limit',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    message,
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  ),
+                ),
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: Colors.blueGrey,
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            LinearProgressIndicator(
+              backgroundColor: Colors.grey[300],
+              value: remaining / totalDailyLimit,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Remaining',
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+                Text(
+                  remaining.toString(),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: Icon(Icons.check),
+                onPressed: () {
+                  PurchaseHelper.showPaywall();
+                },
+                label: Text(
+                  'Remove Limits',
+                  style: TextStyle(fontSize: 16),
+                ),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

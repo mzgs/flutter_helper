@@ -25,6 +25,7 @@ dependencies:
   get:  
   get_storage:  
   flutter_inapp_purchase: ^5.4.1
+  launch_review: ^3.0.1
 
 dev_dependencies:
   flutter_test:

@@ -72,9 +72,26 @@ class Helper {
     inAppReview.openStoreListing(appStoreId: iosAppID);
   }
 
-  static void inAppRate() async {
+  static void showInAppRate() async {
     if (await inAppReview.isAvailable()) {
       inAppReview.requestReview();
+    }
+  }
+
+  static void showInappRateOnce() {
+    var key = "in_App_rate_showed";
+    if (!Pref.get(key, false)) {
+      Pref.set(key, true);
+      showInAppRate();
+    }
+  }
+
+  static showInappRateWithActionCount(int mustCountValue) {
+    var key = "count_inapprate";
+    var nextValue = Pref.get(key, 0) + 1;
+    Pref.set(key, nextValue);
+    if (nextValue >= mustCountValue) {
+      Helper.showInappRateOnce();
     }
   }
 }
@@ -89,6 +106,16 @@ class HttpHelper {
 // return parsed json
   static Future<dynamic> getJsonFromUrl(String url) async {
     return jsonDecode(await getStringFromUrl(url));
+  }
+
+  Future<http.Response> postRequest(
+      String url, Map<String, String> body) async {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    return response;
   }
 
   static List<String> convertDynamicListToStringList(List<dynamic> list) {

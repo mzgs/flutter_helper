@@ -108,7 +108,7 @@ class HttpHelper {
     return jsonDecode(await getStringFromUrl(url));
   }
 
-  Future<http.Response> postRequest(
+  static Future<http.Response> postRequest(
       String url, Map<String, String> body) async {
     final response = await http.post(
       Uri.parse(url),
@@ -715,17 +715,18 @@ class PurchaseConfig {
   Color gradientColor2;
   bool iconIsOval;
   String image;
+  String analyticData;
 
-  PurchaseConfig({
-    this.title = 'Premium',
-    this.description = '✓ Unlimited Genarate\n✓ No Ads',
-    this.mainColor = const Color.fromARGB(255, 16, 190, 36),
-    this.textColor = const Color.fromARGB(255, 30, 50, 79),
-    this.gradientColor1 = const Color.fromARGB(255, 244, 255, 198),
-    this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
-    this.iconIsOval = true,
-    this.image = 'app.png',
-  });
+  PurchaseConfig(
+      {this.title = 'Premium',
+      this.description = '✓ Unlimited Genarate\n✓ No Ads',
+      this.mainColor = const Color.fromARGB(255, 16, 190, 36),
+      this.textColor = const Color.fromARGB(255, 30, 50, 79),
+      this.gradientColor1 = const Color.fromARGB(255, 244, 255, 198),
+      this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
+      this.iconIsOval = true,
+      this.image = 'app.png',
+      this.analyticData = ""});
 }
 
 class RemoteConfig {

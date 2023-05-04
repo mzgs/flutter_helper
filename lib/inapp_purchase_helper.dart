@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 var mainColor = PurchaseHelper.purchaseConfig.mainColor;
@@ -15,6 +17,8 @@ var pageBgGradientColors = [
 List<Map<String, dynamic>> _cardData = [];
 var products = Get.arguments['products'];
 SubscriptionWidget? subscriptionWidget = null;
+
+IAPItem? selectedItem;
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage({Key? key}) : super(key: key);
@@ -225,6 +229,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
                     // analytics.logEvent(name: "purchase_page_continue");
 
+                    selectedItem = products[mapKey];
+
                     FlutterInappPurchase.instance
                         .requestPurchase(products[mapKey].productId);
                   },
@@ -330,6 +336,20 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
     UI.showSuccessDialog("You are using PREMIUM version of app now.",
         title: "Payment successful");
+
+    try {
+      HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
+        "platform": Platform.operatingSystem,
+        "date":
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc()),
+        "subscription_id": selectedItem!.productId.toString(),
+        "price": selectedItem!.price.toString(),
+        "country": WidgetsBinding.instance.window.locale.countryCode.toString(),
+        "lang": WidgetsBinding.instance.window.locale.languageCode,
+        "localePrice": selectedItem!.localizedPrice.toString(),
+        "data": PurchaseHelper.purchaseConfig.analyticData
+      });
+    } catch (e) {}
 
     // hideBanner();
   }

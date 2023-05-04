@@ -205,7 +205,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               minimumSize:
-                  Size(context.widthPercent(55), context.heightPercent(6)),
+                  Size(context.widthPercent(60), context.heightPercent(6)),
               backgroundColor: mainColor,
             ),
             onPressed: _isLoading
@@ -266,22 +266,25 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
   Widget buildCard(Map<String, dynamic> data, int index) {
     final bool isSelected = index == _selectedIndex;
 
-    return Container(
-      margin: EdgeInsets.only(right: 7),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-            color: index == _selectedIndex
-                ? mainColor
-                : Color.fromARGB(255, 174, 173, 173),
-            width: index == _selectedIndex ? 5 : 2),
-        borderRadius: BorderRadius.circular(20),
+    return Card(
+      color: Colors.white,
+      elevation: isSelected ? 5 : 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+        side: BorderSide(
+          color: index == _selectedIndex
+              ? mainColor
+              : Color.fromARGB(255, 215, 212, 212),
+          width: isSelected ? 5 : 2,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(data['topTitle'],
-              style: TextStyle(fontSize: context.width * 0.025)),
+          Text(
+            data['topTitle'],
+            style: TextStyle(fontSize: context.width * 0.025),
+          ),
           Text(
             data['months'],
             style: TextStyle(
@@ -292,23 +295,28 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           ),
           Text(
             data['monthName'],
-            style: TextStyle(color: textColor, fontSize: context.width * 0.03),
+            style: TextStyle(
+              color: textColor,
+              fontSize: context.width * 0.03,
+            ),
           ),
           Text(
             data['discount'] != 0
                 ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
                 : "",
             style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-                fontSize: context.width * 0.032),
+              color: Colors.red,
+              fontWeight: FontWeight.w600,
+              fontSize: context.width * 0.032,
+            ),
           ),
           Text(
             data['price'],
             style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: textColor,
-                fontSize: context.width * 0.04),
+              fontWeight: FontWeight.w700,
+              color: textColor,
+              fontSize: context.width * 0.04,
+            ),
           ),
         ],
       ),

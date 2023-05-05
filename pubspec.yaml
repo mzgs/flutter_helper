@@ -26,6 +26,7 @@ dependencies:
   get_storage:  
   flutter_inapp_purchase: ^5.4.1
   in_app_review: ^2.0.6
+  applovin_max: ^2.5.0
 
 dev_dependencies:
   flutter_test:

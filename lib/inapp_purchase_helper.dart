@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
@@ -83,16 +84,36 @@ class _PurchasePageState extends State<PurchasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
+    return Material(
+      child: Stack(
+        children: [
+          Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: pageBgGradientColors),
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: pageBgGradientColors,
+              ),
             ),
-            child: SubscriptionWidget()));
+            child: SubscriptionWidget(),
+          ),
+          Positioned(
+            top: 40,
+            left: 10,
+            child: IconButton(
+              icon: Icon(
+                CupertinoIcons.xmark,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                context.closeActivity();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -254,20 +275,6 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: context.width * 0.05)),
-          ),
-          SizedBox(height: context.heightPercent(1)),
-          TextButton(
-            child: Text(
-              'NO THANKS',
-              style: TextStyle(
-                  color: Color.fromARGB(255, 65, 64, 64),
-                  fontSize: context.widthPercent(context.isTablet ? 2.5 : 3.6)),
-            ),
-            onPressed: () {
-              // analytics.logEvent(name: "purchase_page_no_thanks");
-
-              context.closeActivity();
-            },
           ),
         ],
       ),

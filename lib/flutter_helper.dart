@@ -45,6 +45,11 @@ class Helper {
     return packageInfo.packageName;
   }
 
+  static Future<String> getAppName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.appName;
+  }
+
   static void hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
@@ -716,6 +721,7 @@ class PurchaseConfig {
   bool iconIsOval;
   String image;
   String analyticData;
+  bool showTrial1Month;
 
   PurchaseConfig(
       {this.title = 'Premium',
@@ -726,7 +732,8 @@ class PurchaseConfig {
       this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
       this.iconIsOval = true,
       this.image = 'app.png',
-      this.analyticData = ""});
+      this.analyticData = "",
+      this.showTrial1Month = false});
 }
 
 class RemoteConfig {

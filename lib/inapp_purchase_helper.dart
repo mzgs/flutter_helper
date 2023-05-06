@@ -68,7 +68,8 @@ class _PurchasePageState extends State<PurchasePage> {
       'monthName': 'month',
       'topTitle': '',
       'price': montly.localizedPrice,
-      'discount': 0.0
+      'discount': 0.0,
+      'trial': '3 DAYS FREE TRIAL'
     });
 
     setState(() {
@@ -316,6 +317,18 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               fontSize: context.width * 0.032,
             ),
           ),
+          if (data['trial'] != null &&
+              PurchaseHelper.purchaseConfig.showTrial1Month) ...{
+            Text(
+              data['trial'] ?? "",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: PurchaseHelper.purchaseConfig.mainColor,
+                fontWeight: FontWeight.w800,
+                fontSize: context.width * 0.032,
+              ),
+            )
+          },
           Text(
             data['price'],
             style: TextStyle(
@@ -329,7 +342,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     );
   }
 
-  void itemPurchasedSuccess(PurchasedItem? productItem) {
+  void itemPurchasedSuccess(PurchasedItem? productItem) async {
     context.closeActivity();
 
     PurchaseHelper.isPremium = true;
@@ -347,6 +360,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         "country": WidgetsBinding.instance.window.locale.countryCode.toString(),
         "lang": WidgetsBinding.instance.window.locale.languageCode,
         "localePrice": selectedItem!.localizedPrice.toString(),
+        "package_name": (await Helper.getPackageName()),
+        "app_name": (await Helper.getAppName()),
         "data": PurchaseHelper.purchaseConfig.analyticData
       });
     } catch (e) {}

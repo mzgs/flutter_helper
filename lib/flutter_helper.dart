@@ -721,7 +721,7 @@ class PurchaseConfig {
   bool iconIsOval;
   String image;
   String analyticData;
-  bool showTrial1Month;
+  bool showTrialYearly;
 
   PurchaseConfig(
       {this.title = 'Premium',
@@ -733,7 +733,7 @@ class PurchaseConfig {
       this.iconIsOval = true,
       this.image = 'app.png',
       this.analyticData = "",
-      this.showTrial1Month = false});
+      this.showTrialYearly = false});
 }
 
 class RemoteConfig {

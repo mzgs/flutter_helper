@@ -51,7 +51,10 @@ class _PurchasePageState extends State<PurchasePage> {
               .toStringAsFixed(0),
       'price': yearly.localizedPrice,
       'trial': '3 DAYS FREE',
-      'discount': 0.0
+      'discount':
+          (double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
+              (double.parse(montly.price!) * 12) *
+              100
     });
 
     _cardData.add({
@@ -184,7 +187,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           SizedBox(height: context.heightPercent(2)),
           Container(
             padding: EdgeInsets.all(20),
-            height: context.heightPercent(27),
+            height: context.heightPercent(context.isTablet ? 30 : 27),
             child: Row(
               children: _cardData
                   .asMap()
@@ -289,7 +292,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          if (data['months'] == "12") ...{
+          if (data['months'] == "12" &&
+              PurchaseHelper.purchaseConfig.showTrialYearly) ...{
             Container(
               margin: EdgeInsets.symmetric(horizontal: 3),
               width: double.infinity,
@@ -304,10 +308,13 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               child: Text("SAVE " + data['topTitle'] + '%',
                   style: TextStyle(
                       fontSize: context.width * 0.035, color: Colors.white)),
+            ),
+            SizedBox(
+              height: 1,
             )
           } else ...{
             Text(
-              data['topTitle'],
+              data['months'] == "12" ? "BEST VALUE" : data['topTitle'],
               style: TextStyle(fontSize: context.width * 0.025),
             )
           },
@@ -326,18 +333,23 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               fontSize: context.width * 0.03,
             ),
           ),
-          Text(
-            data['discount'] != 0
-                ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
-                : "",
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.w600,
-              fontSize: context.width * 0.032,
-            ),
-          ),
+          if (data['months'] == '12' &&
+              PurchaseHelper.purchaseConfig.showTrialYearly)
+            ...{}
+          else ...{
+            Text(
+              data['discount'] != 0
+                  ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
+                  : "",
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.w600,
+                fontSize: context.width * 0.032,
+              ),
+            )
+          },
           if (data['trial'] != null &&
-              PurchaseHelper.purchaseConfig.showTrial1Month) ...{
+              PurchaseHelper.purchaseConfig.showTrialYearly) ...{
             Text(
               data['trial'] ?? "",
               textAlign: TextAlign.center,
@@ -347,7 +359,10 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 fontSize: context.width * 0.032,
               ),
             ),
-            Text("then")
+            Text(
+              "then",
+              style: TextStyle(fontSize: context.widthPercent(3.5)),
+            )
           },
           Text(
             data['price'],

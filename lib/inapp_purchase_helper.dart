@@ -44,12 +44,14 @@ class _PurchasePageState extends State<PurchasePage> {
     _cardData.add({
       'months': '12',
       'monthName': 'months',
-      'topTitle': 'BEST VALUE',
+      'topTitle':
+          ((double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
+                  (double.parse(montly.price!) * 12) *
+                  100)
+              .toStringAsFixed(0),
       'price': yearly.localizedPrice,
-      'discount':
-          (double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
-              (double.parse(montly.price!) * 12) *
-              100
+      'trial': '3 DAYS FREE',
+      'discount': 0.0
     });
 
     _cardData.add({
@@ -69,7 +71,6 @@ class _PurchasePageState extends State<PurchasePage> {
       'topTitle': '',
       'price': montly.localizedPrice,
       'discount': 0.0,
-      'trial': '3 DAYS FREE TRIAL'
     });
 
     setState(() {
@@ -288,10 +289,28 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            data['topTitle'],
-            style: TextStyle(fontSize: context.width * 0.025),
-          ),
+          if (data['months'] == "12") ...{
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 3),
+              width: double.infinity,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+                color: Colors.red,
+              ),
+              child: Text("SAVE " + data['topTitle'] + '%',
+                  style: TextStyle(
+                      fontSize: context.width * 0.035, color: Colors.white)),
+            )
+          } else ...{
+            Text(
+              data['topTitle'],
+              style: TextStyle(fontSize: context.width * 0.025),
+            )
+          },
           Text(
             data['months'],
             style: TextStyle(
@@ -327,7 +346,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 fontWeight: FontWeight.w800,
                 fontSize: context.width * 0.032,
               ),
-            )
+            ),
+            Text("then")
           },
           Text(
             data['price'],

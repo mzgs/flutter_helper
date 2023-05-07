@@ -14,6 +14,7 @@ class ApplovinHelper {
   static String interstitialID = "";
   static String bannerID = "";
   static String rewardedID = "";
+  static String appopenID = "";
 
   static bool isFirstInterstitialShowed = false;
   static bool showInterstitialOnStart = false;
@@ -24,10 +25,12 @@ class ApplovinHelper {
       String interstitialID = "",
       String bannerID = "",
       String rewardedID = "",
+      String appopenID = "",
       bool showInterstitialOnStart = false}) async {
     ApplovinHelper.interstitialID = interstitialID;
     ApplovinHelper.bannerID = bannerID;
     ApplovinHelper.rewardedID = rewardedID;
+    ApplovinHelper.appopenID = appopenID;
     ApplovinHelper.showInterstitialOnStart = showInterstitialOnStart;
     ApplovinHelper.showAdsInDebug = showAdsInDebug;
 
@@ -40,11 +43,37 @@ class ApplovinHelper {
     if (interstitialID != "") {
       initializeInterstitialAds();
     }
-    if (bannerID != "") {
-      initializeBannerAds();
-    }
+
     if (rewardedID != "") {
       initializeRewardedAds();
+    }
+
+    AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
+      onAdLoadedCallback: (ad) {
+        print("app open loaded.");
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        print(error);
+      },
+      onAdDisplayedCallback: (ad) {},
+      onAdDisplayFailedCallback: (ad, error) {},
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+      onAdRevenuePaidCallback: (ad) {},
+    ));
+  }
+
+  static void loadAppOpen() async {
+    var ready = await AppLovinMAX.isAppOpenAdReady(appopenID) ?? false;
+    if (!ready) {
+      AppLovinMAX.loadAppOpenAd(appopenID);
+    }
+  }
+
+  static void showAppOpen() async {
+    var ready = await AppLovinMAX.isAppOpenAdReady(appopenID) ?? false;
+    if (ready) {
+      AppLovinMAX.showAppOpenAd(appopenID);
     }
   }
 
@@ -147,10 +176,6 @@ class ApplovinHelper {
     }
   }
 
-  static void initializeBannerAds() {
-    AppLovinMAX.loadBanner(bannerID);
-  }
-
   static Widget getBannerView() {
     return MaxAdView(
         adUnitId: bannerID,
@@ -159,7 +184,9 @@ class ApplovinHelper {
             onAdLoadedCallback: (ad) {
               AppLovinMAX.showBanner(bannerID);
             },
-            onAdLoadFailedCallback: (adUnitId, error) {},
+            onAdLoadFailedCallback: (adUnitId, error) {
+              print("banner ad load error $error");
+            },
             onAdClickedCallback: (ad) {},
             onAdExpandedCallback: (ad) {},
             onAdCollapsedCallback: (ad) {}));

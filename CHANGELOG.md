@@ -1,3 +1,6 @@
+## 0.0.7
+* add trial to yearly plan
+
 ## 0.0.6
 * add trial to yearly plan
 

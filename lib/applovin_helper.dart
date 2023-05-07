@@ -3,6 +3,8 @@ import 'dart:math';
 // flutter pub add applovin_max
 
 import 'package:applovin_max/applovin_max.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 class ApplovinHelper {
@@ -15,9 +17,11 @@ class ApplovinHelper {
 
   static bool isFirstInterstitialShowed = false;
   static bool showInterstitialOnStart = false;
+  static bool showAdsInDebug = true;
 
   static void init(String sdkKey,
-      {String interstitialID = "",
+      {bool showAdsInDebug = true,
+      String interstitialID = "",
       String bannerID = "",
       String rewardedID = "",
       bool showInterstitialOnStart = false}) async {
@@ -25,6 +29,7 @@ class ApplovinHelper {
     ApplovinHelper.bannerID = bannerID;
     ApplovinHelper.rewardedID = rewardedID;
     ApplovinHelper.showInterstitialOnStart = showInterstitialOnStart;
+    ApplovinHelper.showAdsInDebug = showAdsInDebug;
 
     Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
 
@@ -129,6 +134,10 @@ class ApplovinHelper {
   }
 
   static void ShowRewarded() async {
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
+
     if (PurchaseHelper.isPremium) {
       return;
     }
@@ -139,9 +148,21 @@ class ApplovinHelper {
   }
 
   static void initializeBannerAds() {
-    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
-    AppLovinMAX.createBanner(bannerID, AdViewPosition.bottomCenter);
-    AppLovinMAX.showBanner(bannerID);
+    AppLovinMAX.loadBanner(bannerID);
+  }
+
+  static Widget getBannerView() {
+    return MaxAdView(
+        adUnitId: bannerID,
+        adFormat: AdFormat.banner,
+        listener: AdViewAdListener(
+            onAdLoadedCallback: (ad) {
+              AppLovinMAX.showBanner(bannerID);
+            },
+            onAdLoadFailedCallback: (adUnitId, error) {},
+            onAdClickedCallback: (ad) {},
+            onAdExpandedCallback: (ad) {},
+            onAdCollapsedCallback: (ad) {}));
   }
 
   void hideBanner() {
@@ -149,6 +170,10 @@ class ApplovinHelper {
   }
 
   static void ShowInterstitial() async {
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
+
     if (PurchaseHelper.isPremium) {
       return;
     }

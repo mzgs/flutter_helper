@@ -2,6 +2,7 @@ library flutter_helper;
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -624,6 +625,7 @@ class PurchaseHelper {
 
   static Future<void> init(
     PurchaseConfig _purchaseConfig, {
+    bool initOnDebug = true,
     String monthlyID = "",
     String month6ID = "",
     String yearlyID = "",
@@ -632,6 +634,10 @@ class PurchaseHelper {
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
     purchaseConfig = _purchaseConfig;
+
+    if (kDebugMode && !initOnDebug) {
+      return;
+    }
 
     await FlutterInappPurchase.instance.initialize();
     await PurchaseHelper.checkSubscription();

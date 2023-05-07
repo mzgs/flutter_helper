@@ -293,7 +293,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           color: index == _selectedIndex
               ? mainColor
               : Color.fromARGB(255, 215, 212, 212),
-          width: isSelected ? 5 : 2,
+          width: isSelected ? 6 : 2,
         ),
       ),
       child: Column(

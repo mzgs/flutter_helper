@@ -71,6 +71,9 @@ class ApplovinHelper {
   }
 
   static void showAppOpen() async {
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
     var ready = await AppLovinMAX.isAppOpenAdReady(appopenID) ?? false;
     if (ready) {
       AppLovinMAX.showAppOpenAd(appopenID);

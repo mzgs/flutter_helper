@@ -172,6 +172,9 @@ class ApplovinHelper {
 
   static Widget getBannerView(String bannerID,
       {AdFormat format = AdFormat.banner}) {
+    if (PurchaseHelper.isPremium) {
+      return SizedBox();
+    }
     return MaxAdView(
         adUnitId: bannerID,
         adFormat: format,
@@ -189,10 +192,6 @@ class ApplovinHelper {
 
   static Widget getMrecView(String bannerID) {
     return getBannerView(bannerID, format: AdFormat.mrec);
-  }
-
-  void hideBanner() {
-    AppLovinMAX.hideBanner(bannerID);
   }
 
   static void ShowInterstitial({String name = "INTERSTITIAL"}) async {

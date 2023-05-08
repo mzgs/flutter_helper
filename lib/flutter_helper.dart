@@ -535,7 +535,7 @@ class UI {
 
 class DailyCredits {
   static int credits = 0;
-  static Init(int maxCredits) {
+  static void init(int maxCredits) {
     String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     credits = Pref.get("credit", maxCredits);
@@ -553,9 +553,16 @@ class DailyCredits {
     return credits > 0;
   }
 
-  static consumeCredit() {
+  static void consumeCredit() {
     credits--;
     Pref.set("credit", credits);
+  }
+
+  static void addCredits(int creditToAdd) {
+    if (kDebugMode) {
+      credits = creditToAdd;
+      Pref.set("credit", credits);
+    }
   }
 }
 

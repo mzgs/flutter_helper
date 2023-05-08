@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:mzgs_flutter_helper/applovin_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -774,7 +775,7 @@ class RemoteConfig {
 
     if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
       print("interstitial showed: $name");
-      // ShowInterstitial(name:  "INTERSTITIAL_" + name);
+      ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_" + name);
     }
   }
 }

@@ -12,7 +12,6 @@ class ApplovinHelper {
   static var _rewardedAdRetryAttempt = 0;
 
   static String interstitialID = "";
-  static String bannerID = "";
   static String rewardedID = "";
   static String appopenID = "";
 
@@ -20,15 +19,15 @@ class ApplovinHelper {
   static bool showInterstitialOnStart = false;
   static bool showAdsInDebug = true;
 
-  static void init(String sdkKey,
-      {bool showAdsInDebug = true,
-      String interstitialID = "",
-      String bannerID = "",
-      String rewardedID = "",
-      String appopenID = "",
-      bool showInterstitialOnStart = false}) async {
+  static void init(
+    String sdkKey, {
+    bool showAdsInDebug = true,
+    String interstitialID = "",
+    String rewardedID = "",
+    String appopenID = "",
+    bool showInterstitialOnStart = false,
+  }) async {
     ApplovinHelper.interstitialID = interstitialID;
-    ApplovinHelper.bannerID = bannerID;
     ApplovinHelper.rewardedID = rewardedID;
     ApplovinHelper.appopenID = appopenID;
     ApplovinHelper.showInterstitialOnStart = showInterstitialOnStart;
@@ -47,23 +46,12 @@ class ApplovinHelper {
     if (rewardedID != "") {
       initializeRewardedAds();
     }
-
-    AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
-      onAdLoadedCallback: (ad) {
-        print("app open loaded.");
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        print(error);
-      },
-      onAdDisplayedCallback: (ad) {},
-      onAdDisplayFailedCallback: (ad, error) {},
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-      onAdRevenuePaidCallback: (ad) {},
-    ));
   }
 
   static void loadAppOpen() async {
+    if (PurchaseHelper.isPremium || appopenID == "") {
+      return;
+    }
     var ready = await AppLovinMAX.isAppOpenAdReady(appopenID) ?? false;
     if (!ready) {
       AppLovinMAX.loadAppOpenAd(appopenID);
@@ -71,6 +59,9 @@ class ApplovinHelper {
   }
 
   static void showAppOpen() async {
+    if (PurchaseHelper.isPremium || appopenID == "") {
+      return;
+    }
     if (kDebugMode && !showAdsInDebug) {
       return;
     }
@@ -165,7 +156,7 @@ class ApplovinHelper {
     AppLovinMAX.loadRewardedAd(rewardedID);
   }
 
-  static void ShowRewarded() async {
+  static void ShowRewarded({String name = "REWARDED"}) async {
     if (kDebugMode && !showAdsInDebug) {
       return;
     }
@@ -175,14 +166,15 @@ class ApplovinHelper {
     }
     bool isReady = (await AppLovinMAX.isRewardedAdReady(rewardedID))!;
     if (isReady) {
-      AppLovinMAX.showRewardedAd(rewardedID);
+      AppLovinMAX.showRewardedAd(rewardedID, placement: name);
     }
   }
 
-  static Widget getBannerView() {
+  static Widget getBannerView(String bannerID,
+      {AdFormat format = AdFormat.banner}) {
     return MaxAdView(
         adUnitId: bannerID,
-        adFormat: AdFormat.banner,
+        adFormat: format,
         listener: AdViewAdListener(
             onAdLoadedCallback: (ad) {
               AppLovinMAX.showBanner(bannerID);
@@ -195,11 +187,15 @@ class ApplovinHelper {
             onAdCollapsedCallback: (ad) {}));
   }
 
+  static Widget getMrecView(String bannerID) {
+    return getBannerView(bannerID, format: AdFormat.mrec);
+  }
+
   void hideBanner() {
     AppLovinMAX.hideBanner(bannerID);
   }
 
-  static void ShowInterstitial() async {
+  static void ShowInterstitial({String name = "INTERSTITIAL"}) async {
     if (kDebugMode && !showAdsInDebug) {
       return;
     }
@@ -209,7 +205,7 @@ class ApplovinHelper {
     }
     bool isReady = (await AppLovinMAX.isInterstitialReady(interstitialID))!;
     if (isReady) {
-      AppLovinMAX.showInterstitial(interstitialID);
+      AppLovinMAX.showInterstitial(interstitialID, placement: name);
     }
   }
 }

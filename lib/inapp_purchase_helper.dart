@@ -173,7 +173,6 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(context.height);
     var img = Image.asset(
       'assets/${PurchaseHelper.purchaseConfig.image}',
       fit: BoxFit.cover,
@@ -303,7 +302,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         children: [
           if (data['months'] == "12") ...{
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+              margin: EdgeInsets.symmetric(horizontal: 3),
               padding: EdgeInsets.symmetric(vertical: 1),
               width: double.infinity,
               alignment: Alignment.center,

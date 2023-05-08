@@ -680,6 +680,7 @@ class PurchaseHelper {
 
       return hasSubscription;
     } catch (e) {
+      print("checkSubscription error: $e");
       return false;
     }
   }

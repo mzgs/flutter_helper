@@ -173,6 +173,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(context.height);
     var img = Image.asset(
       'assets/${PurchaseHelper.purchaseConfig.image}',
       fit: BoxFit.cover,
@@ -208,7 +209,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           SizedBox(height: context.heightPercent(2)),
           Container(
             padding: EdgeInsets.all(20),
-            height: context.heightPercent(context.isTablet ? 30 : 27),
+            height: context.heightPercent(
+                context.isTablet ? 32 : (context.height < 700 ? 31 : 27)),
             child: Row(
               children: _cardData
                   .asMap()
@@ -235,7 +237,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               minimumSize:
-                  Size(context.widthPercent(60), context.heightPercent(6)),
+                  Size(context.widthPercent(70), context.heightPercent(6)),
               backgroundColor: mainColor,
             ),
             onPressed: _isLoading
@@ -297,12 +299,12 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          if (data['months'] == "12" &&
-              PurchaseHelper.purchaseConfig.showTrialYearly) ...{
+          if (data['months'] == "12") ...{
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 3),
+              margin: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+              padding: EdgeInsets.symmetric(vertical: 1),
               width: double.infinity,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -314,14 +316,13 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               ),
               child: Text("SAVE " + data['topTitle'] + '%',
                   style: TextStyle(
-                      fontSize: context.width * 0.035, color: Colors.white)),
+                      fontSize: context.widthPercent(3.5),
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white)),
             ),
-            SizedBox(
-              height: 1,
-            )
           } else ...{
             Text(
-              data['months'] == "12" ? "BEST VALUE" : data['topTitle'],
+              data['topTitle'],
               style: TextStyle(fontSize: context.width * 0.025),
             )
           },
@@ -340,21 +341,16 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               fontSize: context.width * 0.03,
             ),
           ),
-          if (data['months'] == '12' &&
-              PurchaseHelper.purchaseConfig.showTrialYearly)
-            ...{}
-          else ...{
-            Text(
-              data['discount'] != 0
-                  ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
-                  : "",
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-                fontSize: context.width * 0.032,
-              ),
-            )
-          },
+          Text(
+            data['discount'] != 0 && data['months'] != '12'
+                ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
+                : "",
+            style: TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.w600,
+              fontSize: context.width * 0.032,
+            ),
+          ),
           if (data['trial'] != null &&
               PurchaseHelper.purchaseConfig.showTrialYearly) ...{
             Text(
@@ -379,6 +375,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               fontSize: context.width * 0.04,
             ),
           ),
+          SizedBox(height: 2)
         ],
       ),
     );

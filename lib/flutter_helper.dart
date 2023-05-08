@@ -715,6 +715,12 @@ class PurchaseHelper {
       showPaywall();
     }
   }
+
+  static Future<List<PurchasedItem>> purchaseHistory() async {
+    List<PurchasedItem>? history =
+        await FlutterInappPurchase.instance.getPurchaseHistory();
+    return history ?? [];
+  }
 }
 
 class PurchaseConfig {

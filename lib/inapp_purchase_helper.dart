@@ -381,10 +381,10 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
   }
 
   void itemPurchasedSuccess(PurchasedItem? productItem) async {
-    context.closeActivity();
-
     PurchaseHelper.isPremium = true;
-
+    if (mounted) {
+      context.closeActivity();
+    }
     UI.showSuccessDialog("You are using PREMIUM version of app now.",
         title: "Payment successful");
 

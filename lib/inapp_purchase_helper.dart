@@ -154,9 +154,11 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         itemPurchasedSuccess(productItem);
       }
 
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     });
 
     _purchaseErrorSubscription =

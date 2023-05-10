@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mzgs_flutter_helper/applovin_helper.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 var mainColor = PurchaseHelper.purchaseConfig.mainColor;
@@ -33,6 +34,14 @@ class _PurchasePageState extends State<PurchasePage> {
   void initState() {
     super.initState();
     setProducts();
+    ApplovinHelper.showAppOpenAds = false;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    ApplovinHelper.showAppOpenAds = true;
   }
 
   void setProducts() {

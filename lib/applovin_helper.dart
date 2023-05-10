@@ -20,6 +20,7 @@ class ApplovinHelper {
   static bool isFirstInterstitialShowed = false;
   static bool showInterstitialOnStart = false;
   static bool showAdsInDebug = true;
+  static bool showAppOpenAds = true;
 
   static void init(
     String sdkKey, {
@@ -65,6 +66,9 @@ class ApplovinHelper {
   }
 
   static void showAppOpen() async {
+    if (!showAppOpenAds) {
+      return;
+    }
     if (PurchaseHelper.isPremium || appopenID == "") {
       return;
     }

@@ -630,10 +630,11 @@ class PurchaseHelper {
   static String YEARLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
+  static bool activateOnDebug = true;
 
   static Future<void> init(
     PurchaseConfig _purchaseConfig, {
-    bool initOnDebug = true,
+    bool activateOnDebug = true,
     String monthlyID = "",
     String month6ID = "",
     String yearlyID = "",
@@ -641,9 +642,10 @@ class PurchaseHelper {
     MONTHLY_ID = monthlyID;
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
+    PurchaseHelper.activateOnDebug = activateOnDebug;
     purchaseConfig = _purchaseConfig;
 
-    if (kDebugMode && !initOnDebug) {
+    if (kDebugMode && !activateOnDebug) {
       return;
     }
 
@@ -698,6 +700,10 @@ class PurchaseHelper {
   }
 
   static void showPaywall() async {
+    if (kDebugMode && !activateOnDebug) {
+      return;
+    }
+
     if (isPremium) {
       return;
     }

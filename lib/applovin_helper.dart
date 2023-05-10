@@ -13,6 +13,8 @@ class ApplovinHelper {
 
   static String interstitialID = "";
   static String rewardedID = "";
+  static String bannerID = "";
+  static String mrecID = "";
   static String appopenID = "";
 
   static bool isFirstInterstitialShowed = false;
@@ -24,12 +26,16 @@ class ApplovinHelper {
     bool showAdsInDebug = true,
     String interstitialID = "",
     String rewardedID = "",
+    String bannerID = "",
+    String mrecID = "",
     String appopenID = "",
     bool showInterstitialOnStart = false,
   }) async {
     ApplovinHelper.interstitialID = interstitialID;
     ApplovinHelper.rewardedID = rewardedID;
     ApplovinHelper.appopenID = appopenID;
+    ApplovinHelper.bannerID = bannerID;
+    ApplovinHelper.mrecID = mrecID;
     ApplovinHelper.showInterstitialOnStart = showInterstitialOnStart;
     ApplovinHelper.showAdsInDebug = showAdsInDebug;
 
@@ -170,7 +176,7 @@ class ApplovinHelper {
     }
   }
 
-  static Widget getBannerView(String bannerID,
+  static Widget _getBannerView(String bannerID,
       {AdFormat format = AdFormat.banner}) {
     if (PurchaseHelper.isPremium) {
       return SizedBox();
@@ -190,8 +196,12 @@ class ApplovinHelper {
             onAdCollapsedCallback: (ad) {}));
   }
 
-  static Widget getMrecView(String bannerID) {
-    return getBannerView(bannerID, format: AdFormat.mrec);
+  static Widget getBannerView() {
+    return _getBannerView(bannerID);
+  }
+
+  static Widget getMrecView() {
+    return _getBannerView(mrecID, format: AdFormat.mrec);
   }
 
   static void ShowInterstitial({String name = "INTERSTITIAL"}) async {

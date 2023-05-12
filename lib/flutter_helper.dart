@@ -547,10 +547,15 @@ class DailyCredits {
   }
 
   static bool hasCredit() {
-    // if (PurchaseHelper.isPremium) {
-    //   return true;
-    // }
-    return credits > 0;
+    if (PurchaseHelper.isPremium) {
+      return true;
+    }
+    var has = credits > 0;
+
+    if (!has) {
+      PurchaseHelper.showPaywall();
+    }
+    return has;
   }
 
   static void consumeCredit() {
@@ -681,12 +686,13 @@ class PurchaseHelper {
     try {
       var montly =
           await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
-      var month6 =
-          await FlutterInappPurchase.instance.checkSubscribed(sku: MONTH6_ID);
-      var yearly =
-          await FlutterInappPurchase.instance.checkSubscribed(sku: YEARLY_ID);
+      var month6 = await FlutterInappPurchase.instance
+          .checkSubscribed(sku: MONTH6_ID, duration: const Duration(days: 180));
+      var yearly = await FlutterInappPurchase.instance
+          .checkSubscribed(sku: YEARLY_ID, duration: const Duration(days: 360));
       var hasSubscription = montly || month6 || yearly;
       isPremium = hasSubscription;
+      Pref.set("is_premium", isPremium);
 
       return hasSubscription;
     } catch (e) {

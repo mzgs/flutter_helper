@@ -10,10 +10,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:mzgs_flutter_helper/applovin_helper.dart';
+import 'package:mzgs_flutter_helper/web.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'inapp_purchase_helper.dart';
@@ -68,9 +69,9 @@ class Helper {
       {String message = "Check out this amazing app at"}) async {
     String appLink = 'https://apps.apple.com/app/id$isoAppID';
     if (isAndroid) {
-      var package_name = await Helper.getPackageName();
+      var packageName = await Helper.getPackageName();
 
-      appLink = "https://play.google.com/store/apps/details?id=$package_name";
+      appLink = "https://play.google.com/store/apps/details?id=$packageName";
     }
     Share.share('$message $appLink');
   }
@@ -100,6 +101,13 @@ class Helper {
     if (nextValue >= mustCountValue) {
       Helper.showInappRateOnce();
     }
+  }
+
+  static void openUrlInWebview(String url, {String title = ""}) {
+    Get.to(() => WebPage(
+          url,
+          title: title,
+        ));
   }
 }
 
@@ -166,7 +174,7 @@ class UI {
 
     var tile2 = ListTile(
       leading: Container(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: iconColor,
@@ -179,7 +187,7 @@ class UI {
       ),
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
         ),
       ),
@@ -235,31 +243,31 @@ class UI {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 24.0,
                     vertical: 12.0,
                   ),
@@ -294,17 +302,17 @@ class UI {
             children: [
               if (title != null) ...[
                 title,
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
               if (message != null) ...[
                 message,
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
               ],
               if (buttonLabel != null) ...[
                 ElevatedButton(
                   onPressed: () => Get.back(),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -337,7 +345,7 @@ class UI {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle_outline,
                 color: Colors.green,
                 size: 64,
@@ -345,7 +353,7 @@ class UI {
               const SizedBox(height: 16),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
@@ -354,9 +362,9 @@ class UI {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
@@ -395,26 +403,26 @@ class UI {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 color: Colors.red,
                 size: 64,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
@@ -423,8 +431,8 @@ class UI {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 24.0,
                     vertical: 12.0,
                   ),
@@ -464,33 +472,33 @@ class UI {
                 color: color,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
                     message,
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    style: const TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.info_outline_rounded,
                   color: Colors.blueGrey,
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             LinearProgressIndicator(
               backgroundColor: Colors.grey[300],
               value: remaining / totalDailyLimit,
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Remaining',
                   style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
@@ -504,15 +512,15 @@ class UI {
                 ),
               ],
             ),
-            SizedBox(height: 16),
-            Container(
+            const SizedBox(height: 16),
+            SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                icon: Icon(Icons.check),
+                icon: const Icon(Icons.check),
                 onPressed: () {
                   PurchaseHelper.showPaywall();
                 },
-                label: Text(
+                label: const Text(
                   'Remove Limits',
                   style: TextStyle(fontSize: 16),
                 ),
@@ -522,7 +530,7 @@ class UI {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -582,9 +590,9 @@ class FileHelper {
       {Function(Object e)? onError}) async {
     Dio dio = Dio();
 // Download the file
-    var _appDocDir = await getAppDataPath();
+    var appDocDir = await getAppDataPath();
     try {
-      await dio.download(url, _appDocDir + saveFilePath,
+      await dio.download(url, appDocDir + saveFilePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
           var progress = received / total;
@@ -613,8 +621,8 @@ class FileHelper {
   }
 
   static Future<String> getAppDataPath({String file = ""}) async {
-    final Directory _appDocDir = await getApplicationDocumentsDirectory();
-    return _appDocDir.path + file;
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    return appDocDir.path + file;
   }
 
   static Future<List<FileSystemEntity>> getFiles(
@@ -638,7 +646,7 @@ class PurchaseHelper {
   static bool initOnDebug = true;
 
   static Future<void> init(
-    PurchaseConfig _purchaseConfig, {
+    PurchaseConfig purchaseConfig, {
     bool initOnDebug = true,
     String monthlyID = "",
     String month6ID = "",
@@ -648,7 +656,7 @@ class PurchaseHelper {
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
     PurchaseHelper.initOnDebug = initOnDebug;
-    purchaseConfig = _purchaseConfig;
+    PurchaseHelper.purchaseConfig = purchaseConfig;
 
     if (kDebugMode && !initOnDebug) {
       return;
@@ -771,17 +779,17 @@ class PurchaseConfig {
 
 class RemoteConfig {
   // COUNTERS
-  static var _counterValues = {};
+  static final _counterValues = {};
   static var app = {};
 
   static Future init(String iosAppID) async {
-    var package_name = await Helper.getPackageName();
+    var packageName = await Helper.getPackageName();
     if (isApple) {
-      package_name = iosAppID;
+      packageName = iosAppID;
     }
     app = (await HttpHelper.getJsonFromUrl(
                 "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
-            package_name] ??
+            packageName] ??
         {};
   }
 
@@ -821,7 +829,7 @@ extension BuildContextExt on BuildContext {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('OK!'),
+                  child: const Text('OK!'),
                 )
               ],
             ));

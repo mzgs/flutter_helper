@@ -18,7 +18,7 @@ var pageBgGradientColors = [
 
 List<Map<String, dynamic>> _cardData = [];
 var products = Get.arguments['products'];
-SubscriptionWidget? subscriptionWidget = null;
+SubscriptionWidget? subscriptionWidget;
 
 IAPItem? selectedItem;
 
@@ -87,7 +87,7 @@ class _PurchasePageState extends State<PurchasePage> {
     });
 
     setState(() {
-      subscriptionWidget = SubscriptionWidget();
+      subscriptionWidget = const SubscriptionWidget();
     });
   }
 
@@ -105,13 +105,13 @@ class _PurchasePageState extends State<PurchasePage> {
                 colors: pageBgGradientColors,
               ),
             ),
-            child: SubscriptionWidget(),
+            child: const SubscriptionWidget(),
           ),
           Positioned(
             top: 40,
             left: 10,
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 CupertinoIcons.xmark,
                 color: Colors.grey,
               ),
@@ -129,6 +129,8 @@ class _PurchasePageState extends State<PurchasePage> {
 // SubscriptionWidget
 
 class SubscriptionWidget extends StatefulWidget {
+  const SubscriptionWidget({super.key});
+
   @override
   _SubscriptionWidgetState createState() => _SubscriptionWidgetState();
 }
@@ -146,11 +148,10 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     initListeners();
   }
 
-  StreamSubscription? _purchaseUpdatedSubscription = null;
-  StreamSubscription? _purchaseErrorSubscription = null;
+  StreamSubscription? _purchaseErrorSubscription;
 
   void initListeners() {
-    StreamSubscription _purchaseUpdatedSubscription =
+    StreamSubscription purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       // purchase success
       if (productItem?.transactionStateIOS == TransactionState.purchased ||
@@ -176,7 +177,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       setState(() {
         _isLoading = false;
 
-        _purchaseUpdatedSubscription.cancel();
+        purchaseUpdatedSubscription.cancel();
         _purchaseErrorSubscription?.cancel();
       });
     });
@@ -203,7 +204,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: context.width * 0.075,
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    color: const Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.w700),
               ),
               Text(
@@ -218,7 +219,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           ),
           SizedBox(height: context.heightPercent(2)),
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             height: context.heightPercent(
                 context.isTablet ? 32 : (context.height < 700 ? 31 : 27)),
             child: Row(
@@ -243,7 +244,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                   .toList(),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               minimumSize:
@@ -304,7 +305,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         side: BorderSide(
           color: index == _selectedIndex
               ? mainColor
-              : Color.fromARGB(255, 215, 212, 212),
+              : const Color.fromARGB(255, 215, 212, 212),
           width: isSelected ? 6 : 2,
         ),
       ),
@@ -313,18 +314,18 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         children: [
           if (data['months'] == "12") ...{
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 3),
-              padding: EdgeInsets.symmetric(vertical: 1),
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              padding: const EdgeInsets.symmetric(vertical: 1),
               width: double.infinity,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0),
                   topRight: Radius.circular(20.0),
                 ),
                 color: Colors.red,
               ),
-              child: Text("SAVE " + data['topTitle'] + '%',
+              child: Text('${"SAVE " + data['topTitle']}%',
                   style: TextStyle(
                       fontSize: context.widthPercent(3.5),
                       fontWeight: FontWeight.w500,
@@ -385,7 +386,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               fontSize: context.width * 0.04,
             ),
           ),
-          SizedBox(height: 2)
+          const SizedBox(height: 2)
         ],
       ),
     );

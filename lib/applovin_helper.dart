@@ -85,7 +85,7 @@ class ApplovinHelper {
     AppLovinMAX.setInterstitialListener(InterstitialListener(
       onAdLoadedCallback: (ad) {
         // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
-        print('Interstitial ad loaded from ' + ad.networkName);
+        print('Interstitial ad loaded from ${ad.networkName}');
 
         if (!isFirstInterstitialShowed && showInterstitialOnStart) {
           ShowInterstitial();
@@ -101,11 +101,7 @@ class ApplovinHelper {
 
         int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
+        print('Interstitial ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
 
         Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
           AppLovinMAX.loadInterstitial(interstitialID);
@@ -132,7 +128,7 @@ class ApplovinHelper {
     AppLovinMAX.setRewardedAdListener(RewardedAdListener(
         onAdLoadedCallback: (ad) {
           // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-          print('Rewarded ad loaded from ' + ad.networkName);
+          print('Rewarded ad loaded from ${ad.networkName}');
 
           // Reset retry attempt
           _rewardedAdRetryAttempt = 0;
@@ -143,11 +139,7 @@ class ApplovinHelper {
           _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
           int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ' +
-              error.code.toString() +
-              ' - retrying in ' +
-              retryDelay.toString() +
-              's');
+          print('Rewarded ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
 
           Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
             AppLovinMAX.loadRewardedAd(rewardedID);
@@ -183,7 +175,7 @@ class ApplovinHelper {
   static Widget _getBannerView(String bannerID,
       {AdFormat format = AdFormat.banner}) {
     if (PurchaseHelper.isPremium) {
-      return SizedBox();
+      return const SizedBox();
     }
     return MaxAdView(
         adUnitId: bannerID,

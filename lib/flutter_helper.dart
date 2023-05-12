@@ -541,6 +541,177 @@ class UI {
   }
 }
 
+class SettingsHelper {
+  static Widget terms() {
+    return UI.cardListTile(
+      Icons.feed,
+      Colors.blue,
+      "Terms of Use (EULA)",
+      onTap: () => {
+        Helper.openUrlInWebview('https://mzgs.net/terms.html',
+            title: 'Terms of Use (EULA)')
+      },
+    );
+  }
+
+  static Widget privacy() {
+    return UI.cardListTile(
+      Icons.privacy_tip,
+      Colors.red,
+      "Privacy Policy",
+      onTap: () => {
+        Helper.openUrlInWebview('https://mzgs.net/privacy.html',
+            title: 'Privacy Policy')
+      },
+    );
+  }
+
+  static Widget buyPremiumAndRestoreButton() {
+    return Visibility(
+        visible: !PurchaseHelper.isPremium,
+        child: Column(
+          children: [
+            UI.cardListTile(
+              Icons.shopping_cart,
+              Colors.lightBlueAccent,
+              "Buy Premium",
+              onTap: () => {PurchaseHelper.showPaywall()},
+            ),
+            UI.cardListTile(
+              Icons.restore,
+              Colors.green,
+              "Restore Purchases",
+              subtitle:
+                  "You are using ${PurchaseHelper.isPremium ? "⭐ PREMIUM" : "FREE"} version of app.",
+              onTap: () => {
+                if (PurchaseHelper.isPremium)
+                  {
+                    Get.snackbar(
+                      "Success",
+                      "Purchases restored successfully.",
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      snackPosition: SnackPosition.BOTTOM,
+                    )
+                  }
+                else
+                  {
+                    Get.snackbar(
+                      "Error",
+                      "You have no active subscription.",
+                      icon: const Icon(Icons.error, color: Colors.red),
+                      snackPosition: SnackPosition.BOTTOM,
+                    )
+                  }
+              },
+            ),
+          ],
+        ));
+  }
+
+  static Widget share(String appID) {
+    return UI.cardListTile(
+      Icons.share,
+      Colors.purple,
+      "Share with Friends",
+      onTap: () {
+        Helper.shareApp(appID);
+      },
+    );
+  }
+
+  static Widget rateUs(String appID) {
+    return UI.cardListTile(
+      Icons.star,
+      Colors.green,
+      "Rate Us",
+      onTap: () => {
+        Helper.rateApp(appID)
+        // Helper.inAppRate()
+      },
+    );
+  }
+
+  static Widget premiumCard() {
+    return Container(
+      height: 120,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(width: 16),
+          Icon(Icons.star, color: Colors.yellow, size: 48),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Premium",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "You are using premium version of this app.",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+        ],
+      ),
+    );
+  }
+
+  static Widget dailyLimitCard(int dailyLimit, String description,
+      {Color color = Colors.blue}) {
+    return Column(children: [
+      if (!PurchaseHelper.isPremium) ...[
+        const SizedBox(height: 12),
+        UI.DailyLimitRemainingCard(
+            dailyLimit, DailyCredits.credits, description,
+            color: color),
+        const SizedBox(height: 16),
+      ] else ...[
+        Padding(
+          padding: EdgeInsets.all(4.0),
+          child: premiumCard(),
+        ),
+      ],
+    ]);
+  }
+
+  static List<Widget> usualItems(String appID) {
+    return [
+      SettingsHelper.share(appID),
+      SettingsHelper.rateUs(appID),
+      const SizedBox(height: 16),
+      SettingsHelper.terms(),
+      SettingsHelper.privacy(),
+      const SizedBox(height: 16),
+      SettingsHelper.buyPremiumAndRestoreButton()
+    ];
+  }
+}
+
 class DailyCredits {
   static int credits = 0;
   static void init(int maxCredits) {
@@ -662,8 +833,10 @@ class PurchaseHelper {
       return;
     }
 
+    isPremium = Pref.get("is_premium", false);
+
     await FlutterInappPurchase.instance.initialize();
-    await PurchaseHelper.checkSubscription();
+    PurchaseHelper.checkSubscription();
   }
 
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {
@@ -690,7 +863,7 @@ class PurchaseHelper {
     return products;
   }
 
-  static Future<bool> checkSubscription() async {
+  static Future checkSubscription() async {
     try {
       var montly =
           await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
@@ -701,11 +874,8 @@ class PurchaseHelper {
       var hasSubscription = montly || month6 || yearly;
       isPremium = hasSubscription;
       Pref.set("is_premium", isPremium);
-
-      return hasSubscription;
     } catch (e) {
       print("checkSubscription error: $e");
-      return false;
     }
   }
 

@@ -36,7 +36,7 @@ class Helper {
   static Color Hex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
     if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
+      hexColor = "FF$hexColor";
     }
 
     return Color(int.parse(hexColor, radix: 16));
@@ -539,8 +539,8 @@ class DailyCredits {
     String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     credits = Pref.get("credit", maxCredits);
-    if (!Pref.get("credit" + today, false)) {
-      Pref.set("credit" + today, true);
+    if (!Pref.get("credit$today", false)) {
+      Pref.set("credit$today", true);
       Pref.set("credit", maxCredits);
       credits = maxCredits;
     }
@@ -630,11 +630,11 @@ class PurchaseHelper {
   static String YEARLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
-  static bool activateOnDebug = true;
+  static bool initOnDebug = true;
 
   static Future<void> init(
     PurchaseConfig _purchaseConfig, {
-    bool activateOnDebug = true,
+    bool initOnDebug = true,
     String monthlyID = "",
     String month6ID = "",
     String yearlyID = "",
@@ -642,10 +642,10 @@ class PurchaseHelper {
     MONTHLY_ID = monthlyID;
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
-    PurchaseHelper.activateOnDebug = activateOnDebug;
+    PurchaseHelper.initOnDebug = initOnDebug;
     purchaseConfig = _purchaseConfig;
 
-    if (kDebugMode && !activateOnDebug) {
+    if (kDebugMode && !initOnDebug) {
       return;
     }
 
@@ -700,7 +700,7 @@ class PurchaseHelper {
   }
 
   static void showPaywall() async {
-    if (kDebugMode && !activateOnDebug) {
+    if (kDebugMode && !initOnDebug) {
       return;
     }
 
@@ -731,7 +731,7 @@ class PurchaseHelper {
     }
   }
 
-  static Future<List<PurchasedItem>> purchaseHistory() async {
+  static Future<List<PurchasedItem>> getPurchaseHistory() async {
     List<PurchasedItem>? history =
         await FlutterInappPurchase.instance.getPurchaseHistory();
     return history ?? [];
@@ -788,7 +788,7 @@ class RemoteConfig {
 
     if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
       print("interstitial showed: $name");
-      ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_" + name);
+      ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_$name");
     }
   }
 }

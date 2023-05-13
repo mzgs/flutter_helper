@@ -211,9 +211,10 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 PurchaseHelper.purchaseConfig.description,
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                    fontSize: context.widthPercent(context.isTablet ? 3 : 4.5),
+                    fontSize:
+                        context.widthPercent(context.isTablet ? 2.8 : 4.3),
                     color: textColor,
-                    fontWeight: FontWeight.w700),
+                    fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -327,7 +328,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               ),
               child: Text('${"DISCOUNT".tr + ' ' + data['topTitle']}%',
                   style: TextStyle(
-                      fontSize: context.widthPercent(3),
+                      fontSize: context.widthPercent(2.9),
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
@@ -360,7 +361,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
             style: TextStyle(
                 color: Colors.red,
                 fontWeight: FontWeight.w600,
-                fontSize: context.widthPercent(3)),
+                fontSize: context.widthPercent(2.9)),
           ),
           if (data['trial'] != null &&
               PurchaseHelper.purchaseConfig.showTrialYearly) ...{

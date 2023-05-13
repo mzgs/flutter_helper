@@ -148,10 +148,11 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     initListeners();
   }
 
+  StreamSubscription? _purchaseUpdatedSubscription;
   StreamSubscription? _purchaseErrorSubscription;
 
   void initListeners() {
-    StreamSubscription purchaseUpdatedSubscription =
+    _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       // purchase success
       if (productItem?.transactionStateIOS == TransactionState.purchased ||
@@ -177,7 +178,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       setState(() {
         _isLoading = false;
 
-        purchaseUpdatedSubscription.cancel();
+        _purchaseUpdatedSubscription?.cancel();
         _purchaseErrorSubscription?.cancel();
       });
     });

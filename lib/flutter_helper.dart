@@ -666,7 +666,7 @@ class SettingsHelper {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "You are using premium version of this app.".tr,
+                  "You are using the premium version of this app.".tr,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

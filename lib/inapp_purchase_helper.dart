@@ -53,14 +53,14 @@ class _PurchasePageState extends State<PurchasePage> {
 
     _cardData.add({
       'months': '12',
-      'monthName': 'months',
+      'monthName': 'months'.tr,
       'topTitle':
           ((double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
                   (double.parse(montly.price!) * 12) *
                   100)
               .toStringAsFixed(0),
       'price': yearly.localizedPrice,
-      'trial': '3 DAYS FREE',
+      'trial': '3 DAYS FREE'.tr,
       'discount':
           (double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
               (double.parse(montly.price!) * 12) *
@@ -69,8 +69,8 @@ class _PurchasePageState extends State<PurchasePage> {
 
     _cardData.add({
       'months': '6',
-      'monthName': 'months',
-      'topTitle': '⭐MOST POPULAR',
+      'monthName': 'months'.tr,
+      'topTitle': '⭐${'MOST POPULAR'.tr}',
       'price': month6.localizedPrice,
       'discount':
           (double.parse(montly.price!) * 6 - double.parse(month6.price!)) /
@@ -80,7 +80,7 @@ class _PurchasePageState extends State<PurchasePage> {
 
     _cardData.add({
       'months': '1',
-      'monthName': 'month',
+      'monthName': 'month'.tr,
       'topTitle': '',
       'price': montly.localizedPrice,
       'discount': 0.0,
@@ -284,7 +284,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                     ),
                   )
                 : Icon(Icons.check, size: context.widthPercent(6)),
-            label: Text('CONTINUE',
+            label: Text('CONTINUE'.tr,
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: context.width * 0.05)),
@@ -325,9 +325,9 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                 ),
                 color: Colors.red,
               ),
-              child: Text('${"SAVE " + data['topTitle']}%',
+              child: Text('${"DISCOUNT".tr + ' ' + data['topTitle']}%',
                   style: TextStyle(
-                      fontSize: context.widthPercent(3.5),
+                      fontSize: context.widthPercent(3),
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
@@ -354,13 +354,13 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
           ),
           Text(
             data['discount'] != 0 && data['months'] != '12'
-                ? "SAVE ${(data['discount'] as double).toStringAsFixed(0)}%"
+                ? 'DISCOUNT'.tr +
+                    " ${(data['discount'] as double).toStringAsFixed(0)}%"
                 : "",
             style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.w600,
-              fontSize: context.width * 0.032,
-            ),
+                color: Colors.red,
+                fontWeight: FontWeight.w600,
+                fontSize: context.widthPercent(3)),
           ),
           if (data['trial'] != null &&
               PurchaseHelper.purchaseConfig.showTrialYearly) ...{
@@ -374,7 +374,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               ),
             ),
             Text(
-              "then",
+              "then".tr,
               style: TextStyle(fontSize: context.widthPercent(3.5)),
             )
           },
@@ -397,8 +397,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     if (mounted) {
       context.closeActivity();
     }
-    UI.showSuccessDialog("You are using PREMIUM version of app now.",
-        title: "Payment successful");
+    UI.showSuccessDialog("You are using PREMIUM version of app now".tr,
+        title: "Payment successful".tr);
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {

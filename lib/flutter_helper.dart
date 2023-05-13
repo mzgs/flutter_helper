@@ -65,8 +65,10 @@ class Helper {
     return false;
   }
 
-  static void shareApp(String isoAppID,
-      {String message = "Check out this amazing app at"}) async {
+  static void shareApp(String isoAppID, {String message = ""}) async {
+    if (message == "") {
+      message = "Check out this amazing app at".tr;
+    }
     String appLink = 'https://apps.apple.com/app/id$isoAppID';
     if (isAndroid) {
       var packageName = await Helper.getPackageName();
@@ -206,7 +208,7 @@ class UI {
 
   static void showErrorToast(String message) {
     Get.snackbar(
-      'ERROR',
+      'ERROR'.tr,
       message,
       icon: const Icon(Icons.error, color: Colors.white),
       backgroundColor: Colors.red,
@@ -217,7 +219,7 @@ class UI {
 
   static void showSuccessToast(String message) {
     Get.snackbar(
-      'SUCCESS',
+      'SUCCESS'.tr,
       message,
       icon: const Icon(Icons.check, color: Colors.white),
       backgroundColor: Colors.green,
@@ -465,7 +467,7 @@ class UI {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Daily Limit',
+              'Daily Limit'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -498,8 +500,8 @@ class UI {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Remaining',
+                Text(
+                  'Remaining'.tr,
                   style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
                 Text(
@@ -520,8 +522,8 @@ class UI {
                 onPressed: () {
                   PurchaseHelper.showPaywall();
                 },
-                label: const Text(
-                  'Remove Limits',
+                label: Text(
+                  'Remove Limits'.tr,
                   style: TextStyle(fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -546,10 +548,10 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.feed,
       Colors.blue,
-      "Terms of Use (EULA)",
+      "Terms of Use (EULA)".tr,
       onTap: () => {
         Helper.openUrlInWebview('https://mzgs.net/terms.html',
-            title: 'Terms of Use (EULA)')
+            title: 'Terms of Use (EULA)'.tr)
       },
     );
   }
@@ -558,10 +560,10 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.privacy_tip,
       Colors.red,
-      "Privacy Policy",
+      "Privacy Policy".tr,
       onTap: () => {
         Helper.openUrlInWebview('https://mzgs.net/privacy.html',
-            title: 'Privacy Policy')
+            title: 'Privacy Policy'.tr)
       },
     );
   }
@@ -574,15 +576,13 @@ class SettingsHelper {
             UI.cardListTile(
               Icons.shopping_cart,
               Colors.lightBlueAccent,
-              "Buy Premium",
+              "Buy Premium".tr,
               onTap: () => {PurchaseHelper.showPaywall()},
             ),
             UI.cardListTile(
               Icons.restore,
               Colors.green,
-              "Restore Purchases",
-              subtitle:
-                  "You are using ${PurchaseHelper.isPremium ? "⭐ PREMIUM" : "FREE"} version of app.",
+              "Restore Purchases".tr,
               onTap: () => {
                 if (PurchaseHelper.isPremium)
                   {
@@ -596,8 +596,8 @@ class SettingsHelper {
                 else
                   {
                     Get.snackbar(
-                      "Error",
-                      "You have no active subscription.",
+                      "Error".tr,
+                      "You have no active subscription.".tr,
                       icon: const Icon(Icons.error, color: Colors.red),
                       snackPosition: SnackPosition.BOTTOM,
                     )
@@ -612,7 +612,7 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.share,
       Colors.purple,
-      "Share with Friends",
+      "Share with Friends".tr,
       onTap: () {
         Helper.shareApp(appID);
       },
@@ -623,7 +623,7 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.star,
       Colors.green,
-      "Rate Us",
+      "Rate Us".tr,
       onTap: () => {
         Helper.rateApp(appID)
         // Helper.inAppRate()
@@ -646,7 +646,7 @@ class SettingsHelper {
           ),
         ],
       ),
-      child: const Row(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(width: 16),
@@ -666,7 +666,7 @@ class SettingsHelper {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "You are using premium version of this app.",
+                  "You are using premium version of this app.".tr,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

@@ -336,7 +336,10 @@ class UI {
     );
   }
 
-  static void showSuccessDialog(String message, {String title = "Successful"}) {
+  static void showSuccessDialog(String message, {String title = ""}) {
+    if (title == "") {
+      title = "SUCCESS".tr;
+    }
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -394,7 +397,10 @@ class UI {
     );
   }
 
-  static void showErrorDialog(String message, {String title = "Error"}) {
+  static void showErrorDialog(String message, {String title = ""}) {
+    if (title == "") {
+      title = "ERROR".tr;
+    }
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -587,7 +593,7 @@ class SettingsHelper {
                 if (PurchaseHelper.isPremium)
                   {
                     Get.snackbar(
-                      "Success",
+                      "Success".tr,
                       "Purchases restored successfully.",
                       icon: const Icon(Icons.check, color: Colors.green),
                       snackPosition: SnackPosition.BOTTOM,

@@ -743,9 +743,14 @@ class DailyCredits {
     return has;
   }
 
-  static void consumeCredit() {
+  static void consumeCredit({bool setPurchaseAnalytic = false}) {
     credits--;
     Pref.set("credit", credits);
+
+    if (setPurchaseAnalytic) {
+      PurchaseHelper.purchaseConfig.analyticData =
+          '{"dailyCredits":"${DailyCredits.credits}"}';
+    }
   }
 
   static void addCredits(int creditToAdd) {

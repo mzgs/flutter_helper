@@ -148,6 +148,14 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     initListeners();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _purchaseUpdatedSubscription?.cancel();
+    _purchaseErrorSubscription?.cancel();
+  }
+
   StreamSubscription? _purchaseUpdatedSubscription;
   StreamSubscription? _purchaseErrorSubscription;
 
@@ -177,9 +185,6 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
       print('purchase-error: $purchaseError');
       setState(() {
         _isLoading = false;
-
-        _purchaseUpdatedSubscription?.cancel();
-        _purchaseErrorSubscription?.cancel();
       });
     });
   }
@@ -396,6 +401,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
 
   void itemPurchasedSuccess(PurchasedItem? productItem) async {
     PurchaseHelper.isPremium = true;
+    Pref.set("is_premium", true);
+
     if (mounted) {
       context.closeActivity();
     }
@@ -409,8 +416,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
             DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc()),
         "subscription_id": selectedItem!.productId.toString(),
         "price": selectedItem!.price.toString(),
-        "country": WidgetsBinding.instance.window.locale.countryCode.toString(),
-        "lang": WidgetsBinding.instance.window.locale.languageCode,
+        "country": Get.locale?.countryCode ?? "",
+        "lang": Get.locale?.languageCode ?? "",
         "localePrice": selectedItem!.localizedPrice.toString(),
         "package_name": (await Helper.getPackageName()),
         "app_name": (await Helper.getAppName()),

@@ -61,7 +61,7 @@ class TranslateHelper {
         "CONTINUE": "DEVAM ET",
         "3 DAYS FREE": "3 GÜNLÜK ÜCRETSİZ",
         "DISCOUNT": "İNDİRİM",
-        "months": "aylar",
+        "months": "ay",
         "month": "ay",
         "MOST POPULAR": "EN POPÜLER",
         "then": "ardından",

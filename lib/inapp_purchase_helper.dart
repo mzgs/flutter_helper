@@ -416,7 +416,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
             DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc()),
         "subscription_id": selectedItem!.productId.toString(),
         "price": selectedItem!.price.toString(),
-        "country": Get.locale?.countryCode ?? "",
+        "country": Helper.getPhoneCountryCode(),
         "lang": Get.locale?.languageCode ?? "",
         "localePrice": selectedItem!.localizedPrice.toString(),
         "package_name": (await Helper.getPackageName()),

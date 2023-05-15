@@ -20,6 +20,7 @@ class TranslateHelper {
         "Search": "Search",
         "Share": "Share",
         "Save": "Save",
+        "Premium": "Premium",
         "Watch ad": "Watch ad",
         "CONTINUE": "CONTINUE",
         "3 DAYS FREE": "3 DAYS FREE",
@@ -43,7 +44,8 @@ class TranslateHelper {
       },
       "tr": {
         "Settings": "Ayarlar",
-        "Remove Limits": "Sınırları Kaldır",
+        "Premium": "Premium",
+        "Remove Limits": "Limitleri Kaldır",
         "Check out this amazing app at":
             "Bu harika uygulamayı burada kontrol edin",
         "Remaining": "Kalan",
@@ -231,6 +233,7 @@ class TranslateHelper {
       "ja": {
         "Settings": "設定",
         "Remove Limits": "制限解除",
+        "Premium": "プレミアム",
         "Check out this amazing app at": "この素晴らしいアプリをチェック",
         "Remaining": "残り",
         "Daily Limit": "1日の制限",
@@ -265,6 +268,7 @@ class TranslateHelper {
       },
       "ar": {
         "Settings": "الإعدادات",
+        "Premium": "بريميوم",
         "Remove Limits": "إزالة الحدود",
         "Check out this amazing app at": "تحقق من هذا التطبيق المذهل على",
         "Remaining": "المتبقي",
@@ -301,6 +305,7 @@ class TranslateHelper {
       },
       "ru": {
         "Settings": "Настройки",
+        "Premium": "Премиум",
         "Remove Limits": "Убрать ограничения",
         "Check out this amazing app at":
             "Ознакомьтесь с этим удивительным приложением на",
@@ -338,6 +343,7 @@ class TranslateHelper {
       },
       "zh": {
         "Settings": "设置",
+        "Premium": "高级",
         "Remove Limits": "移除限制",
         "Check out this amazing app at": "请查看这个令人惊叹的应用程序",
         "Remaining": "剩余",
@@ -409,6 +415,7 @@ class TranslateHelper {
       },
       "hi": {
         "Settings": "सेटिंग्स",
+        "Premium": "प्रीमियम",
         "Remove Limits": "सीमाएँ हटाएं",
         "Check out this amazing app at": "इस शानदार ऐप की जांच करें",
         "Remaining": "शेष",
@@ -483,6 +490,7 @@ class TranslateHelper {
       "ko": {
         "Settings": "설정",
         "Remove Limits": "제한 해제",
+        "Premium": "프리미엄",
         "Check out this amazing app at": "이 멋진 앱을 확인하세요",
         "Remaining": "남은",
         "Daily Limit": "일일 한도",

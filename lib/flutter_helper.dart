@@ -767,8 +767,7 @@ class DailyCredits {
     Pref.set("credit", credits);
 
     if (setPurchaseAnalytic) {
-      PurchaseHelper.purchaseConfig.analyticData =
-          '{"dailyCredits":"${DailyCredits.credits}"}';
+      PurchaseHelper.setAnalyticData("dailyCredits", DailyCredits.credits);
     }
   }
 
@@ -950,6 +949,12 @@ class PurchaseHelper {
         await FlutterInappPurchase.instance.getPurchaseHistory();
     return history ?? [];
   }
+
+  static void setAnalyticData(String key, value) {
+    var data = jsonDecode(purchaseConfig.analyticData);
+    data[key] = value;
+    purchaseConfig.analyticData = jsonEncode(data);
+  }
 }
 
 class PurchaseConfig {
@@ -973,7 +978,7 @@ class PurchaseConfig {
       this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
       this.iconIsOval = true,
       this.image = 'app.png',
-      this.analyticData = "",
+      this.analyticData = "{}",
       this.showTrialYearly = false});
 }
 
@@ -1004,6 +1009,25 @@ class RemoteConfig {
       print("interstitial showed: $name");
       ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_$name");
     }
+  }
+}
+
+class ActionCounter {
+  static void increase(String key) {
+    var oldValue = Pref.get(key, 0);
+    Pref.set(key, ++oldValue);
+  }
+
+  static void increaseAndSetPurchaseAnalyticData(String key) {
+    var oldValue = Pref.get(key, 0);
+    oldValue++;
+
+    Pref.set(key, oldValue);
+    PurchaseHelper.setAnalyticData(key, oldValue);
+  }
+
+  static int get(String key) {
+    return Pref.get(key, 0);
   }
 }
 

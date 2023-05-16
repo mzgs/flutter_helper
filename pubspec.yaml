@@ -21,13 +21,13 @@ dependencies:
   share_plus: ^6.3.4
   url_launcher: ^6.1.10
   path_provider:
-  get:  
-  get_storage:  
   flutter_inapp_purchase: ^5.4.1
   in_app_review: ^2.0.6
   applovin_max: ^2.5.0
   package_info_plus: ^3.1.2
   webview_flutter: ^4.2.0
+  get: ^4.6.5
+  get_storage: ^2.1.1
   
 
 dev_dependencies:

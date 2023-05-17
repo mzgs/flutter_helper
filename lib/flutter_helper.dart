@@ -887,6 +887,8 @@ class PurchaseHelper {
 
     await FlutterInappPurchase.instance.initialize();
     PurchaseHelper.checkSubscription();
+
+    checkSubscribedAndroid(sku: MONTHLY_ID);
   }
 
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {
@@ -914,6 +916,17 @@ class PurchaseHelper {
   }
 
   static Future checkSubscription() async {
+    if (isAndroid) {
+      var montly = await checkSubscribedAndroid(sku: MONTHLY_ID);
+      var month6 = await checkSubscribedAndroid(sku: MONTH6_ID);
+      var yearly = await checkSubscribedAndroid(sku: YEARLY_ID);
+      var hasSubscription = montly || month6 || yearly;
+      isPremium = hasSubscription;
+      Pref.set("is_premium", isPremium);
+
+      return;
+    }
+
     try {
       var montly =
           await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
@@ -975,6 +988,19 @@ class PurchaseHelper {
     var data = jsonDecode(purchaseConfig.analyticData);
     data[key] = value;
     purchaseConfig.analyticData = jsonEncode(data);
+  }
+
+  static Future<bool> checkSubscribedAndroid({
+    required String sku,
+  }) async {
+    var purchases =
+        await FlutterInappPurchase.instance.getAvailablePurchases() ?? [];
+
+    for (var purchase in purchases) {
+      if (purchase.productId == sku) return true;
+    }
+
+    return false;
   }
 }
 

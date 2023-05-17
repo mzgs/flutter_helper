@@ -477,6 +477,27 @@ class UI {
     );
   }
 
+  static ElevatedButton rewardedButton(String title, void Function() onPressed,
+      {IconData icon = Icons.star, Color color = Colors.blue}) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(backgroundColor: color),
+      onPressed: () {
+        ApplovinHelper.ShowRewarded();
+        onPressed();
+      },
+      icon: Icon(icon),
+      label: Column(
+        children: [
+          Text(title, style: TextStyle(fontSize: 17)),
+          if (!PurchaseHelper.isPremium) ...{
+            Text('Watch ad'.tr, style: TextStyle(fontSize: 11)),
+            SizedBox(height: 5)
+          },
+        ],
+      ),
+    );
+  }
+
   static Widget DailyLimitRemainingCard(
       int totalDailyLimit, int remaining, String message,
       {Color color = Colors.blue}) {

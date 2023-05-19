@@ -888,6 +888,7 @@ class PurchaseHelper {
     isPremium = Pref.get("is_premium", false);
 
     await FlutterInappPurchase.instance.initialize();
+    setAsaData();
     PurchaseHelper.checkSubscription();
 
     checkSubscribedAndroid(sku: MONTHLY_ID);

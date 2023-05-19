@@ -873,7 +873,7 @@ class PurchaseHelper {
     if (!kDebugMode) {
       setAsaData();
     }
-
+    setIpData();
     PurchaseHelper.checkSubscription();
   }
 
@@ -997,6 +997,14 @@ class PurchaseHelper {
           await FlutterAsaAttribution.instance.requestAttributionDetails();
       asaData = jsonEncode(data);
     } catch (e) {}
+  }
+
+  static setIpData() async {
+    var ipData = await HttpHelper.getJsonFromUrl("http://ip-api.com/json");
+    var country = ipData['countryCode'];
+    var ip = ipData['query'];
+    setAnalyticData("country", country);
+    setAnalyticData("ip", ip);
   }
 }
 

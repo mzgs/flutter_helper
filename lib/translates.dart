@@ -1,6 +1,6 @@
 // convert all the "en" map keys to other languages, you can update the keys map in the Messages class as follows:
 
-// en,  tr , fr , es, de, it, ja, ar, ru, zh , pt , hi , ms , ko , id
+// en,  tr , fr , es, de, it, ja, ar, ru, zh , pt , hi , ms , ko , id, nl
 
 class TranslateHelper {
   static Map<String, Map<String, String>> getHelperTranslations() {
@@ -560,6 +560,43 @@ class TranslateHelper {
         "Restore Purchases": "Pulihkan Pembelian",
         "You are using the premium version of this app.":
             "Anda menggunakan versi premium dari aplikasi ini."
+      },
+      "nl": {
+        "Settings": "Instellingen",
+        "Remove Limits": "Beperkingen verwijderen",
+        "Check out this amazing app at": "Bekijk deze geweldige app op",
+        "Remaining": "Resterend",
+        "Daily Limit": "Daglimiet",
+        "Share with Friends": "Delen met vrienden",
+        "Rate Us": "Beoordeel ons",
+        "Privacy Policy": "Privacybeleid",
+        "Terms of Use (EULA)": "Gebruiksvoorwaarden (EULA)",
+        "Image saved to photos": "Afbeelding opgeslagen in foto's",
+        "Save to Photos": "Opslaan in foto's",
+        "Search": "Zoeken",
+        "Share": "Delen",
+        "Save": "Opslaan",
+        "Premium": "Premium",
+        "Watch ad": "Bekijk advertentie",
+        "CONTINUE": "DOORGAAN",
+        "3 DAYS FREE": "3 DAGEN GRATIS",
+        "DISCOUNT": "KORTING",
+        "months": "maanden",
+        "month": "maand",
+        "MOST POPULAR": "MEEST POPULAIR",
+        "then": "dan",
+        "Payment successful": "Betaling geslaagd",
+        "You are using PREMIUM version of app now":
+            "U gebruikt nu de PREMIUM-versie van de app",
+        "Success": "Succes",
+        "SUCCESS": "SUCCES",
+        "ERROR": "FOUT",
+        "Error": "Fout",
+        "You have no active subscription.": "U heeft geen actief abonnement.",
+        "Buy Premium": "Koop Premium",
+        "Restore Purchases": "Aankopen herstellen",
+        "You are using the premium version of this app.":
+            "U gebruikt de premiumversie van deze app."
       }
     };
   }

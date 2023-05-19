@@ -869,10 +869,12 @@ class PurchaseHelper {
     isPremium = Pref.get("is_premium", false);
 
     await FlutterInappPurchase.instance.initialize();
-    setAsaData();
-    PurchaseHelper.checkSubscription();
 
-    checkSubscribedAndroid(sku: MONTHLY_ID);
+    if (!kDebugMode) {
+      setAsaData();
+    }
+
+    PurchaseHelper.checkSubscription();
   }
 
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {

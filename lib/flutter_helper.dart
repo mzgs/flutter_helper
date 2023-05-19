@@ -44,25 +44,6 @@ class Helper {
     return Color(int.parse(hexColor, radix: 16));
   }
 
-  static String getPhoneCountryCode() {
-    if (Platform.isAndroid) {
-      // Retrieve the phone country code on Android
-      final locale = Platform.localeName;
-      final parts = locale.split('_');
-      if (parts.length == 2) {
-        return parts[1].toUpperCase();
-      }
-    } else if (Platform.isIOS) {
-      // Retrieve the phone country code on iOS
-      final locale = Platform.localeName;
-      final parts = locale.split('_');
-      if (parts.length == 2) {
-        return parts[0].toUpperCase();
-      }
-    }
-    return 'Unknown';
-  }
-
   static Future<String> getPackageName() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.packageName;

@@ -421,7 +421,8 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         "localePrice": selectedItem!.localizedPrice.toString(),
         "package_name": (await Helper.getPackageName()),
         "app_name": (await Helper.getAppName()),
-        "data": PurchaseHelper.purchaseConfig.analyticData
+        "data": PurchaseHelper.purchaseConfig.analyticData,
+        "asa": PurchaseHelper.asaData
       });
     } catch (e) {}
 

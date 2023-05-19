@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_asa_attribution/flutter_asa_attribution.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -861,6 +862,7 @@ class PurchaseHelper {
   static Map<String, IAPItem> products = {};
   static PurchaseConfig purchaseConfig = PurchaseConfig();
 
+  static String asaData = "";
   static String YEARLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
@@ -1001,6 +1003,16 @@ class PurchaseHelper {
     }
 
     return false;
+  }
+
+  static void setAsaData() async {
+    try {
+      var token = await FlutterAsaAttribution.instance.attributionToken();
+      // print("mzgs token: " + token.toString());
+      var data =
+          await FlutterAsaAttribution.instance.requestAttributionDetails();
+      asaData = jsonEncode(data);
+    } catch (e) {}
   }
 }
 

@@ -872,9 +872,9 @@ class PurchaseHelper {
 
     if (!kDebugMode) {
       setAsaData();
+      PurchaseHelper.checkSubscription();
     }
     setIpData();
-    PurchaseHelper.checkSubscription();
   }
 
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {

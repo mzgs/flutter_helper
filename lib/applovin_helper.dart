@@ -101,7 +101,8 @@ class ApplovinHelper {
 
         int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-        print('Interstitial ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
+        print(
+            'Interstitial ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
 
         Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
           AppLovinMAX.loadInterstitial(interstitialID);
@@ -139,7 +140,8 @@ class ApplovinHelper {
           _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
           int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
+          print(
+              'Rewarded ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
 
           Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
             AppLovinMAX.loadRewardedAd(rewardedID);
@@ -174,7 +176,7 @@ class ApplovinHelper {
 
   static Widget _getBannerView(String bannerID,
       {AdFormat format = AdFormat.banner}) {
-    if (PurchaseHelper.isPremium) {
+    if (PurchaseHelper.isPremium || (kDebugMode && !showAdsInDebug)) {
       return const SizedBox();
     }
     return MaxAdView(

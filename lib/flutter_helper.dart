@@ -824,8 +824,11 @@ class FileHelper {
   }
 
   static Future<String> getAppDataPath({String file = ""}) async {
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    return appDocDir.path + file;
+    if (!file.startsWith("/") && file != "") {
+      file = "/$file";
+    }
+
+    return (await getApplicationDocumentsDirectory()).path + file;
   }
 
   static Future<List<FileSystemEntity>> getFiles(

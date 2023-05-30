@@ -40,6 +40,10 @@ class ApplovinHelper {
     ApplovinHelper.showInterstitialOnStart = showInterstitialOnStart;
     ApplovinHelper.showAdsInDebug = showAdsInDebug;
 
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
+
     Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
 
     if (PurchaseHelper.isPremium) {

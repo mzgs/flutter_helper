@@ -850,6 +850,7 @@ class PurchaseHelper {
   static String YEARLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
+  static String LIFETIME_ID = "";
   static bool initOnDebug = true;
 
   static Future<void> init(
@@ -858,10 +859,12 @@ class PurchaseHelper {
     String monthlyID = "",
     String month6ID = "",
     String yearlyID = "",
+    String lifetimeID = "",
   }) async {
     MONTHLY_ID = monthlyID;
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
+    LIFETIME_ID = lifetimeID;
     PurchaseHelper.initOnDebug = initOnDebug;
     PurchaseHelper.purchaseConfig = purchaseConfig;
 
@@ -884,9 +887,10 @@ class PurchaseHelper {
     var products = <String, IAPItem>{};
 
     List<IAPItem> items = await FlutterInappPurchase.instance
-        .getSubscriptions([YEARLY_ID, MONTH6_ID, MONTHLY_ID]);
+        .getSubscriptions([YEARLY_ID, MONTH6_ID, MONTHLY_ID, LIFETIME_ID]);
 
     for (var item in items) {
+      print(item.productId);
       var key = "monthly";
 
       if (item.subscriptionPeriodNumberIOS == "6" ||

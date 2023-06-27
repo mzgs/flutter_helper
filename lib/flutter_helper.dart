@@ -880,6 +880,7 @@ class PurchaseHelper {
       setAsaData();
       PurchaseHelper.checkSubscription();
     }
+    PurchaseHelper.checkSubscription(); //todo remove
     setIpData();
   }
 
@@ -890,8 +891,16 @@ class PurchaseHelper {
         .getSubscriptions([YEARLY_ID, MONTH6_ID, MONTHLY_ID, LIFETIME_ID]);
 
     for (var item in items) {
-      print(item.productId);
-      var key = "monthly";
+      var key = "other";
+
+      if (item.productId == LIFETIME_ID) {
+        key = "lifetime";
+      }
+
+      if (item.subscriptionPeriodNumberIOS == "1" ||
+          item.subscriptionPeriodAndroid == "P1M") {
+        key = "monthly";
+      }
 
       if (item.subscriptionPeriodNumberIOS == "6" ||
           item.subscriptionPeriodAndroid == "P6M") {
@@ -909,6 +918,15 @@ class PurchaseHelper {
   }
 
   static Future checkSubscription() async {
+    var history = await getPurchaseHistory();
+    for (var element in history) {
+      if (element.productId == LIFETIME_ID) {
+        isPremium = true;
+        Pref.set("is_premium", isPremium);
+        return;
+      }
+    }
+
     if (isAndroid) {
       var montly = await checkSubscribedAndroid(sku: MONTHLY_ID);
       var month6 = await checkSubscribedAndroid(sku: MONTH6_ID);
@@ -928,6 +946,7 @@ class PurchaseHelper {
       var yearly = await FlutterInappPurchase.instance
           .checkSubscribed(sku: YEARLY_ID, duration: const Duration(days: 360));
       var hasSubscription = montly || month6 || yearly;
+
       isPremium = hasSubscription;
       Pref.set("is_premium", isPremium);
     } catch (e) {

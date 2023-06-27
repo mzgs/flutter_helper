@@ -880,7 +880,7 @@ class PurchaseHelper {
       setAsaData();
       PurchaseHelper.checkSubscription();
     }
-    PurchaseHelper.checkSubscription(); //todo remove
+
     setIpData();
   }
 

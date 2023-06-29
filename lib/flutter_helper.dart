@@ -958,7 +958,7 @@ class PurchaseHelper {
     products = await getPurchaseProducts();
   }
 
-  static void showPaywall() async {
+  static void showPaywall({analyticKey = ""}) async {
     if (kDebugMode && !initOnDebug) {
       return;
     }
@@ -973,6 +973,8 @@ class PurchaseHelper {
     if (products.isEmpty) {
       return;
     }
+
+    PurchaseHelper.setAnalyticData("paywall", analyticKey);
 
     Get.to(() => const PurchasePage(), arguments: {'products': products});
   }

@@ -548,7 +548,7 @@ class UI {
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.check),
                 onPressed: () {
-                  PurchaseHelper.showPaywall();
+                  PurchaseHelper.showPaywall(analyticKey: "remove_limits");
                 },
                 label: Text(
                   'Remove Limits'.tr,
@@ -605,7 +605,8 @@ class SettingsHelper {
               Icons.shopping_cart,
               Colors.lightBlueAccent,
               "Buy Premium".tr,
-              onTap: () => {PurchaseHelper.showPaywall()},
+              onTap: () =>
+                  {PurchaseHelper.showPaywall(analyticKey: "buy_premium")},
             ),
             UI.cardListTile(
               Icons.restore,
@@ -760,7 +761,7 @@ class DailyCredits {
     var has = credits > 0;
 
     if (!has) {
-      PurchaseHelper.showPaywall();
+      PurchaseHelper.showPaywall(analyticKey: "no_credits");
     }
     return has;
   }
@@ -974,7 +975,7 @@ class PurchaseHelper {
       return;
     }
 
-    PurchaseHelper.setAnalyticData("paywall", analyticKey);
+    PurchaseHelper.setAnalyticData("paywall_location", analyticKey);
 
     Get.to(() => const PurchasePage(), arguments: {'products': products});
   }

@@ -22,14 +22,14 @@ SubscriptionWidget? subscriptionWidget;
 
 IAPItem? selectedItem;
 
-class PurchasePage extends StatefulWidget {
-  const PurchasePage({Key? key}) : super(key: key);
+class Paywall1 extends StatefulWidget {
+  const Paywall1({Key? key}) : super(key: key);
 
   @override
-  _PurchasePageState createState() => _PurchasePageState();
+  _Paywall1State createState() => _Paywall1State();
 }
 
-class _PurchasePageState extends State<PurchasePage> {
+class _Paywall1State extends State<Paywall1> {
   @override
   void initState() {
     super.initState();

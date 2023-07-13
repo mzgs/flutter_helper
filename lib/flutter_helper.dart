@@ -18,7 +18,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'inapp_purchase_helper.dart';
+import 'paywall1.dart';
 
 // mzgs_flutter_helper:
 //       path: /Users/mustafa/Developer/Flutter/flutter_helper
@@ -988,7 +988,7 @@ class PurchaseHelper {
 
     PurchaseHelper.setAnalyticData("paywall_location", analyticKey);
 
-    Get.to(() => const PurchasePage(), arguments: {'products': products});
+    Get.to(() => const Paywall1(), arguments: {'products': products});
   }
 
   static void showPaywallOnce() {

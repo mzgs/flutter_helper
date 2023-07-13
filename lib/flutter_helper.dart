@@ -849,6 +849,7 @@ class PurchaseHelper {
 
   static String asaData = "";
   static String YEARLY_ID = "";
+  static String WEEKLY_ID = "";
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
   static String LIFETIME_ID = "";
@@ -859,10 +860,12 @@ class PurchaseHelper {
     bool initOnDebug = true,
     String monthlyID = "",
     String month6ID = "",
+    String weeklyID = "",
     String yearlyID = "",
     String lifetimeID = "",
   }) async {
     MONTHLY_ID = monthlyID;
+    WEEKLY_ID = weeklyID;
     MONTH6_ID = month6ID;
     YEARLY_ID = yearlyID;
     LIFETIME_ID = lifetimeID;
@@ -888,8 +891,8 @@ class PurchaseHelper {
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {
     var products = <String, IAPItem>{};
 
-    List<IAPItem> items = await FlutterInappPurchase.instance
-        .getSubscriptions([YEARLY_ID, MONTH6_ID, MONTHLY_ID, LIFETIME_ID]);
+    List<IAPItem> items = await FlutterInappPurchase.instance.getSubscriptions(
+        [YEARLY_ID, MONTH6_ID, MONTHLY_ID, LIFETIME_ID, WEEKLY_ID]);
 
     for (var item in items) {
       var key = "other";
@@ -898,12 +901,20 @@ class PurchaseHelper {
         key = "lifetime";
       }
 
-      if (item.subscriptionPeriodNumberIOS == "1" ||
+      if ((item.subscriptionPeriodNumberIOS == "7" &&
+              item.subscriptionPeriodUnitIOS == "DAY") ||
+          item.subscriptionPeriodAndroid == "P1M") {
+        key = "weekly";
+      }
+
+      if ((item.subscriptionPeriodNumberIOS == "1" &&
+              item.subscriptionPeriodUnitIOS == "MONTH") ||
           item.subscriptionPeriodAndroid == "P1M") {
         key = "monthly";
       }
 
-      if (item.subscriptionPeriodNumberIOS == "6" ||
+      if ((item.subscriptionPeriodNumberIOS == "6" &&
+              item.subscriptionPeriodUnitIOS == "MONTH") ||
           item.subscriptionPeriodAndroid == "P6M") {
         key = "month6";
       }

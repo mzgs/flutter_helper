@@ -23,6 +23,8 @@ class _Paywall1State extends State<Paywall1> {
 
   List<PurchaseItem> purchaseItems = [];
 
+  List<Widget> features = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -30,6 +32,17 @@ class _Paywall1State extends State<Paywall1> {
 
     initListeners();
     setProducts();
+    setFeatures();
+  }
+
+  void setFeatures() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        for (var element in PurchaseHelper.paywallFeatures) {
+          features.add(feature(element));
+        }
+      });
+    });
   }
 
   @override
@@ -50,22 +63,22 @@ class _Paywall1State extends State<Paywall1> {
     setState(() {
       purchaseItems.add(
         PurchaseItem(
-          duration: '1 Week',
+          duration: '1 Week'.tr,
           price: weekly.localizedPrice!,
           discount: '',
         ),
       );
 
       var weekToYearPrice = double.parse(weekly.price!) * 48;
+      var discount =
+          (((weekToYearPrice - double.parse(yearly.price!)) / weekToYearPrice) *
+                  100)
+              .toStringAsFixed(0);
       purchaseItems.add(
         PurchaseItem(
-          duration: '1 Year',
+          duration: '1 Year'.tr,
           price: yearly.localizedPrice!,
-          discount: (((weekToYearPrice - double.parse(yearly.price!)) /
-                          weekToYearPrice) *
-                      100)
-                  .toStringAsFixed(0) +
-              "% OFF",
+          discount: "off".trArgs([discount]),
         ),
       );
     });
@@ -182,7 +195,7 @@ class _Paywall1State extends State<Paywall1> {
                         children: [
                           SizedBox(height: 12),
                           Text(
-                            'Unlock Premium Content',
+                            PurchaseHelper.paywallTitle,
                             style: TextStyle(
                               fontSize: context.isTablet ? 32 : 24.0,
                               fontWeight: FontWeight.bold,
@@ -194,12 +207,7 @@ class _Paywall1State extends State<Paywall1> {
                             child: SizedBox(
                               width: context.widthPercent(80),
                               child: Column(
-                                children: [
-                                  feature("Remove ads"),
-                                  feature("Remove ads"),
-                                  feature("Remove ads"),
-                                  feature("Unlimited image generation"),
-                                ],
+                                children: features,
                               ),
                             ),
                           ),
@@ -250,7 +258,7 @@ class _Paywall1State extends State<Paywall1> {
                       ),
                     )
                   : Icon(Icons.check, size: context.widthPercent(6)),
-              label: Text('CONTINUE',
+              label: Text('CONTINUE'.tr,
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: context.widthPercent(5))),

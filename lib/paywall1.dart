@@ -160,7 +160,8 @@ class _Paywall1State extends State<Paywall1> {
                         height: context.heightPercent(40),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/p1.jpg'),
+                            image: AssetImage(
+                                'assets/${PurchaseHelper.paywallImage}'),
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -843,9 +843,11 @@ class FileHelper {
 }
 
 class PurchaseHelper {
+  static bool DEBUG = true;
+  static String analyticData = "{}";
+
   static var isPremium = false;
   static Map<String, IAPItem> products = {};
-  static PurchaseConfig purchaseConfig = PurchaseConfig();
 
   static String asaData = "";
   static String YEARLY_ID = "";
@@ -853,26 +855,15 @@ class PurchaseHelper {
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
   static String LIFETIME_ID = "";
-  static bool initOnDebug = true;
 
-  static Future<void> init(
-    PurchaseConfig purchaseConfig, {
-    bool initOnDebug = true,
-    String monthlyID = "",
-    String month6ID = "",
-    String weeklyID = "",
-    String yearlyID = "",
-    String lifetimeID = "",
-  }) async {
-    MONTHLY_ID = monthlyID;
-    WEEKLY_ID = weeklyID;
-    MONTH6_ID = month6ID;
-    YEARLY_ID = yearlyID;
-    LIFETIME_ID = lifetimeID;
-    PurchaseHelper.initOnDebug = initOnDebug;
-    PurchaseHelper.purchaseConfig = purchaseConfig;
+  // paywall settings
+  static String paywallTitle = "Unlock Premium";
+  static List<String> paywallFeatures = ["Remove Ads"];
+  static Color paywallBtnColor = Colors.blue;
+  static String paywallImage = "app.png";
 
-    if (kDebugMode && !initOnDebug) {
+  static Future<void> init() async {
+    if (kDebugMode && !DEBUG) {
       return;
     }
 
@@ -971,7 +962,7 @@ class PurchaseHelper {
   }
 
   static void showPaywall({analyticKey = ""}) async {
-    if (kDebugMode && !initOnDebug) {
+    if (kDebugMode && !DEBUG) {
       return;
     }
 
@@ -988,7 +979,7 @@ class PurchaseHelper {
 
     PurchaseHelper.setAnalyticData("paywall_location", analyticKey);
 
-    Get.to(() => const Paywall1(), arguments: {'products': products});
+    Get.to(() => Paywall1());
   }
 
   static void showPaywallOnce() {
@@ -1011,9 +1002,9 @@ class PurchaseHelper {
   }
 
   static void setAnalyticData(String key, value) {
-    var data = jsonDecode(purchaseConfig.analyticData);
+    var data = jsonDecode(analyticData);
     data[key] = value;
-    purchaseConfig.analyticData = jsonEncode(data);
+    analyticData = jsonEncode(data);
   }
 
   static Future<bool> checkSubscribedAndroid({
@@ -1046,31 +1037,6 @@ class PurchaseHelper {
     setAnalyticData("country", country);
     setAnalyticData("ip", ip);
   }
-}
-
-class PurchaseConfig {
-  String title;
-  String description;
-  Color mainColor;
-  Color textColor;
-  Color gradientColor1;
-  Color gradientColor2;
-  bool iconIsOval;
-  String image;
-  String analyticData;
-  bool showTrialYearly;
-
-  PurchaseConfig(
-      {this.title = 'Premium',
-      this.description = '✓ Unlimited Genarate\n✓ No Ads',
-      this.mainColor = const Color.fromARGB(255, 16, 190, 36),
-      this.textColor = const Color.fromARGB(255, 30, 50, 79),
-      this.gradientColor1 = const Color.fromARGB(255, 244, 255, 198),
-      this.gradientColor2 = const Color.fromARGB(255, 198, 229, 61),
-      this.iconIsOval = true,
-      this.image = 'app.png',
-      this.analyticData = "{}",
-      this.showTrialYearly = false});
 }
 
 class RemoteConfig {

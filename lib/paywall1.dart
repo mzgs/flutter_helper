@@ -1,151 +1,35 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:mzgs_flutter_helper/flutter_helper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mzgs_flutter_helper/applovin_helper.dart';
-import 'package:mzgs_flutter_helper/flutter_helper.dart';
-
-var mainColor = PurchaseHelper.purchaseConfig.mainColor;
-var textColor = PurchaseHelper.purchaseConfig.textColor;
-
-var pageBgGradientColors = [
-  PurchaseHelper.purchaseConfig.gradientColor1,
-  PurchaseHelper.purchaseConfig.gradientColor2
-];
-
-List<Map<String, dynamic>> _cardData = [];
-var products = Get.arguments['products'];
-SubscriptionWidget? subscriptionWidget;
-
-IAPItem? selectedItem;
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 
 class Paywall1 extends StatefulWidget {
-  const Paywall1({Key? key}) : super(key: key);
-
   @override
   _Paywall1State createState() => _Paywall1State();
 }
 
 class _Paywall1State extends State<Paywall1> {
-  @override
-  void initState() {
-    super.initState();
-    setProducts();
-    ApplovinHelper.showAppOpenAds = false;
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    ApplovinHelper.showAppOpenAds = true;
-  }
-
-  void setProducts() {
-    _cardData = [];
-
-    IAPItem montly = products['monthly'];
-    IAPItem yearly = products['yearly'];
-    IAPItem month6 = products['month6'];
-
-    _cardData.add({
-      'months': '12',
-      'monthName': 'months'.tr,
-      'topTitle':
-          ((double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
-                  (double.parse(montly.price!) * 12) *
-                  100)
-              .toStringAsFixed(0),
-      'price': yearly.localizedPrice,
-      'trial': '3 DAYS FREE'.tr,
-      'discount':
-          (double.parse(montly.price!) * 12 - double.parse(yearly.price!)) /
-              (double.parse(montly.price!) * 12) *
-              100
-    });
-
-    _cardData.add({
-      'months': '6',
-      'monthName': 'months'.tr,
-      'topTitle': '⭐${'MOST POPULAR'.tr}',
-      'price': month6.localizedPrice,
-      'discount':
-          (double.parse(montly.price!) * 6 - double.parse(month6.price!)) /
-              (double.parse(montly.price!) * 6) *
-              100
-    });
-
-    _cardData.add({
-      'months': '1',
-      'monthName': 'month'.tr,
-      'topTitle': '',
-      'price': montly.localizedPrice,
-      'discount': 0.0,
-    });
-
-    setState(() {
-      subscriptionWidget = const SubscriptionWidget();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: pageBgGradientColors,
-              ),
-            ),
-            child: const SubscriptionWidget(),
-          ),
-          Positioned(
-            top: 40,
-            left: 10,
-            child: IconButton(
-              icon: const Icon(
-                CupertinoIcons.xmark,
-                color: Colors.grey,
-              ),
-              onPressed: () {
-                context.closeActivity();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// SubscriptionWidget
-
-class SubscriptionWidget extends StatefulWidget {
-  const SubscriptionWidget({super.key});
-
-  @override
-  _SubscriptionWidgetState createState() => _SubscriptionWidgetState();
-}
-
-class _SubscriptionWidgetState extends State<SubscriptionWidget> {
-  int _selectedIndex = 1;
-  List<Widget> cards = [];
-
+  int selectedIndex = 1; // Initially selected item index
   var _isLoading = false;
 
+  StreamSubscription? _purchaseUpdatedSubscription;
+  StreamSubscription? _purchaseErrorSubscription;
+  IAPItem? selectedItem;
+
+  List<PurchaseItem> purchaseItems = [];
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
 
     initListeners();
+    setProducts();
   }
 
   @override
@@ -156,8 +40,36 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     _purchaseErrorSubscription?.cancel();
   }
 
-  StreamSubscription? _purchaseUpdatedSubscription;
-  StreamSubscription? _purchaseErrorSubscription;
+  void setProducts() {
+    Map<String, IAPItem> products = PurchaseHelper.products;
+
+    IAPItem weekly = products['weekly']!;
+    IAPItem yearly = products['yearly']!;
+    selectedItem = yearly;
+
+    setState(() {
+      purchaseItems.add(
+        PurchaseItem(
+          duration: '1 Week',
+          price: weekly.localizedPrice!,
+          discount: '',
+        ),
+      );
+
+      var weekToYearPrice = double.parse(weekly.price!) * 48;
+      purchaseItems.add(
+        PurchaseItem(
+          duration: '1 Year',
+          price: yearly.localizedPrice!,
+          discount: (((weekToYearPrice - double.parse(yearly.price!)) /
+                          weekToYearPrice) *
+                      100)
+                  .toStringAsFixed(0) +
+              "% OFF",
+        ),
+      );
+    });
+  }
 
   void initListeners() {
     _purchaseUpdatedSubscription =
@@ -189,216 +101,6 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var img = Image.asset(
-      'assets/${PurchaseHelper.purchaseConfig.image}',
-      fit: BoxFit.cover,
-      width: context.heightPercent(20),
-    );
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          PurchaseHelper.purchaseConfig.iconIsOval ? ClipOval(child: img) : img,
-          SizedBox(height: context.heightPercent(2)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                PurchaseHelper.purchaseConfig.title,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: context.width * 0.075,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    fontWeight: FontWeight.w700),
-              ),
-              Text(
-                PurchaseHelper.purchaseConfig.description,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize:
-                        context.widthPercent(context.isTablet ? 2.8 : 4.3),
-                    color: textColor,
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          SizedBox(height: context.heightPercent(2)),
-          Container(
-            padding: const EdgeInsets.all(20),
-            height: context.heightPercent(
-                context.isTablet ? 32 : (context.height < 700 ? 31 : 27)),
-            child: Row(
-              children: _cardData
-                  .asMap()
-                  .map(
-                    (index, data) => MapEntry(
-                      index,
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                          },
-                          child: buildCard(data, index),
-                        ),
-                      ),
-                    ),
-                  )
-                  .values
-                  .toList(),
-            ),
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              minimumSize:
-                  Size(context.widthPercent(70), context.heightPercent(6)),
-              backgroundColor: mainColor,
-            ),
-            onPressed: _isLoading
-                ? null
-                : () {
-                    setState(() {
-                      _isLoading = true;
-                    });
-
-                    var mapKey = "monthly";
-                    if (_selectedIndex == 0) {
-                      mapKey = "yearly";
-                    }
-                    if (_selectedIndex == 1) {
-                      mapKey = "month6";
-                    }
-
-                    // analytics.logEvent(name: "purchase_page_continue");
-
-                    selectedItem = products[mapKey];
-
-                    FlutterInappPurchase.instance
-                        .requestPurchase(products[mapKey].productId);
-                  },
-            icon: _isLoading
-                ? Container(
-                    width: 24,
-                    height: 24,
-                    padding: const EdgeInsets.all(2.0),
-                    child: const CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 3,
-                    ),
-                  )
-                : Icon(Icons.check, size: context.widthPercent(6)),
-            label: Text('CONTINUE'.tr,
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: context.width * 0.05)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildCard(Map<String, dynamic> data, int index) {
-    final bool isSelected = index == _selectedIndex;
-
-    return Card(
-      color: Colors.white,
-      elevation: isSelected ? 5 : 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(
-          color: index == _selectedIndex
-              ? mainColor
-              : const Color.fromARGB(255, 215, 212, 212),
-          width: isSelected ? 6 : 2,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          if (data['months'] == "12") ...{
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              padding: const EdgeInsets.symmetric(vertical: 1),
-              width: double.infinity,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-                color: Colors.red,
-              ),
-              child: Text('${"DISCOUNT".tr + ' ' + data['topTitle']}%',
-                  style: TextStyle(
-                      fontSize: context.widthPercent(2.9),
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white)),
-            ),
-          } else ...{
-            Text(
-              data['topTitle'],
-              style: TextStyle(fontSize: context.width * 0.025),
-            )
-          },
-          Text(
-            data['months'],
-            style: TextStyle(
-              fontSize: context.width * 0.1,
-              color: textColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            data['monthName'],
-            style: TextStyle(
-              color: textColor,
-              fontSize: context.width * 0.03,
-            ),
-          ),
-          Text(
-            data['discount'] != 0 && data['months'] != '12'
-                ? 'DISCOUNT'.tr +
-                    " ${(data['discount'] as double).toStringAsFixed(0)}%"
-                : "",
-            style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-                fontSize: context.widthPercent(2.9)),
-          ),
-          if (data['trial'] != null &&
-              PurchaseHelper.purchaseConfig.showTrialYearly) ...{
-            Text(
-              data['trial'] ?? "",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: PurchaseHelper.purchaseConfig.mainColor,
-                fontWeight: FontWeight.w800,
-                fontSize: context.width * 0.032,
-              ),
-            ),
-            Text(
-              "then".tr,
-              style: TextStyle(fontSize: context.widthPercent(3.5)),
-            )
-          },
-          Text(
-            data['price'],
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: textColor,
-              fontSize: context.width * 0.04,
-            ),
-          ),
-          const SizedBox(height: 2)
-        ],
-      ),
-    );
-  }
-
   void itemPurchasedSuccess(PurchasedItem? productItem) async {
     PurchaseHelper.isPremium = true;
     Pref.set("is_premium", true);
@@ -421,22 +123,259 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         "localePrice": selectedItem!.localizedPrice.toString(),
         "package_name": (await Helper.getPackageName()),
         "app_name": (await Helper.getAppName()),
-        "data": PurchaseHelper.purchaseConfig.analyticData,
+        "data": PurchaseHelper.analyticData,
         "asa": PurchaseHelper.asaData
       });
     } catch (e) {}
 
     // hideBanner();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        height: context.heightPercent(40),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/p1.jpg'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 30,
+                        left: 10,
+                        child: IconButton(
+                          icon: const Icon(
+                            CupertinoIcons.xmark,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            context.closeActivity();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Transform.translate(
+                    offset: Offset(0, -20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0),
+                        ),
+                        color: Colors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 12),
+                          Text(
+                            'Unlock Premium Content',
+                            style: TextStyle(
+                              fontSize: context.isTablet ? 32 : 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 10.0),
+                          Center(
+                            child: SizedBox(
+                              width: context.widthPercent(80),
+                              child: Column(
+                                children: [
+                                  feature("Remove ads"),
+                                  feature("Remove ads"),
+                                  feature("Remove ads"),
+                                  feature("Unlimited image generation"),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(0),
+                            itemCount: purchaseItems.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = index;
+                                  });
+                                },
+                                child: PurchaseItemCard(
+                                  item: purchaseItems[index],
+                                  isSelected: selectedIndex == index,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                minimumSize:
+                    Size(context.widthPercent(70), context.heightPercent(6)),
+                backgroundColor: Colors.blue,
+              ),
+              icon: _isLoading
+                  ? Container(
+                      width: 24,
+                      height: 24,
+                      padding: const EdgeInsets.all(2.0),
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                  : Icon(Icons.check, size: context.widthPercent(6)),
+              label: Text('CONTINUE',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: context.widthPercent(5))),
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      selectedItem = PurchaseHelper
+                          .products[selectedIndex == 0 ? "weekly" : "yearly"];
+
+                      FlutterInappPurchase.instance
+                          .requestPurchase(selectedItem!.productId!);
+                    },
+            ),
+          ),
+          SizedBox(height: context.heightPercent(6))
+        ],
+      ),
+    );
+  }
+
+  Widget feature(String text) {
+    return Row(
+      children: [
+        Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
+        SizedBox(width: 5.0),
+        Text(
+          text,
+          style: TextStyle(fontSize: context.isTablet ? 24 : 16.0),
+        ),
+      ],
+    );
+  }
 }
 
-class PurchaseProduct {
-  final String id;
-  final String topTitle;
-  final int months;
+class PurchaseItem {
+  final String duration;
   final String price;
-  final double discount;
+  final String discount;
 
-  PurchaseProduct(
-      this.id, this.topTitle, this.months, this.price, this.discount);
+  PurchaseItem({
+    required this.duration,
+    required this.price,
+    required this.discount,
+  });
+}
+
+class PurchaseItemCard extends StatelessWidget {
+  final PurchaseItem item;
+  final bool isSelected;
+
+  PurchaseItemCard({
+    required this.item,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Card(
+          margin: EdgeInsets.symmetric(vertical: 10.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            side: BorderSide(
+              color:
+                  isSelected ? Colors.lightBlue.shade300 : Colors.grey.shade200,
+              width: isSelected ? 3.0 : 1.5,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      item.duration,
+                      style: TextStyle(
+                        fontSize: context.isTablet ? 26 : 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      item.price,
+                      style: TextStyle(
+                        fontSize: context.isTablet ? 28 : 16.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        item.discount.isEmpty
+            ? SizedBox()
+            : Positioned(
+                top: 0,
+                right: 10.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  child: Text(
+                    item.discount,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.isTablet ? 18 : 12.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+      ],
+    );
+  }
 }

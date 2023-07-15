@@ -861,6 +861,7 @@ class PurchaseHelper {
   static List<String> paywallFeatures = ["Remove Ads"];
   static Color paywallBtnColor = Colors.blue;
   static String paywallImage = "app.png";
+  static Color paywallCloseColor = Colors.grey;
 
   static Future<void> init() async {
     if (kDebugMode && !DEBUG) {

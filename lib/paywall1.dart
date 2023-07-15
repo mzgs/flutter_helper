@@ -167,12 +167,12 @@ class _Paywall1State extends State<Paywall1> {
                         ),
                       ),
                       Positioned(
-                        top: 30,
+                        top: 40,
                         left: 10,
                         child: IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             CupertinoIcons.xmark,
-                            color: Colors.grey,
+                            color: PurchaseHelper.paywallCloseColor,
                           ),
                           onPressed: () {
                             context.closeActivity();

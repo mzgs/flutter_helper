@@ -932,10 +932,11 @@ class PurchaseHelper {
     }
 
     if (isAndroid) {
+      var weekly = await checkSubscribedAndroid(sku: WEEKLY_ID);
       var montly = await checkSubscribedAndroid(sku: MONTHLY_ID);
       var month6 = await checkSubscribedAndroid(sku: MONTH6_ID);
       var yearly = await checkSubscribedAndroid(sku: YEARLY_ID);
-      var hasSubscription = montly || month6 || yearly;
+      var hasSubscription = weekly || montly || month6 || yearly;
       isPremium = hasSubscription;
       Pref.set("is_premium", isPremium);
 
@@ -943,13 +944,15 @@ class PurchaseHelper {
     }
 
     try {
+      var weekly = await FlutterInappPurchase.instance
+          .checkSubscribed(sku: WEEKLY_ID, duration: Duration(days: 7));
       var montly =
           await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
       var month6 = await FlutterInappPurchase.instance
           .checkSubscribed(sku: MONTH6_ID, duration: const Duration(days: 180));
       var yearly = await FlutterInappPurchase.instance
           .checkSubscribed(sku: YEARLY_ID, duration: const Duration(days: 360));
-      var hasSubscription = montly || month6 || yearly;
+      var hasSubscription = weekly || montly || month6 || yearly;
 
       isPremium = hasSubscription;
       Pref.set("is_premium", isPremium);

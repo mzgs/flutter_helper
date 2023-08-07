@@ -871,6 +871,7 @@ class PurchaseHelper {
     isPremium = Pref.get("is_premium", false);
 
     await FlutterInappPurchase.instance.initialize();
+    await setProducts();
 
     if (!kDebugMode) {
       setAsaData();

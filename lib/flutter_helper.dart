@@ -1,5 +1,6 @@
 library flutter_helper;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -111,6 +112,45 @@ class Helper {
           url,
           title: title,
         ));
+  }
+
+  static void restorePurchase({BuildContext? closePage}) {
+    Get.dialog(
+      AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(), // Show a loading indicator
+            SizedBox(height: 16),
+            Text("Loading..."),
+          ],
+        ),
+      ),
+      barrierDismissible: false, // Prevent dialog from being dismissed
+    );
+
+    // Wait for 10 seconds using a Timer
+    Timer(Duration(seconds: 10), () {
+      Get.back(); // Close the dialog
+
+      if (PurchaseHelper.isPremium) {
+        Get.snackbar(
+          "Success".tr,
+          "Purchases restored successfully.",
+          icon: const Icon(Icons.check, color: Colors.green),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        closePage?.closeActivity();
+      } else {
+        Get.snackbar(
+          "Error".tr,
+          "You have no active subscription.".tr,
+          icon: const Icon(Icons.error, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    });
   }
 }
 
@@ -612,26 +652,7 @@ class SettingsHelper {
               Icons.restore,
               Colors.green,
               "Restore Purchases".tr,
-              onTap: () => {
-                if (PurchaseHelper.isPremium)
-                  {
-                    Get.snackbar(
-                      "Success".tr,
-                      "Purchases restored successfully.",
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      snackPosition: SnackPosition.BOTTOM,
-                    )
-                  }
-                else
-                  {
-                    Get.snackbar(
-                      "Error".tr,
-                      "You have no active subscription.".tr,
-                      icon: const Icon(Icons.error, color: Colors.red),
-                      snackPosition: SnackPosition.BOTTOM,
-                    )
-                  }
-              },
+              onTap: () => {Helper.restorePurchase()},
             ),
           ],
         ));

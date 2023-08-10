@@ -191,7 +191,7 @@ class _Paywall1State extends State<Paywall1> {
                         ),
                         color: Colors.white,
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
                         children: [
                           SizedBox(height: 12),
@@ -240,43 +240,94 @@ class _Paywall1State extends State<Paywall1> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                minimumSize:
-                    Size(context.widthPercent(70), context.heightPercent(6)),
-                backgroundColor: Colors.blue,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Align(
+              alignment: Alignment.center,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(context.heightPercent(6.5)),
+                  backgroundColor: Colors.blue,
+                ),
+                icon: _isLoading
+                    ? Container(
+                        width: 24,
+                        height: 24,
+                        padding: const EdgeInsets.all(2.0),
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      )
+                    : Icon(Icons.check, size: context.widthPercent(6)),
+                label: Text('CONTINUE'.tr,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: context.widthPercent(5))),
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        selectedItem = PurchaseHelper
+                            .products[selectedIndex == 0 ? "weekly" : "yearly"];
+
+                        FlutterInappPurchase.instance
+                            .requestPurchase(selectedItem!.productId!);
+                      },
               ),
-              icon: _isLoading
-                  ? Container(
-                      width: 24,
-                      height: 24,
-                      padding: const EdgeInsets.all(2.0),
-                      child: const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 3,
-                      ),
-                    )
-                  : Icon(Icons.check, size: context.widthPercent(6)),
-              label: Text('CONTINUE'.tr,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: context.widthPercent(5))),
-              onPressed: _isLoading
-                  ? null
-                  : () {
-                      setState(() {
-                        _isLoading = true;
-                      });
-
-                      selectedItem = PurchaseHelper
-                          .products[selectedIndex == 0 ? "weekly" : "yearly"];
-
-                      FlutterInappPurchase.instance
-                          .requestPurchase(selectedItem!.productId!);
-                    },
             ),
+          ),
+          SizedBox(height: context.heightPercent(2)), // Add some spacing
+
+          // Three Text Buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Helper.openUrlInWebview('https://mzgs.net/terms.html',
+                      title: 'Terms of Use (EULA)');
+                },
+                child: Text(
+                  "Terms",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              SizedBox(
+                  width:
+                      context.widthPercent(5)), // Add spacing between buttons
+              TextButton(
+                onPressed: () {
+                  Helper.openUrlInWebview('https://mzgs.net/privacy.html',
+                      title: 'Privacy Policy');
+                },
+                child: Text(
+                  "Privacy",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              SizedBox(
+                  width:
+                      context.widthPercent(5)), // Add spacing between buttons
+              TextButton(
+                onPressed: () {
+                  Helper.restorePurchase(closePage: context);
+                },
+                child: Text(
+                  "Restore",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: context.heightPercent(6))
         ],
@@ -288,7 +339,7 @@ class _Paywall1State extends State<Paywall1> {
     return Row(
       children: [
         Icon(
-          Icons.check,
+          Icons.check_circle_rounded,
           color: Colors.green,
         ),
         SizedBox(width: 5.0),

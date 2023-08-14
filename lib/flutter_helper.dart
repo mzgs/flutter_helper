@@ -609,6 +609,46 @@ class UI {
       ),
     );
   }
+
+  static Widget proButton() {
+    return !PurchaseHelper.isPremium
+        ? GestureDetector(
+            onTap: () {
+              PurchaseHelper.showPaywall(analyticKey: "PRO");
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.purple, // Set the border color to yellow
+                    width: 4.0, // Set the border width
+                  ),
+                  borderRadius:
+                      BorderRadius.circular(20.0), // Set the border radius
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.bolt,
+                      size: 20,
+                      color: Colors.purple,
+                    ),
+                    Text(
+                      'PRO',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.purple),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : SizedBox();
+  }
 }
 
 class SettingsHelper {

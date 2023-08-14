@@ -247,7 +247,7 @@ class _Paywall1State extends State<Paywall1> {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size.fromHeight(context.heightPercent(6.5)),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: PurchaseHelper.paywallBtnColor,
                 ),
                 icon: _isLoading
                     ? Container(
@@ -340,7 +340,7 @@ class _Paywall1State extends State<Paywall1> {
       children: [
         Icon(
           Icons.check_circle_rounded,
-          color: Colors.green,
+          color: PurchaseHelper.paywallCheckColor,
         ),
         SizedBox(width: 5.0),
         Text(
@@ -382,8 +382,9 @@ class PurchaseItemCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(
-              color:
-                  isSelected ? Colors.lightBlue.shade300 : Colors.grey.shade200,
+              color: isSelected
+                  ? PurchaseHelper.paywallSelectedColor
+                  : Colors.grey.shade200,
               width: isSelected ? 3.0 : 1.5,
             ),
           ),

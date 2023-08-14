@@ -921,6 +921,8 @@ class PurchaseHelper {
   static String paywallTitle = "Unlock Premium";
   static List<String> paywallFeatures = ["Remove Ads"];
   static Color paywallBtnColor = Colors.blue;
+  static Color paywallSelectedColor = Colors.lightBlue.shade300;
+  static Color paywallCheckColor = Colors.green;
   static String paywallImage = "app.png";
   static Color paywallCloseColor = Colors.grey;
 

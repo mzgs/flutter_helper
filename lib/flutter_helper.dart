@@ -903,6 +903,17 @@ class FileHelper {
   }
 }
 
+class Paywall {
+  // Fields
+  String title;
+  List<String> features;
+  List<String> items;
+  Color btnColor = Colors.blue;
+  String image;
+
+  Paywall(this.title, this.features, this.items, this.image);
+}
+
 class PurchaseHelper {
   static bool DEBUG = true;
   static String analyticData = "{}";

@@ -908,10 +908,22 @@ class Paywall {
   String title;
   List<String> features;
   List<String> items;
-  Color btnColor = Colors.blue;
   String image;
+  Color btnColor = Colors.blue;
+  Color selectedColor = const Color(0xFF81A1C1);
+  Color checkColor = Colors.green;
+  Color closeColor = Colors.grey;
 
-  Paywall(this.title, this.features, this.items, this.image);
+  Paywall(
+    this.title,
+    this.features,
+    this.items,
+    this.image, {
+    Color btnColor = Colors.blue,
+    Color selectedColor = const Color(0xFF81A1C1),
+    Color checkColor = Colors.green,
+    Color closeColor = Colors.grey,
+  });
 }
 
 class PurchaseHelper {

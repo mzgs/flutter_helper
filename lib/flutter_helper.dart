@@ -978,6 +978,7 @@ class PurchaseHelper {
     for (var element in history) {
       if (element.productId == lifetimeId) {
         setPremium(true);
+        print("lifetime restored");
         return;
       }
     }

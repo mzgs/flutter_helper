@@ -57,34 +57,60 @@ class _Paywall1State extends State<Paywall1> {
   void setProducts() {
     Map<String, IAPItem> products = PurchaseHelper.products;
 
-    return;
+    // IAPItem weekly = products['weekly']!;
+    // IAPItem yearly = products['yearly']!;
+    // selectedItem = yearly;
 
-    IAPItem weekly = products['weekly']!;
-    IAPItem yearly = products['yearly']!;
-    selectedItem = yearly;
+    for (var item in PurchaseHelper.paywall.items) {
+      var p = products[item]!;
 
-    setState(() {
-      purchaseItems.add(
-        PurchaseItem(
-          duration: '1 Week'.tr,
-          price: weekly.localizedPrice!,
-          discount: '',
-        ),
-      );
+      var duration = "";
+      if (p.subscriptionPeriodUnitIOS == "DAY") {
+        duration =
+            p.subscriptionPeriodNumberIOS == "0" ? "Lifetime".tr : "1 Week".tr;
+      }
 
-      var weekToYearPrice = double.parse(weekly.price!) * 48;
-      var discount =
-          (((weekToYearPrice - double.parse(yearly.price!)) / weekToYearPrice) *
-                  100)
-              .toStringAsFixed(0);
-      purchaseItems.add(
-        PurchaseItem(
-          duration: '1 Year'.tr,
-          price: yearly.localizedPrice!,
-          discount: "off".trArgs([discount]),
-        ),
-      );
-    });
+      if (p.subscriptionPeriodUnitIOS == "MONTH") {
+        duration = "% Month".trArgs([p.subscriptionPeriodNumberIOS!]);
+      }
+
+      if (p.subscriptionPeriodUnitIOS == "YEAR") {
+        duration = "1 Year".tr;
+      }
+
+      setState(() {
+        purchaseItems.add(
+          PurchaseItem(
+            duration: duration,
+            price: p.localizedPrice!,
+            discount: '',
+          ),
+        );
+      });
+    }
+
+    // setState(() {
+    //   purchaseItems.add(
+    //     PurchaseItem(
+    //       duration: '1 Week'.tr,
+    //       price: weekly.localizedPrice!,
+    //       discount: '',
+    //     ),
+    //   );
+
+    //   var weekToYearPrice = double.parse(weekly.price!) * 48;
+    //   var discount =
+    //       (((weekToYearPrice - double.parse(yearly.price!)) / weekToYearPrice) *
+    //               100)
+    //           .toStringAsFixed(0);
+    //   purchaseItems.add(
+    //     PurchaseItem(
+    //       duration: '1 Year'.tr,
+    //       price: yearly.localizedPrice!,
+    //       discount: "off".trArgs([discount]),
+    //     ),
+    //   );
+    // });
   }
 
   void initListeners() {

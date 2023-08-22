@@ -14,7 +14,8 @@ class Paywall1 extends StatefulWidget {
 }
 
 class _Paywall1State extends State<Paywall1> {
-  int selectedIndex = 1; // Initially selected item index
+  int selectedIndex =
+      PurchaseHelper.paywall.selectedIndex; // Initially selected item index
   var _isLoading = false;
 
   StreamSubscription? _purchaseUpdatedSubscription;
@@ -38,7 +39,7 @@ class _Paywall1State extends State<Paywall1> {
   void setFeatures() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        for (var element in PurchaseHelper.paywallFeatures) {
+        for (var element in PurchaseHelper.paywall.features) {
           features.add(feature(element));
         }
       });
@@ -161,7 +162,7 @@ class _Paywall1State extends State<Paywall1> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
-                                'assets/${PurchaseHelper.paywallImage}'),
+                                'assets/${PurchaseHelper.paywall.image}'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -172,7 +173,7 @@ class _Paywall1State extends State<Paywall1> {
                         child: IconButton(
                           icon: Icon(
                             CupertinoIcons.xmark,
-                            color: PurchaseHelper.paywallCloseColor,
+                            color: PurchaseHelper.paywall.closeColor,
                           ),
                           onPressed: () {
                             context.closeActivity();
@@ -196,7 +197,7 @@ class _Paywall1State extends State<Paywall1> {
                         children: [
                           SizedBox(height: 12),
                           Text(
-                            PurchaseHelper.paywallTitle,
+                            PurchaseHelper.paywall.title,
                             style: TextStyle(
                               fontSize: context.isTablet ? 32 : 24.0,
                               fontWeight: FontWeight.bold,
@@ -247,7 +248,7 @@ class _Paywall1State extends State<Paywall1> {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size.fromHeight(context.heightPercent(6.5)),
-                  backgroundColor: PurchaseHelper.paywallBtnColor,
+                  backgroundColor: PurchaseHelper.paywall.btnColor,
                 ),
                 icon: _isLoading
                     ? Container(
@@ -340,7 +341,7 @@ class _Paywall1State extends State<Paywall1> {
       children: [
         Icon(
           Icons.check_circle_rounded,
-          color: PurchaseHelper.paywallCheckColor,
+          color: PurchaseHelper.paywall.checkColor,
         ),
         SizedBox(width: 5.0),
         Text(
@@ -383,7 +384,7 @@ class PurchaseItemCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(
               color: isSelected
-                  ? PurchaseHelper.paywallSelectedColor
+                  ? PurchaseHelper.paywall.selectedColor
                   : Colors.grey.shade200,
               width: isSelected ? 3.0 : 1.5,
             ),

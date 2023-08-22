@@ -905,24 +905,28 @@ class FileHelper {
 
 class Paywall {
   // Fields
+  String name;
   String title;
   List<String> features;
   List<String> items;
+  int selectedIndex = 0;
   String image;
   Color btnColor = Colors.blue;
-  Color selectedColor = const Color(0xFF81A1C1);
+  Color selectedColor = const Color.fromARGB(255, 95, 171, 247);
   Color checkColor = Colors.green;
   Color closeColor = Colors.grey;
 
   Paywall(
+    this.name,
+    this.image,
     this.title,
     this.features,
-    this.items,
-    this.image, {
+    this.items, {
     Color btnColor = Colors.blue,
     Color selectedColor = const Color(0xFF81A1C1),
     Color checkColor = Colors.green,
     Color closeColor = Colors.grey,
+    int selectedIndex = 0,
   });
 }
 
@@ -930,8 +934,12 @@ class PurchaseHelper {
   static bool DEBUG = true;
   static String analyticData = "{}";
 
+  static List<String> productsIds = [];
+
   static var isPremium = false;
   static Map<String, IAPItem> products = {};
+
+  static Paywall paywall = Paywall("name", "app.png", "title", [], []);
 
   static String asaData = "";
   static String YEARLY_ID = "";
@@ -939,15 +947,6 @@ class PurchaseHelper {
   static String MONTH6_ID = "";
   static String MONTHLY_ID = "";
   static String LIFETIME_ID = "";
-
-  // paywall settings
-  static String paywallTitle = "Unlock Premium";
-  static List<String> paywallFeatures = ["Remove Ads"];
-  static Color paywallBtnColor = Colors.blue;
-  static Color paywallSelectedColor = Colors.lightBlue.shade300;
-  static Color paywallCheckColor = Colors.green;
-  static String paywallImage = "app.png";
-  static Color paywallCloseColor = Colors.grey;
 
   static Future<void> init() async {
     if (kDebugMode && !DEBUG) {
@@ -970,8 +969,8 @@ class PurchaseHelper {
   static Future<Map<String, IAPItem>> getPurchaseProducts() async {
     var products = <String, IAPItem>{};
 
-    List<IAPItem> items = await FlutterInappPurchase.instance.getSubscriptions(
-        [YEARLY_ID, MONTH6_ID, MONTHLY_ID, LIFETIME_ID, WEEKLY_ID]);
+    List<IAPItem> items =
+        await FlutterInappPurchase.instance.getSubscriptions(productsIds);
 
     for (var item in items) {
       var key = "other";

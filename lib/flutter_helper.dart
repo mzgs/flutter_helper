@@ -975,13 +975,12 @@ class PurchaseHelper {
       }
     }
 
-// todo
-    // for (var element in history) {
-    //   if (element.productId == lifetimeId) {
-    //     setPremium(true);
-    //     return;
-    //   }
-    // }
+    for (var element in history) {
+      if (element.productId == lifetimeId) {
+        setPremium(true);
+        return;
+      }
+    }
     // check lifetime end -----------
 
     if (isAndroid) {

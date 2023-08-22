@@ -942,11 +942,6 @@ class PurchaseHelper {
   static Paywall paywall = Paywall("name", "app.png", "title", [], []);
 
   static String asaData = "";
-  static String YEARLY_ID = "";
-  static String WEEKLY_ID = "";
-  static String MONTH6_ID = "";
-  static String MONTHLY_ID = "";
-  static String LIFETIME_ID = "";
 
   static Future<void> init() async {
     if (kDebugMode && !DEBUG) {
@@ -962,93 +957,96 @@ class PurchaseHelper {
       setAsaData();
       PurchaseHelper.checkSubscription();
     }
+    PurchaseHelper.checkSubscription();
 
     setIpData();
   }
 
-  static Future<Map<String, IAPItem>> getPurchaseProducts() async {
-    var products = <String, IAPItem>{};
-
-    List<IAPItem> items =
-        await FlutterInappPurchase.instance.getSubscriptions(productsIds);
-
-    for (var item in items) {
-      var key = "other";
-
-      if (item.productId == LIFETIME_ID) {
-        key = "lifetime";
-      }
-
-      if ((item.subscriptionPeriodNumberIOS == "7" &&
-              item.subscriptionPeriodUnitIOS == "DAY") ||
-          item.subscriptionPeriodAndroid == "P1M") {
-        key = "weekly";
-      }
-
-      if ((item.subscriptionPeriodNumberIOS == "1" &&
-              item.subscriptionPeriodUnitIOS == "MONTH") ||
-          item.subscriptionPeriodAndroid == "P1M") {
-        key = "monthly";
-      }
-
-      if ((item.subscriptionPeriodNumberIOS == "6" &&
-              item.subscriptionPeriodUnitIOS == "MONTH") ||
-          item.subscriptionPeriodAndroid == "P6M") {
-        key = "month6";
-      }
-      if (item.subscriptionPeriodUnitIOS == "YEAR" ||
-          item.subscriptionPeriodAndroid == "P1Y") {
-        key = "yearly";
-      }
-
-      products[key] = item;
-    }
-
-    return products;
-  }
-
   static Future checkSubscription() async {
     var history = await getPurchaseHistory();
-    for (var element in history) {
-      if (element.productId == LIFETIME_ID) {
-        isPremium = true;
-        Pref.set("is_premium", isPremium);
-        return;
+
+// check lifetime ------------------
+    String lifetimeId = "";
+    for (var entry in products.entries) {
+      String key = entry.key;
+      IAPItem item = entry.value;
+      if (item.subscriptionPeriodNumberIOS == "0") {
+        lifetimeId = key;
       }
     }
 
+// todo
+    // for (var element in history) {
+    //   if (element.productId == lifetimeId) {
+    //     setPremium(true);
+    //     return;
+    //   }
+    // }
+    // check lifetime end -----------
+
     if (isAndroid) {
-      var weekly = await checkSubscribedAndroid(sku: WEEKLY_ID);
-      var montly = await checkSubscribedAndroid(sku: MONTHLY_ID);
-      var month6 = await checkSubscribedAndroid(sku: MONTH6_ID);
-      var yearly = await checkSubscribedAndroid(sku: YEARLY_ID);
-      var hasSubscription = weekly || montly || month6 || yearly;
-      isPremium = hasSubscription;
-      Pref.set("is_premium", isPremium);
+      for (var id in productsIds) {
+        var p = await checkSubscribedAndroid(sku: id);
+
+        if (p) {
+          setPremium(true);
+        }
+      }
 
       return;
     }
 
     try {
-      var weekly = await FlutterInappPurchase.instance
-          .checkSubscribed(sku: WEEKLY_ID, duration: Duration(days: 7));
-      var montly =
-          await FlutterInappPurchase.instance.checkSubscribed(sku: MONTHLY_ID);
-      var month6 = await FlutterInappPurchase.instance
-          .checkSubscribed(sku: MONTH6_ID, duration: const Duration(days: 180));
-      var yearly = await FlutterInappPurchase.instance
-          .checkSubscribed(sku: YEARLY_ID, duration: const Duration(days: 360));
-      var hasSubscription = weekly || montly || month6 || yearly;
+      for (var entry in products.entries) {
+        String key = entry.key;
+        IAPItem item = entry.value;
 
-      isPremium = hasSubscription;
-      Pref.set("is_premium", isPremium);
+        var pUnit = item.subscriptionPeriodUnitIOS;
+        var pNumber = int.parse(item.subscriptionPeriodNumberIOS!);
+        var days = 0;
+
+        switch (pUnit) {
+          case "DAY":
+            days = pNumber;
+            break;
+          case "MONTH":
+            days = pNumber * 30;
+            break;
+          case "YEAR":
+            days = pNumber * 360;
+            break;
+          default:
+        }
+        if (days == 0) {
+          continue;
+        }
+
+        var check = await FlutterInappPurchase.instance
+            .checkSubscribed(sku: key, duration: Duration(days: days));
+        if (check) {
+          setPremium(true);
+          return;
+        }
+      }
+
+      setPremium(false);
     } catch (e) {
       print("checkSubscription error: $e");
     }
   }
 
+  static setPremium(bool value) {
+    isPremium = value;
+    Pref.set("is_premium", isPremium);
+  }
+
   static Future<void> setProducts() async {
-    products = await getPurchaseProducts();
+    List<IAPItem> items =
+        await FlutterInappPurchase.instance.getSubscriptions(productsIds);
+
+    for (var item in items) {
+      products[item.productId!] = item;
+    }
   }
 
   static void showPaywall({analyticKey = ""}) async {

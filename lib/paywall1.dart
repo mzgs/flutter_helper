@@ -57,6 +57,8 @@ class _Paywall1State extends State<Paywall1> {
   void setProducts() {
     Map<String, IAPItem> products = PurchaseHelper.products;
 
+    return;
+
     IAPItem weekly = products['weekly']!;
     IAPItem yearly = products['yearly']!;
     selectedItem = yearly;

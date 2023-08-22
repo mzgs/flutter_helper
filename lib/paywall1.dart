@@ -83,7 +83,7 @@ class _Paywall1State extends State<Paywall1> {
           PurchaseItem(
             duration: duration,
             price: p.localizedPrice!,
-            discount: '',
+            discount: "off".trArgs(["34"]),
           ),
         );
       });
@@ -407,7 +407,8 @@ class PurchaseItemCard extends StatelessWidget {
     return Stack(
       children: [
         Card(
-          margin: EdgeInsets.symmetric(vertical: 10.0),
+          margin: EdgeInsets.symmetric(
+              vertical: PurchaseHelper.paywall.items.length == 2 ? 10 : 5.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(
@@ -418,7 +419,9 @@ class PurchaseItemCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+            padding: EdgeInsets.symmetric(
+                vertical: PurchaseHelper.paywall.items.length == 2 ? 24 : 18,
+                horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

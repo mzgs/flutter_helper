@@ -69,7 +69,7 @@ class Helper {
 
   static void shareApp(String isoAppID, {String message = ""}) async {
     if (message == "") {
-      message = "Check out this amazing app at".tr;
+      message = "amazingapp".tr;
     }
     String appLink = 'https://apps.apple.com/app/id$isoAppID';
     if (isAndroid) {
@@ -145,7 +145,7 @@ class Helper {
       } else {
         Get.snackbar(
           "Error".tr,
-          "You have no active subscription.".tr,
+          "nosubs".tr,
           icon: const Icon(Icons.error, color: Colors.red),
           snackPosition: SnackPosition.BOTTOM,
         );
@@ -656,10 +656,10 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.feed,
       Colors.blue,
-      "Terms of Use (EULA)".tr,
+      "Terms".tr,
       onTap: () => {
         Helper.openUrlInWebview('https://mzgs.net/terms.html',
-            title: 'Terms of Use (EULA)'.tr)
+            title: 'Terms'.tr)
       },
     );
   }
@@ -668,10 +668,10 @@ class SettingsHelper {
     return UI.cardListTile(
       Icons.privacy_tip,
       Colors.red,
-      "Privacy Policy".tr,
+      "Privacy".tr,
       onTap: () => {
         Helper.openUrlInWebview('https://mzgs.net/privacy.html',
-            title: 'Privacy Policy'.tr)
+            title: 'Privacy'.tr)
       },
     );
   }
@@ -756,7 +756,7 @@ class SettingsHelper {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "You are using the premium version of this app.".tr,
+                  "premiumuse".tr,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -957,7 +957,6 @@ class PurchaseHelper {
       setAsaData();
       PurchaseHelper.checkSubscription();
     }
-    PurchaseHelper.checkSubscription();
 
     setIpData();
   }

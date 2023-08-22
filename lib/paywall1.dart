@@ -57,9 +57,13 @@ class _Paywall1State extends State<Paywall1> {
   void setProducts() {
     Map<String, IAPItem> products = PurchaseHelper.products;
 
-    // IAPItem weekly = products['weekly']!;
-    // IAPItem yearly = products['yearly']!;
-    // selectedItem = yearly;
+    bool hasLifetime = false;
+    for (var item in PurchaseHelper.paywall.items) {
+      var p = products[item]!;
+      if (p.subscriptionPeriodNumberIOS == "0") {
+        hasLifetime = true;
+      }
+    }
 
     for (var item in PurchaseHelper.paywall.items) {
       var p = products[item]!;
@@ -71,7 +75,7 @@ class _Paywall1State extends State<Paywall1> {
       }
 
       if (p.subscriptionPeriodUnitIOS == "MONTH") {
-        duration = "% Month".trArgs([p.subscriptionPeriodNumberIOS!]);
+        duration = "month".trArgs([p.subscriptionPeriodNumberIOS!]);
       }
 
       if (p.subscriptionPeriodUnitIOS == "YEAR") {
@@ -81,36 +85,16 @@ class _Paywall1State extends State<Paywall1> {
       setState(() {
         purchaseItems.add(
           PurchaseItem(
-            duration: duration,
-            price: p.localizedPrice!,
-            discount: "off".trArgs(["34"]),
-          ),
+              duration: duration,
+              price: p.localizedPrice!,
+              discount: p.subscriptionPeriodNumberIOS == "0"
+                  ? "off".trArgs(["80"])
+                  : (p.subscriptionPeriodUnitIOS == "YEAR" && !hasLifetime)
+                      ? "off".trArgs(["70"])
+                      : ""),
         );
       });
     }
-
-    // setState(() {
-    //   purchaseItems.add(
-    //     PurchaseItem(
-    //       duration: '1 Week'.tr,
-    //       price: weekly.localizedPrice!,
-    //       discount: '',
-    //     ),
-    //   );
-
-    //   var weekToYearPrice = double.parse(weekly.price!) * 48;
-    //   var discount =
-    //       (((weekToYearPrice - double.parse(yearly.price!)) / weekToYearPrice) *
-    //               100)
-    //           .toStringAsFixed(0);
-    //   purchaseItems.add(
-    //     PurchaseItem(
-    //       duration: '1 Year'.tr,
-    //       price: yearly.localizedPrice!,
-    //       discount: "off".trArgs([discount]),
-    //     ),
-    //   );
-    // });
   }
 
   void initListeners() {
@@ -150,8 +134,7 @@ class _Paywall1State extends State<Paywall1> {
     if (mounted) {
       context.closeActivity();
     }
-    UI.showSuccessDialog("You are using PREMIUM version of app now".tr,
-        title: "Payment successful".tr);
+    UI.showSuccessDialog("premiumDesc".tr, title: "Payment successful".tr);
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
@@ -318,7 +301,7 @@ class _Paywall1State extends State<Paywall1> {
               TextButton(
                 onPressed: () {
                   Helper.openUrlInWebview('https://mzgs.net/terms.html',
-                      title: 'Terms of Use (EULA)');
+                      title: 'Terms'.tr);
                 },
                 child: Text(
                   "Terms",
@@ -333,7 +316,7 @@ class _Paywall1State extends State<Paywall1> {
               TextButton(
                 onPressed: () {
                   Helper.openUrlInWebview('https://mzgs.net/privacy.html',
-                      title: 'Privacy Policy');
+                      title: 'Privacy'.tr);
                 },
                 child: Text(
                   "Privacy",

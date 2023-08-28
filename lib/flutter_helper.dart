@@ -989,6 +989,7 @@ class PurchaseHelper {
 
         if (p) {
           setPremium(true);
+          break;
         }
       }
 

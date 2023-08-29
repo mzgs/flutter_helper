@@ -92,7 +92,7 @@ class ApplovinHelper {
         print('Interstitial ad loaded from ${ad.networkName}');
 
         if (!isFirstInterstitialShowed && showInterstitialOnStart) {
-          ShowInterstitial();
+          ShowInterstitial(name: "INTER_ON_START");
         }
 
         // Reset retry attempt

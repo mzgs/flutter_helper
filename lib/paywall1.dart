@@ -82,6 +82,13 @@ class _Paywall1State extends State<Paywall1> {
         duration = "1 Year".tr;
       }
 
+      if (p.subscriptionPeriodAndroid == "P1W") {
+        duration = "1 Week".tr;
+      }
+      if (p.subscriptionPeriodAndroid == "P1Y") {
+        duration = "1 Year".tr;
+      }
+
       setState(() {
         purchaseItems.add(
           PurchaseItem(

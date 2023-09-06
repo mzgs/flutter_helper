@@ -19,7 +19,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'paywall1.dart';
 
 // mzgs_flutter_helper:
@@ -27,7 +26,6 @@ import 'paywall1.dart';
 
 bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
-final InAppReview inAppReview = InAppReview.instance;
 
 late GetStorage getStorage;
 
@@ -82,13 +80,19 @@ class Helper {
   }
 
   static void rateApp(String iosAppID) {
-    inAppReview.openStoreListing(appStoreId: iosAppID);
+    if (isAndroid) {
+      AppReview.openAndroidReview();
+    } else {
+      AppReview.openIosReview(appId: iosAppID, compose: true);
+    }
   }
 
   static void showInAppRate() async {
-    AppReview.requestReview.then((onValue) {
-      print(onValue);
-    });
+    if (await AppReview.isRequestReviewAvailable) {
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+      });
+    }
   }
 
   static void showInappRateOnce() {

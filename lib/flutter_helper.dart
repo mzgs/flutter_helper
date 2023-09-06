@@ -3,6 +3,7 @@ library flutter_helper;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_review/app_review.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,9 +86,9 @@ class Helper {
   }
 
   static void showInAppRate() async {
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
-    }
+    AppReview.requestReview.then((onValue) {
+      print(onValue);
+    });
   }
 
   static void showInappRateOnce() {

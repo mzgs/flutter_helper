@@ -155,15 +155,17 @@ class Helper {
 }
 
 class HttpHelper {
-  static Future<String> getStringFromUrl(String url) async {
-    var result = await http.Client().get(Uri.parse(url));
+  static Future<String> getStringFromUrl(String url,
+      {Map<String, String>? headers}) async {
+    var result = await http.Client().get(Uri.parse(url), headers: headers);
 
     return result.body;
   }
 
 // return parsed json
-  static Future<dynamic> getJsonFromUrl(String url) async {
-    return jsonDecode(await getStringFromUrl(url));
+  static Future<dynamic> getJsonFromUrl(String url,
+      {Map<String, String>? headers}) async {
+    return jsonDecode(await getStringFromUrl(url, headers: headers));
   }
 
   static Future<http.Response> postRequest(

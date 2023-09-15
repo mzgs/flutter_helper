@@ -1143,6 +1143,15 @@ class RemoteConfig {
                 "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
             packageName] ??
         {};
+
+    Timer.periodic(const Duration(hours: 1), (Timer timer) {
+      Future.delayed(Duration.zero, () async {
+        app = (await HttpHelper.getJsonFromUrl(
+                    "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
+                packageName] ??
+            {};
+      });
+    });
   }
 
   static get(String key, defaultValue) {

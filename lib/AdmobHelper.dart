@@ -9,6 +9,10 @@ class AdmobHelper {
       ? 'ca-app-pub-3940256099942544/1033173712'
       : 'ca-app-pub-3940256099942544/4411468910';
 
+  static String interstitialOnStartAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/1033173712'
+      : 'ca-app-pub-3940256099942544/4411468910';
+
   static String bannerAdUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/6300978111'
       : 'ca-app-pub-3940256099942544/2934735716';
@@ -68,6 +72,26 @@ class AdmobHelper {
   static void showInterstitial() {
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          print('ADMOB: $ad loaded.');
+          // Keep a reference to the ad so you can show it later.
+          _interstitialAd = ad;
+          _interstitialAd?.show();
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (LoadAdError error) {
+          print('ADMOB: InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  static void showInterstitialOnStart() {
+    InterstitialAd.load(
+      adUnitId: interstitialOnStartAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         // Called when an ad is successfully received.

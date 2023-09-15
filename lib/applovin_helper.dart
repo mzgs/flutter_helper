@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mzgs_flutter_helper/AdmobHelper.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 class ApplovinHelper {
@@ -217,6 +218,9 @@ class ApplovinHelper {
     bool isReady = (await AppLovinMAX.isInterstitialReady(interstitialID))!;
     if (isReady) {
       AppLovinMAX.showInterstitial(interstitialID, placement: name);
+      return;
     }
+
+    AdmobHelper.showInterstitial();
   }
 }

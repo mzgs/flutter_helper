@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdmobHelper {
+  static bool showAds = true;
   static InterstitialAd? _interstitialAd;
   static String interstitialAdUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/1033173712'
@@ -26,6 +28,10 @@ class AdmobHelper {
   }
 
   static Widget getMrecView() {
+    if (kDebugMode && !showAds) {
+      return const SizedBox();
+    }
+
     var _bannerAd = BannerAd(
       adUnitId: mrecAdUnitId,
       request: const AdRequest(),
@@ -48,6 +54,9 @@ class AdmobHelper {
   }
 
   static Widget getBannerView() {
+    if (kDebugMode && !showAds) {
+      return const SizedBox();
+    }
     var _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId,
       request: const AdRequest(),
@@ -70,6 +79,9 @@ class AdmobHelper {
   }
 
   static void showInterstitial() {
+    if (kDebugMode && !showAds) {
+      return;
+    }
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
@@ -90,6 +102,9 @@ class AdmobHelper {
   }
 
   static void showInterstitialOnStart() {
+    if (kDebugMode && !showAds) {
+      return;
+    }
     InterstitialAd.load(
       adUnitId: interstitialOnStartAdUnitId,
       request: const AdRequest(),

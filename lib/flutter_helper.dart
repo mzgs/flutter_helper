@@ -235,6 +235,7 @@ class UI {
         width: 100,
         height: 100,
       ),
+
       submitButtonText: 'Submit'.tr,
       commentHint: 'rate_comment'.tr,
       onCancelled: () => print('cancelled'),

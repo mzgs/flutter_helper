@@ -46,47 +46,6 @@ class Helper {
     return Color(int.parse(hexColor, radix: 16));
   }
 
-  void showRateDialog(String iosAppID,
-      {double minRatingToSubmit = 3, Function? onSubmit}) async {
-    if (Pref.get("rateDialogSubmitted", false)) {
-      return;
-    }
-
-    final _dialog = RatingDialog(
-      initialRating: 5.0,
-      // your app's name?
-      title: Text(
-        await Helper.getAppName(),
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      // encourage your user to leave a high rating?
-
-      // your app's logo?
-      image: Image.asset(
-        "assets/appicon.png",
-        width: 100,
-        height: 100,
-      ),
-      submitButtonText: 'Submit'.tr,
-      commentHint: 'rate_comment'.tr,
-      onCancelled: () => print('cancelled'),
-      onSubmitted: (response) {
-        // TODO: add your own logic
-        if (response.rating >= minRatingToSubmit) {
-          Pref.set("rateDialogSubmitted", true);
-          Helper.rateApp(iosAppID);
-          onSubmit?.call();
-        }
-      },
-    );
-
-    Get.dialog(_dialog);
-  }
-
   static Future<String> getPackageName() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.packageName;
@@ -251,6 +210,47 @@ class Pref {
 }
 
 class UI {
+  static void showRateDialog(String iosAppID,
+      {double minRatingToSubmit = 3, Function? onSubmit}) async {
+    if (Pref.get("rateDialogSubmitted", false)) {
+      return;
+    }
+
+    final _dialog = RatingDialog(
+      initialRating: 5.0,
+      // your app's name?
+      title: Text(
+        await Helper.getAppName(),
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      // encourage your user to leave a high rating?
+
+      // your app's logo?
+      image: Image.asset(
+        "assets/appicon.png",
+        width: 100,
+        height: 100,
+      ),
+      submitButtonText: 'Submit'.tr,
+      commentHint: 'rate_comment'.tr,
+      onCancelled: () => print('cancelled'),
+      onSubmitted: (response) {
+        // TODO: add your own logic
+        if (response.rating >= minRatingToSubmit) {
+          Pref.set("rateDialogSubmitted", true);
+          Helper.rateApp(iosAppID);
+          onSubmit?.call();
+        }
+      },
+    );
+
+    Get.dialog(_dialog);
+  }
+
   static cardListTile(IconData icon, Color iconColor, String title,
       {String subtitle = "", void Function()? onTap, Widget? trailing}) {
     var iconSize = 24.0;

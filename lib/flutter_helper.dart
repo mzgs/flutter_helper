@@ -20,6 +20,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'paywall1.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 
 // mzgs_flutter_helper:
 //       path: /Users/mustafa/Developer/Flutter/flutter_helper
@@ -43,6 +44,47 @@ class Helper {
     }
 
     return Color(int.parse(hexColor, radix: 16));
+  }
+
+  void showRateDialog(String iosAppID,
+      {double minRatingToSubmit = 3, Function? onSubmit}) async {
+    if (Pref.get("rateDialogSubmitted", false)) {
+      return;
+    }
+
+    final _dialog = RatingDialog(
+      initialRating: 5.0,
+      // your app's name?
+      title: Text(
+        await Helper.getAppName(),
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      // encourage your user to leave a high rating?
+
+      // your app's logo?
+      image: Image.asset(
+        "assets/appicon.png",
+        width: 100,
+        height: 100,
+      ),
+      submitButtonText: 'Submit'.tr,
+      commentHint: 'rate_comment'.tr,
+      onCancelled: () => print('cancelled'),
+      onSubmitted: (response) {
+        // TODO: add your own logic
+        if (response.rating >= minRatingToSubmit) {
+          Pref.set("rateDialogSubmitted", true);
+          Helper.rateApp(iosAppID);
+          onSubmit?.call();
+        }
+      },
+    );
+
+    Get.dialog(_dialog);
   }
 
   static Future<String> getPackageName() async {

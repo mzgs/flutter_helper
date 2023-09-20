@@ -158,23 +158,23 @@ class Helper {
 
 class HttpHelper {
   static Future<String> getStringFromUrl(String url,
-      {Map<String, String>? headers, timeout = 15}) async {
+      {Map<String, String>? headers, int timeout = 15}) async {
     var result = await http.Client()
         .get(Uri.parse(url), headers: headers)
-        .timeout(timeout);
+        .timeout(Duration(seconds: timeout));
 
     return result.body;
   }
 
 // return parsed json
   static Future<dynamic> getJsonFromUrl(String url,
-      {Map<String, String>? headers, timeout = 15}) async {
+      {Map<String, String>? headers, int timeout = 15}) async {
     return jsonDecode(
         await getStringFromUrl(url, headers: headers, timeout: timeout));
   }
 
   static Future<http.Response> postRequest(String url, Map<String, String> body,
-      {Map<String, String>? headers, timeout = 30}) async {
+      {Map<String, String>? headers, int timeout = 30}) async {
     var initalHeaders = {'Content-Type': 'application/json'};
 
     if (headers != null) {
@@ -187,7 +187,8 @@ class HttpHelper {
           headers: initalHeaders,
           body: jsonEncode(body),
         )
-        .timeout(timeout);
+        .timeout(Duration(seconds: timeout));
+
     return response;
   }
 

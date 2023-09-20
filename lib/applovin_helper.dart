@@ -61,6 +61,10 @@ class ApplovinHelper {
   }
 
   static void loadAppOpen() async {
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
+
     if (PurchaseHelper.isPremium || appopenID == "") {
       return;
     }
@@ -71,6 +75,10 @@ class ApplovinHelper {
   }
 
   static void showAppOpen() async {
+    if (kDebugMode && !showAdsInDebug) {
+      return;
+    }
+
     if (!showAppOpenAds) {
       return;
     }

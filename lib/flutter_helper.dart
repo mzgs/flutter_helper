@@ -16,6 +16,7 @@ import 'package:mzgs_flutter_helper/web.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -157,25 +158,36 @@ class Helper {
 
 class HttpHelper {
   static Future<String> getStringFromUrl(String url,
-      {Map<String, String>? headers}) async {
-    var result = await http.Client().get(Uri.parse(url), headers: headers);
+      {Map<String, String>? headers, timeout = 15}) async {
+    var result = await http.Client()
+        .get(Uri.parse(url), headers: headers)
+        .timeout(timeout);
 
     return result.body;
   }
 
 // return parsed json
   static Future<dynamic> getJsonFromUrl(String url,
-      {Map<String, String>? headers}) async {
-    return jsonDecode(await getStringFromUrl(url, headers: headers));
+      {Map<String, String>? headers, timeout = 15}) async {
+    return jsonDecode(
+        await getStringFromUrl(url, headers: headers, timeout: timeout));
   }
 
-  static Future<http.Response> postRequest(
-      String url, Map<String, String> body) async {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+  static Future<http.Response> postRequest(String url, Map<String, String> body,
+      {Map<String, String>? headers, timeout = 30}) async {
+    var initalHeaders = {'Content-Type': 'application/json'};
+
+    if (headers != null) {
+      initalHeaders = {...initalHeaders, ...headers};
+    }
+
+    final response = await http
+        .post(
+          Uri.parse(url),
+          headers: initalHeaders,
+          body: jsonEncode(body),
+        )
+        .timeout(timeout);
     return response;
   }
 
@@ -895,31 +907,40 @@ class FileHelper {
   }
 
 // saveFilePath /image.jpg
-  static Future downloadFile(String url, String saveFilePath,
-      Function(double) onProgress, Function() onFinished,
-      {Function(Object e)? onError}) async {
+  static Future downloadFile(String url, String fileName,
+      {Function(double percent)? onProgress,
+      Function()? onFinished,
+      Function(Object e)? onError}) async {
     Dio dio = Dio();
 // Download the file
-    var appDocDir = await getAppDataPath();
+    var appDocDir = await appFolder();
     try {
-      await dio.download(url, appDocDir + saveFilePath,
+      if (fileName.startsWith("/")) {
+        fileName = fileName.substring(1);
+      }
+      await dio.download(url, "$appDocDir/$fileName",
           onReceiveProgress: (received, total) {
         if (total != -1) {
           var progress = received / total;
-          onProgress(progress);
+          onProgress?.call(progress);
 
           if (progress == 1) {
-            onFinished();
+            onFinished?.call();
           }
         }
       });
     } catch (e) {
-      onError ?? (e);
+      onError?.call(e);
     }
   }
 
   static Future<void> deleteAllFilesInFolder(String path) async {
-    Directory directory = Directory(path);
+    var appPath = await appFolder();
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+    Directory directory = Directory("$appPath/$path");
+
     if (await directory.exists()) {
       List<FileSystemEntity> files = directory.listSync();
       for (FileSystemEntity file in files) {
@@ -930,21 +951,29 @@ class FileHelper {
     }
   }
 
-  static Future<String> getAppDataPath({String file = ""}) async {
-    if (!file.startsWith("/") && file != "") {
-      file = "/$file";
-    }
-
-    return (await getApplicationDocumentsDirectory()).path + file;
+  static Future<String> appFolder({String path = ""}) async {
+    return (await getApplicationDocumentsDirectory()).path + path;
   }
 
   static Future<List<FileSystemEntity>> getFiles(
       {String folderPath = ""}) async {
-    var appPath = await getAppDataPath();
+    var appPath = await appFolder();
+    if (folderPath.startsWith("/")) {
+      folderPath = folderPath.substring(1);
+    }
+
     Directory directory = Directory("$appPath/$folderPath");
     List<FileSystemEntity> files =
         directory.listSync(recursive: true, followLinks: false);
     return files;
+  }
+
+  static Future androidStoragePermissions() async {
+    if (Platform.isAndroid) {
+      await Permission.storage.request();
+      await Permission.photos.request();
+      await Permission.videos.request();
+    }
   }
 }
 
@@ -1223,6 +1252,12 @@ class ActionCounter {
 
     Pref.set(key, oldValue);
     PurchaseHelper.setAnalyticData(key, oldValue);
+  }
+
+  static int getAndIncrease(String key) {
+    int val = get(key);
+    increase(key);
+    return val;
   }
 
   static int get(String key) {

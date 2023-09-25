@@ -1293,7 +1293,7 @@ class LoadingHelper {
     _result = Get.dialog(dialog, barrierDismissible: false);
   }
 
-  static void hide(BuildContext context) {
+  static void hide() {
     Get.back();
   }
 }

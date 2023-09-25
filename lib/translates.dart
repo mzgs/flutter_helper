@@ -11,6 +11,7 @@ class TranslateHelper {
         "Daily Limit": "Daily Limit",
         "Share with Friends": "Share with Friends",
         "Rate Us": "Rate Us",
+        "Loading": "Loading...",
         "1 Week": "1 Week",
         "1 Year": "1 Year",
         "month": "%s Month",

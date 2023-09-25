@@ -1266,6 +1266,38 @@ class ActionCounter {
   }
 }
 
+class LoadingHelper {
+  static Future? _result;
+  static void show() {
+    var dialog = Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16),
+              const SizedBox(
+                height: 48.0,
+                width: 48.0,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              const SizedBox(height: 24),
+              Text("Loading".tr)
+            ],
+          )),
+    );
+
+    _result = Get.dialog(dialog, barrierDismissible: false);
+  }
+
+  static void hide(BuildContext context) {
+    Get.back();
+  }
+}
+
 extension BuildContextExt on BuildContext {
   ThemeData get theme => Theme.of(this);
 

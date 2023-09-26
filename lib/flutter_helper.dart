@@ -128,7 +128,7 @@ class Helper {
           ],
         ),
       ),
-      barrierDismissible: false, // Prevent dialog from being dismissed
+      // Prevent dialog from being dismissed
     );
 
     // Wait for 10 seconds using a Timer
@@ -382,7 +382,6 @@ class UI {
           ),
         ),
       ),
-      barrierDismissible: false,
     );
   }
 
@@ -434,7 +433,6 @@ class UI {
           ),
         ),
       ),
-      barrierDismissible: false,
     );
   }
 
@@ -495,7 +493,6 @@ class UI {
           ),
         ),
       ),
-      barrierDismissible: false,
     );
   }
 
@@ -556,7 +553,6 @@ class UI {
           ),
         ),
       ),
-      barrierDismissible: false,
     );
   }
 

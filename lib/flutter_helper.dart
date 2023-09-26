@@ -154,6 +154,12 @@ class Helper {
       }
     });
   }
+
+  static void widgetsBuildFinished(Function f) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      f.call();
+    });
+  }
 }
 
 class HttpHelper {

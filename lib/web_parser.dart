@@ -149,8 +149,10 @@ class WebParser {
 
     webParser.loadUrl(url);
 
-    Get.to(() => WebShowWidget(
-        webViewController: webParser.controller, showWebUI: showWebviewUI));
+    Helper.widgetsBuildFinished(() {
+      Get.to(() => WebShowWidget(
+          webViewController: webParser.controller, showWebUI: showWebviewUI));
+    });
 
     return webParser;
   }

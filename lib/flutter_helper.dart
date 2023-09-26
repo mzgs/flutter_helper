@@ -386,11 +386,11 @@ class UI {
     );
   }
 
-  static void showDialogWithWidgets({
-    Widget? title,
-    Widget? message,
-    Widget? buttonLabel,
-  }) {
+  static void showDialogWithWidgets(
+      {Widget? title,
+      Widget? message,
+      Widget? buttonLabel,
+      Function? onSubmit}) {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -411,7 +411,10 @@ class UI {
               ],
               if (buttonLabel != null) ...[
                 ElevatedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    Get.back();
+                    onSubmit?.call();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(

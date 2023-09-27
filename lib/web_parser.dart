@@ -9,6 +9,9 @@ import 'package:html/dom.dart' as dom;
 class WebParser {
   late WebViewController controller;
   bool _pageLoaded = false;
+  bool isDesktop = false;
+
+  WebParser({this.isDesktop = false});
 
   void init({
     void Function()? onFinished,
@@ -33,6 +36,11 @@ class WebParser {
           },
         ),
       );
+
+    if (isDesktop) {
+      controller.setUserAgent(
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15");
+    }
   }
 
   setFetchListener(Function(String message) onFetch) {
@@ -137,15 +145,11 @@ class WebParser {
       {void Function(WebParser web)? onFinished,
       isDesktop = true,
       bool showWebviewUI = false}) {
-    var webParser = WebParser();
+    var webParser = WebParser(isDesktop: isDesktop);
 
     webParser.init(onFinished: () {
       onFinished?.call(webParser);
     });
-    if (isDesktop) {
-      webParser.controller.setUserAgent(
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15");
-    }
 
     webParser.loadUrl(url);
 

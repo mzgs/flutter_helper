@@ -50,22 +50,29 @@ class WebParser {
     });
   }
 
-  Future<String> getHtml({String query = ""}) async {
+  Future<String> getHtml({String query = "", String queryAll = ""}) async {
     if (query == "") {
       return decodeUnicodeEscapeSequences(
           (await controller.runJavaScriptReturningResult(
-                  "document.documentElement.outerHTML"))
+                  "document.querySelector('$query').outerHTML"))
               .toString());
     }
 
-    return decodeUnicodeEscapeSequences(
-        (await controller.runJavaScriptReturningResult(
-                "document.querySelector('$query').outerHTML"))
-            .toString());
+    if (queryAll == "") {
+      return decodeUnicodeEscapeSequences(
+          (await controller.runJavaScriptReturningResult(
+                  "document.querySelectorAll('$queryAll').outerHTML"))
+              .toString());
+    }
+
+    return decodeUnicodeEscapeSequences((await controller
+            .runJavaScriptReturningResult("document.documentElement.outerHTML"))
+        .toString());
   }
 
-  Future<dom.Document> parseHTML({String query = ""}) async {
-    return parse(await getHtml(query: query));
+  Future<dom.Document> parseHTML(
+      {String query = "", String queryAll = ""}) async {
+    return parse(await getHtml(query: query, queryAll: queryAll));
   }
 
   dom.Document parseHTMLtext(String html) {

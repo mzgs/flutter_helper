@@ -1,7 +1,5 @@
 import 'dart:math';
 
-// flutter pub add applovin_max
-
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

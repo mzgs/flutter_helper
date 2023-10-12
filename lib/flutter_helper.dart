@@ -92,23 +92,6 @@ class Helper {
     }
   }
 
-  static void showInappRateOnce() {
-    var key = "in_App_rate_showed";
-    if (!Pref.get(key, false)) {
-      Pref.set(key, true);
-      showInAppRate();
-    }
-  }
-
-  static showInappRateWithActionCount(int mustCountValue) {
-    var key = "count_inapprate";
-    var nextValue = Pref.get(key, 0) + 1;
-    Pref.set(key, nextValue);
-    if (nextValue >= mustCountValue) {
-      Helper.showInappRateOnce();
-    }
-  }
-
   static void openUrlInWebview(String url, {String title = ""}) {
     Get.to(() => WebPage(
           url,
@@ -271,7 +254,7 @@ class UI {
     Get.dialog(_dialog);
   }
 
-  static cardListTile(IconData icon, Color iconColor, String title,
+  static Card cardListTile(IconData icon, Color iconColor, String title,
       {String subtitle = "", void Function()? onTap, Widget? trailing}) {
     var iconSize = 24.0;
 
@@ -694,7 +677,7 @@ class UI {
                 child: const Row(
                   children: [
                     Icon(
-                      Icons.bolt,
+                      Icons.diamond_rounded,
                       size: 20,
                       color: Colors.purple,
                     ),
@@ -715,15 +698,14 @@ class UI {
 }
 
 class SettingsHelper {
+  static String webSite = "https://mzgs.net";
   static Widget terms() {
     return UI.cardListTile(
       Icons.feed,
       Colors.blue,
       "Terms".tr,
-      onTap: () => {
-        Helper.openUrlInWebview('https://mzgs.net/terms.html',
-            title: 'Terms'.tr)
-      },
+      onTap: () =>
+          {Helper.openUrlInWebview('$webSite/terms.html', title: 'Terms'.tr)},
     );
   }
 
@@ -733,8 +715,7 @@ class SettingsHelper {
       Colors.red,
       "Privacy".tr,
       onTap: () => {
-        Helper.openUrlInWebview('https://mzgs.net/privacy.html',
-            title: 'Privacy'.tr)
+        Helper.openUrlInWebview('$webSite/privacy.html', title: 'Privacy'.tr)
       },
     );
   }

@@ -748,7 +748,7 @@ class SettingsHelper {
       height: 120,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black, // Change card color to dark
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -774,11 +774,12 @@ class SettingsHelper {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white, // Change text color to white
                   ),
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "premiumuse".tr,
+                  "premiumuse".tr, // Assuming .tr is your translation function
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

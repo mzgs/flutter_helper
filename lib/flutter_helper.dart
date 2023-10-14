@@ -802,13 +802,13 @@ class SettingsHelper {
         UI.DailyLimitRemainingCard(
             dailyLimit, DailyCredits.credits, description,
             color: color),
-        const SizedBox(height: 16),
       ] else ...[
         Padding(
           padding: EdgeInsets.all(4.0),
           child: premiumCard(),
         ),
       ],
+      const SizedBox(height: 16),
     ]);
   }
 
@@ -1002,6 +1002,11 @@ class PurchaseHelper {
   }
 
   static Future checkSubscription() async {
+    if (RemoteConfig.get("is_premium", false)) {
+      setPremium(true);
+      return;
+    }
+
     var history = await getPurchaseHistory();
 
 // check lifetime ------------------

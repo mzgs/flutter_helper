@@ -3,6 +3,7 @@ library flutter_helper;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,23 +101,10 @@ class Helper {
   }
 
   static void restorePurchase({BuildContext? closePage}) {
-    Get.dialog(
-      AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(), // Show a loading indicator
-            SizedBox(height: 16),
-            Text("Loading..."),
-          ],
-        ),
-      ),
-      // Prevent dialog from being dismissed
-    );
-
+    LoadingHelper.show();
     // Wait for 10 seconds using a Timer
     Timer(Duration(seconds: 10), () {
-      Get.back(); // Close the dialog
+      LoadingHelper.hide();
 
       if (PurchaseHelper.isPremium) {
         Get.snackbar(
@@ -254,8 +242,10 @@ class UI {
     Get.dialog(_dialog);
   }
 
-  static Card cardListTile(IconData icon, Color iconColor, String title,
-      {String subtitle = "", void Function()? onTap, Widget? trailing}) {
+  static Widget cardListTile(IconData icon, Color iconColor, String title,
+      {String subtitle = "",
+      void Function()? onTap,
+      Widget? trailing = const Icon(CupertinoIcons.right_chevron)}) {
     var iconSize = 24.0;
 
     if (subtitle.isEmpty) {
@@ -288,9 +278,19 @@ class UI {
       minLeadingWidth: 12,
     );
 
-    return Card(
-      elevation: 5,
-      child: tile2,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Color(
+              0xAACCCCCC), // You can change the color to your desired color
+          width: 1.0, // You can adjust the width of the border
+        ),
+      ),
+      child: Card(
+        elevation: 0,
+        child: tile2,
+      ),
     );
   }
 
@@ -567,91 +567,69 @@ class UI {
   }
 
   static Widget DailyLimitRemainingCard(
-      int totalDailyLimit, int remaining, String message,
+      int dailyLimit, int remaining, String message,
       {Color color = Colors.blue}) {
-    return Card(
-      elevation: 4,
-      color: Colors.grey[200],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Color(
+                0xAACCCCCC), // You can change the color to your desired color
+            width: 1.0),
+        color: Colors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Daily Limit'.tr,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: color,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Daily Limit'.tr, // Localization for 'Daily Limit'
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            message,
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
+          SizedBox(height: 16),
+          LinearProgressIndicator(
+            backgroundColor: Colors.grey[300],
+            value: remaining / dailyLimit,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Remaining'.tr, // Localization for 'Remaining'
+                style: TextStyle(fontSize: 16, color: Colors.black87),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    message,
-                    style: const TextStyle(fontSize: 16, color: Colors.black54),
-                  ),
-                ),
-                const Icon(
-                  Icons.info_outline_rounded,
-                  color: Colors.blueGrey,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(
-              backgroundColor: Colors.grey[300],
-              value: remaining / totalDailyLimit,
-              valueColor: AlwaysStoppedAnimation<Color>(color),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Remaining'.tr,
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-                Text(
-                  remaining.toString(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.check),
-                onPressed: () {
-                  PurchaseHelper.showPaywall(analyticKey: "remove_limits");
-                },
-                label: Text(
-                  'Remove Limits'.tr,
-                  style: TextStyle(fontSize: 16),
-                ),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+              Text(
+                remaining.toString(),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: color,
                 ),
               ),
+            ],
+          ),
+          SizedBox(height: 16),
+          ElevatedButton.icon(
+            icon: Icon(Icons.emoji_emotions),
+            onPressed: () {
+              // Add your action here
+            },
+            label: Text(
+              'Remove Limits'.tr, // Localization for 'Remove Limits'
+              style: TextStyle(fontSize: 18),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

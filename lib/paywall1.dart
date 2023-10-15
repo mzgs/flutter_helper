@@ -307,11 +307,11 @@ class _Paywall1State extends State<Paywall1> {
             children: [
               TextButton(
                 onPressed: () {
-                  Helper.openUrlInWebview('https://mzgs.net/terms.html',
+                  Helper.openUrlInWebview(SettingsHelper.termsUrl,
                       title: 'Terms'.tr);
                 },
                 child: Text(
-                  "Terms",
+                  "Terms".tr,
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -322,11 +322,11 @@ class _Paywall1State extends State<Paywall1> {
                       context.widthPercent(5)), // Add spacing between buttons
               TextButton(
                 onPressed: () {
-                  Helper.openUrlInWebview('https://mzgs.net/privacy.html',
+                  Helper.openUrlInWebview(SettingsHelper.privacyUrl,
                       title: 'Privacy'.tr);
                 },
                 child: Text(
-                  "Privacy",
+                  "Privacy".tr,
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -340,7 +340,7 @@ class _Paywall1State extends State<Paywall1> {
                   Helper.restorePurchase(closePage: context);
                 },
                 child: Text(
-                  "Restore",
+                  "Restore".tr,
                   style: TextStyle(
                     color: Colors.grey,
                   ),

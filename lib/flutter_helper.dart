@@ -676,14 +676,15 @@ class UI {
 }
 
 class SettingsHelper {
-  static String webSite = "https://mzgs.net";
+  static String privacyUrl = "https://mzgs.net/privacy.html";
+  static String termsUrl = "https://mzgs.net/terms.html";
+
   static Widget terms() {
     return UI.cardListTile(
       Icons.feed,
       Colors.blue,
       "Terms".tr,
-      onTap: () =>
-          {Helper.openUrlInWebview('$webSite/terms.html', title: 'Terms'.tr)},
+      onTap: () => {Helper.openUrlInWebview(termsUrl, title: 'Terms'.tr)},
     );
   }
 
@@ -692,9 +693,7 @@ class SettingsHelper {
       Icons.privacy_tip,
       Colors.red,
       "Privacy".tr,
-      onTap: () => {
-        Helper.openUrlInWebview('$webSite/privacy.html', title: 'Privacy'.tr)
-      },
+      onTap: () => {Helper.openUrlInWebview(privacyUrl, title: 'Privacy'.tr)},
     );
   }
 

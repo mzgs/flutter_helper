@@ -782,7 +782,7 @@ class SettingsHelper {
                   "premiumuse".tr, // Assuming .tr is your translation function
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: Colors.white70,
                   ),
                 ),
               ],

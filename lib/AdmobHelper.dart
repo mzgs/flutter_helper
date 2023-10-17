@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gdpr_dialog/gdpr_dialog.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdmobHelper {
@@ -25,6 +26,16 @@ class AdmobHelper {
 
   static void init() {
     MobileAds.instance.initialize();
+  }
+
+  static void showConsentDialog({testDeviceId = ""}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GdprDialog.instance
+          .showDialog(isForTest: kDebugMode, testDeviceId: testDeviceId)
+          .then((onValue) {
+        print('result === $onValue');
+      });
+    });
   }
 
   static Widget getMrecView() {

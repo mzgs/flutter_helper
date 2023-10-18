@@ -28,10 +28,15 @@ class AdmobHelper {
     MobileAds.instance.initialize();
   }
 
-  static void showConsentDialog({testDeviceId = ""}) {
+  static void showConsentDialog(
+      {bool isTest = true, String testDeviceId = ""}) {
+    if (!kDebugMode) {
+      isTest = false;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       GdprDialog.instance
-          .showDialog(isForTest: kDebugMode, testDeviceId: testDeviceId)
+          .showDialog(isForTest: isTest, testDeviceId: testDeviceId)
           .then((onValue) {
         print('result === $onValue');
       });

@@ -278,7 +278,7 @@ class _Paywall1State extends State<Paywall1> {
                           strokeWidth: 3,
                         ),
                       )
-                    : Icon(Icons.check, size: context.widthPercent(6)),
+                    : Icon(Icons.arrow_right, size: context.widthPercent(6)),
                 label: Text('CONTINUE'.tr,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,

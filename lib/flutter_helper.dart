@@ -95,7 +95,7 @@ class Helper {
       return;
     }
 
-    var count = ActionCounter.getAndIncrease("inapprate");
+    var count = ActionCounter.getAndIncrease("inapprate") + 1;
     if (showWithCounts.contains(count)) {
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();

@@ -290,8 +290,8 @@ class _Paywall1State extends State<Paywall1> {
                           _isLoading = true;
                         });
 
-                        selectedItem = PurchaseHelper
-                            .products[selectedIndex == 0 ? "weekly" : "yearly"];
+                        selectedItem = PurchaseHelper.products[
+                            PurchaseHelper.productsIds[selectedIndex]];
 
                         FlutterInappPurchase.instance
                             .requestPurchase(selectedItem!.productId!);

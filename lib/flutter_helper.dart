@@ -87,9 +87,19 @@ class Helper {
     inAppReview.openStoreListing(appStoreId: iosAppID);
   }
 
-  static void showInAppRate() async {
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
+  static void showInAppRate({List<int> showWithCounts = const []}) async {
+    if (showWithCounts.isEmpty) {
+      if (await inAppReview.isAvailable()) {
+        inAppReview.requestReview();
+      }
+      return;
+    }
+
+    var count = ActionCounter.getAndIncrease("inapprate");
+    if (showWithCounts.contains(count)) {
+      if (await inAppReview.isAvailable()) {
+        inAppReview.requestReview();
+      }
     }
   }
 

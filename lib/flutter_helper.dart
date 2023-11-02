@@ -644,7 +644,7 @@ class UI {
     );
   }
 
-  static Widget proButton() {
+  static Widget proButton({Color color = Colors.purple}) {
     return !PurchaseHelper.isPremium
         ? GestureDetector(
             onTap: () {
@@ -656,25 +656,25 @@ class UI {
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple, // Set the border color to yellow
+                    color: color, // Set the border color to yellow
                     width: 4.0, // Set the border width
                   ),
                   borderRadius:
                       BorderRadius.circular(20.0), // Set the border radius
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(
                       Icons.diamond_rounded,
                       size: 20,
-                      color: Colors.purple,
+                      color: color,
                     ),
                     Text(
                       'PRO',
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
-                          color: Colors.purple),
+                          color: color),
                     ),
                   ],
                 ),

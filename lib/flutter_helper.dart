@@ -980,6 +980,7 @@ class Paywall {
 }
 
 class PurchaseHelper {
+  static bool NO_PURCHASE_ANDROID = false;
   static bool DEBUG = true;
   static String analyticData = "{}";
 
@@ -998,6 +999,11 @@ class PurchaseHelper {
     }
 
     isPremium = Pref.get("is_premium", false);
+
+    if (NO_PURCHASE_ANDROID && isAndroid) {
+      setPremium(true);
+      return;
+    }
 
     await FlutterInappPurchase.instance.initialize();
     await setProducts();

@@ -753,6 +753,9 @@ class SettingsHelper {
   }
 
   static Widget premiumCard() {
+    if (PurchaseHelper.NO_PURCHASE_ANDROID && isAndroid) {
+      return const SizedBox();
+    }
     return Container(
       height: 120,
       width: double.infinity,

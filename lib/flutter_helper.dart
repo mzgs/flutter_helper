@@ -752,15 +752,19 @@ class SettingsHelper {
     );
   }
 
-  static Widget premiumCard() {
+  static Widget premiumCard({Color bgColor = Colors.black}) {
     if (PurchaseHelper.NO_PURCHASE_ANDROID && isAndroid) {
+      return const SizedBox();
+    }
+
+    if (!PurchaseHelper.isPremium) {
       return const SizedBox();
     }
     return Container(
       height: 120,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black, // Change card color to dark
+        color: bgColor, // Change card color to dark
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(

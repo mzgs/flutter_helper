@@ -1286,7 +1286,7 @@ class LoadingHelper {
   }
 
   static void hide() {
-    Get.back();
+    Get.back(closeOverlays: true);
   }
 }
 

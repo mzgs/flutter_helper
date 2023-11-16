@@ -24,7 +24,8 @@ class AdmobHelper {
       ? 'ca-app-pub-3940256099942544/6300978111'
       : 'ca-app-pub-3940256099942544/2934735716';
 
-  static void init() {
+  static void init({bool showAdsInDebug = false}) {
+    showAds = showAdsInDebug;
     MobileAds.instance.initialize();
   }
 

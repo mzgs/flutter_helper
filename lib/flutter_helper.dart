@@ -632,7 +632,7 @@ class UI {
           ElevatedButton.icon(
             icon: Icon(Icons.emoji_emotions),
             onPressed: () {
-              // Add your action here
+              PurchaseHelper.showPaywall(analyticKey: "remove_limits");
             },
             label: Text(
               'Remove Limits'.tr, // Localization for 'Remove Limits'

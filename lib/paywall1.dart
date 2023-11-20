@@ -135,13 +135,14 @@ class _Paywall1State extends State<Paywall1> {
   }
 
   void itemPurchasedSuccess(PurchasedItem? productItem) async {
-    PurchaseHelper.isPremium = true;
-    Pref.set("is_premium", true);
+    PurchaseHelper.setPremium(true);
 
     if (mounted) {
       context.closeActivity();
     }
     UI.showSuccessDialog("premiumDesc".tr, title: "Payment successful".tr);
+
+    eventBus.fire(EventObject("purchase_success", ""));
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {

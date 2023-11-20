@@ -3,6 +3,7 @@ library flutter_helper;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,15 @@ bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
 final InAppReview inAppReview = InAppReview.instance;
 
+class EventObject {
+  String message;
+  dynamic data;
+  EventObject(this.message, this.data);
+}
+
 late GetStorage getStorage;
+
+EventBus eventBus = EventBus();
 
 class Helper {
   static Future init() async {

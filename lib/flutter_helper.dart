@@ -79,7 +79,8 @@ class Helper {
     return false;
   }
 
-  static void shareApp(String isoAppID, {String message = ""}) async {
+  static void shareApp(String isoAppID, BuildContext context,
+      {String message = ""}) async {
     if (message == "") {
       message = "amazingapp".tr;
     }
@@ -89,7 +90,12 @@ class Helper {
 
       appLink = "https://play.google.com/store/apps/details?id=$packageName";
     }
-    Share.share('$message $appLink');
+
+    // ignore: use_build_context_synchronously
+    final box = context.findRenderObject() as RenderBox?;
+
+    Share.share('$message $appLink',
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
   }
 
   static void rateApp(String iosAppID) {
@@ -738,13 +744,13 @@ class SettingsHelper {
         ));
   }
 
-  static Widget share(String appID) {
+  static Widget share(String appID, BuildContext context) {
     return UI.cardListTile(
       Icons.share,
       Colors.purple,
       "Share with Friends".tr,
       onTap: () {
-        Helper.shareApp(appID);
+        Helper.shareApp(appID, context);
       },
     );
   }
@@ -837,9 +843,9 @@ class SettingsHelper {
     ]);
   }
 
-  static List<Widget> usualItems(String appID) {
+  static List<Widget> usualItems(String appID, BuildContext context) {
     return [
-      SettingsHelper.share(appID),
+      SettingsHelper.share(appID, context),
       SettingsHelper.rateUs(appID),
       const SizedBox(height: 16),
       SettingsHelper.terms(),

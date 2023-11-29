@@ -91,15 +91,25 @@ class Helper {
       appLink = "https://play.google.com/store/apps/details?id=$packageName";
     }
 
-    // ignore: use_build_context_synchronously
-    final box = context.findRenderObject() as RenderBox?;
-
     Share.share('$message $appLink',
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+        sharePositionOrigin: _getSharePos(context));
   }
 
   static void rateApp(String iosAppID) {
     inAppReview.openStoreListing(appStoreId: iosAppID);
+  }
+
+  static _getSharePos(BuildContext context) {
+    final box = context.findRenderObject() as RenderBox;
+
+    final Rect position;
+    if (box.size.width > 442.0) {
+      position = Rect.fromLTRB(
+          0, box.size.height - 1, box.size.width, box.size.height);
+    } else {
+      position = box.localToGlobal(Offset.zero) & box.size;
+    }
+    return position;
   }
 
   static void showInAppRate({List<int> showWithCounts = const []}) async {
@@ -900,10 +910,8 @@ class DailyCredits {
 
 class FileHelper {
   static void shareFile(String path, String shareText, BuildContext context) {
-    final box = context.findRenderObject() as RenderBox?;
     Share.shareXFiles([XFile(path)],
-        subject: shareText,
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+        subject: shareText, sharePositionOrigin: Helper._getSharePos(context));
   }
 
 // saveFilePath /image.jpg

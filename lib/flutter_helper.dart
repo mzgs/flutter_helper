@@ -893,8 +893,11 @@ class DailyCredits {
 }
 
 class FileHelper {
-  static void shareFile(String path, String shareText) {
-    Share.shareXFiles([XFile(path)], subject: shareText);
+  static void shareFile(String path, String shareText, BuildContext context) {
+    final box = context.findRenderObject() as RenderBox?;
+    Share.shareXFiles([XFile(path)],
+        subject: shareText,
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
   }
 
 // saveFilePath /image.jpg

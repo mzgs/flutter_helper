@@ -284,7 +284,7 @@ class _Paywall1State extends State<Paywall1> {
                 label: Text('CONTINUE'.tr,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: context.widthPercent(5))),
+                        fontSize: context.widthPercent(6))),
                 onPressed: _isLoading
                     ? null
                     : () {

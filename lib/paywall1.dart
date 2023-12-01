@@ -266,9 +266,9 @@ class _Paywall1State extends State<Paywall1> {
               alignment: Alignment.center,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size.fromHeight(context.heightPercent(6.5)),
-                  backgroundColor: PurchaseHelper.paywall.btnColor,
-                ),
+                    minimumSize: Size.fromHeight(context.heightPercent(6.5)),
+                    backgroundColor: PurchaseHelper.paywall.btnColor,
+                    foregroundColor: Colors.white),
                 icon: _isLoading
                     ? Container(
                         width: 24,
@@ -279,7 +279,8 @@ class _Paywall1State extends State<Paywall1> {
                           strokeWidth: 3,
                         ),
                       )
-                    : Icon(Icons.arrow_right, size: context.widthPercent(6)),
+                    : Icon(CupertinoIcons.star_fill,
+                        size: context.widthPercent(6)),
                 label: Text('CONTINUE'.tr,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,

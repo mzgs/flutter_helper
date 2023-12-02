@@ -79,7 +79,7 @@ class WebParser {
       var hasInput = await controller.runJavaScriptReturningResult(
           'document.querySelector("$query") == null');
 
-      if (hasInput == "false") {
+      if (hasInput.toString() == "false") {
         break;
       }
       await Future.delayed(const Duration(seconds: 1));

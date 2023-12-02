@@ -279,7 +279,7 @@ class _Paywall1State extends State<Paywall1> {
                           strokeWidth: 3,
                         ),
                       )
-                    : Icon(CupertinoIcons.star_fill,
+                    : Icon(CupertinoIcons.check_mark,
                         size: context.widthPercent(6)),
                 label: Text('CONTINUE'.tr,
                     style: TextStyle(

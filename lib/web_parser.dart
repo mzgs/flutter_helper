@@ -77,10 +77,9 @@ class WebParser {
   Future<void> waitForElement(String query, {int timeout = 10}) async {
     for (var i = 0; i < timeout; i++) {
       var hasInput = await controller.runJavaScriptReturningResult(
-              'document.querySelector("$query").outerHTML') !=
-          "null";
+          'document.querySelector("$query") == null');
 
-      if (hasInput) {
+      if (hasInput == "false") {
         break;
       }
       await Future.delayed(const Duration(seconds: 1));

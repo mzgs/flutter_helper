@@ -46,6 +46,9 @@ class Helper {
   static Future init() async {
     await GetStorage.init();
     getStorage = GetStorage();
+
+    saveInstallationTime();
+    ActionCounter.increaseAndSetPurchaseAnalyticData("session");
   }
 
   static Color Hex(String hexColor) {
@@ -77,6 +80,24 @@ class Helper {
       return true;
     }
     return false;
+  }
+
+  static void saveInstallationTime() async {
+    if (getElapsedTimeInHours() != 0) {
+      return;
+    }
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    Pref.set('installation_time', timestamp);
+  }
+
+  static double getElapsedTimeInHours() {
+    final timestamp = Pref.get('installation_time', 0);
+    if (timestamp == 0) {
+      return 0;
+    }
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final elapsedTime = (now - timestamp) / 1000 / 60 / 60;
+    return elapsedTime;
   }
 
   static void shareApp(String isoAppID, BuildContext context,

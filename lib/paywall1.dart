@@ -144,6 +144,9 @@ class _Paywall1State extends State<Paywall1> {
 
     eventBus.fire(EventObject("purchase_success", ""));
 
+    PurchaseHelper.setAnalyticData(
+        "installed_hour", Helper.getElapsedTimeInHours());
+
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
         "platform": Platform.operatingSystem,

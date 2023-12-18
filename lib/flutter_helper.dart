@@ -656,7 +656,7 @@ class UI {
           SizedBox(height: 16),
           LinearProgressIndicator(
             backgroundColor: Colors.grey[300],
-            value: remaining / dailyLimit,
+            value: dailyLimit == 0 ? 0 : remaining / dailyLimit,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
           SizedBox(height: 16),

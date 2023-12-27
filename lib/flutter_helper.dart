@@ -1289,18 +1289,13 @@ class ActionCounter {
     Pref.set(key, ++oldValue);
   }
 
-  static void increaseAndSetPurchaseAnalyticData(String key) {
-    var oldValue = Pref.get(key, 0);
-    oldValue++;
-
-    Pref.set(key, oldValue);
-    PurchaseHelper.setAnalyticData(key, oldValue);
+  static void SetAnalytic(String key) {
+    PurchaseHelper.setAnalyticData(key, get(key));
   }
 
-  static int getAndIncrease(String key) {
-    int val = get(key);
+  static void increaseAndSetPurchaseAnalyticData(String key) {
     increase(key);
-    return val;
+    SetAnalytic(key);
   }
 
   static int get(String key) {

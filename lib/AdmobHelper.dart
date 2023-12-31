@@ -169,8 +169,7 @@ class AdmobHelper {
 
   static void showRewarded() {
     _rewardedAd?.show(
-        onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-      loadRewarded();
-    });
+        onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {});
+    loadRewarded();
   }
 }

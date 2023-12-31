@@ -98,7 +98,7 @@ class Helper {
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     final elapsedTime = (now - timestamp) / 1000 / 60 / 60;
-    return elapsedTime;
+    return double.parse(elapsedTime.toStringAsFixed(2));
   }
 
   static void shareApp(String isoAppID, BuildContext context,

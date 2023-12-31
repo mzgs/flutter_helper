@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gdpr_dialog/gdpr_dialog.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 class AdmobHelper {
   static bool showAds = true;
@@ -32,6 +33,10 @@ class AdmobHelper {
     showAds = showAdsInDebug;
     await MobileAds.instance.initialize();
 
+    if (PurchaseHelper.isPremium) {
+      return;
+    }
+
     if (initRewarded) {
       loadRewarded();
     }
@@ -54,6 +59,10 @@ class AdmobHelper {
 
   static Widget getMrecView() {
     if (kDebugMode && !showAds) {
+      return const SizedBox();
+    }
+
+    if (PurchaseHelper.isPremium) {
       return const SizedBox();
     }
 
@@ -82,6 +91,11 @@ class AdmobHelper {
     if (kDebugMode && !showAds) {
       return const SizedBox();
     }
+
+    if (PurchaseHelper.isPremium) {
+      return const SizedBox();
+    }
+
     var _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId,
       request: const AdRequest(),
@@ -107,6 +121,9 @@ class AdmobHelper {
     if (kDebugMode && !showAds) {
       return;
     }
+    if (PurchaseHelper.isPremium) {
+      return;
+    }
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
@@ -128,6 +145,9 @@ class AdmobHelper {
 
   static void showInterstitialOnStart() {
     if (kDebugMode && !showAds) {
+      return;
+    }
+    if (PurchaseHelper.isPremium) {
       return;
     }
     InterstitialAd.load(
@@ -184,6 +204,13 @@ class AdmobHelper {
   }
 
   static void showRewarded() {
+    if (kDebugMode && !showAds) {
+      return;
+    }
+
+    if (PurchaseHelper.isPremium) {
+      return;
+    }
     _rewardedAd?.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {});
   }

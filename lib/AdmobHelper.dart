@@ -7,7 +7,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 class AdmobHelper {
-  static bool showAds = true;
   static InterstitialAd? _interstitialAd;
   static String interstitialAdUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/1033173712'
@@ -29,17 +28,23 @@ class AdmobHelper {
       ? 'ca-app-pub-3940256099942544/5224354917'
       : 'ca-app-pub-3940256099942544/1712485313';
 
-  static void init({bool showAdsInDebug = false, initRewarded = false}) async {
-    showAds = showAdsInDebug;
+  static void init({initRewarded = false}) async {
     await MobileAds.instance.initialize();
 
-    if (PurchaseHelper.isPremium) {
+    if (!showAds()) {
       return;
     }
 
     if (initRewarded) {
       loadRewarded();
     }
+  }
+
+  static bool showAds() {
+    if (PurchaseHelper.isPremium) {
+      return false;
+    }
+    return RemoteConfig.get("show_ads", true);
   }
 
   static void showConsentDialog(
@@ -58,11 +63,7 @@ class AdmobHelper {
   }
 
   static Widget getMrecView() {
-    if (kDebugMode && !showAds) {
-      return const SizedBox();
-    }
-
-    if (PurchaseHelper.isPremium) {
+    if (!showAds()) {
       return const SizedBox();
     }
 
@@ -88,11 +89,7 @@ class AdmobHelper {
   }
 
   static Widget getBannerView() {
-    if (kDebugMode && !showAds) {
-      return const SizedBox();
-    }
-
-    if (PurchaseHelper.isPremium) {
+    if (!showAds()) {
       return const SizedBox();
     }
 
@@ -118,12 +115,10 @@ class AdmobHelper {
   }
 
   static void showInterstitial() {
-    if (kDebugMode && !showAds) {
+    if (!showAds()) {
       return;
     }
-    if (PurchaseHelper.isPremium) {
-      return;
-    }
+
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
@@ -144,12 +139,10 @@ class AdmobHelper {
   }
 
   static void showInterstitialOnStart() {
-    if (kDebugMode && !showAds) {
+    if (!showAds()) {
       return;
     }
-    if (PurchaseHelper.isPremium) {
-      return;
-    }
+
     InterstitialAd.load(
       adUnitId: interstitialOnStartAdUnitId,
       request: const AdRequest(),
@@ -204,13 +197,10 @@ class AdmobHelper {
   }
 
   static void showRewarded() {
-    if (kDebugMode && !showAds) {
+    if (!showAds()) {
       return;
     }
 
-    if (PurchaseHelper.isPremium) {
-      return;
-    }
     _rewardedAd?.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {});
   }

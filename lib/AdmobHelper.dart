@@ -24,9 +24,17 @@ class AdmobHelper {
       ? 'ca-app-pub-3940256099942544/6300978111'
       : 'ca-app-pub-3940256099942544/2934735716';
 
-  static void init({bool showAdsInDebug = false}) {
+  static String rewardedAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/5224354917'
+      : 'ca-app-pub-3940256099942544/1712485313';
+
+  static void init({bool showAdsInDebug = false, initRewarded = false}) async {
     showAds = showAdsInDebug;
-    MobileAds.instance.initialize();
+    await MobileAds.instance.initialize();
+
+    if (initRewarded) {
+      loadRewarded();
+    }
   }
 
   static void showConsentDialog(
@@ -139,5 +147,30 @@ class AdmobHelper {
         },
       ),
     );
+  }
+
+  static RewardedAd? _rewardedAd;
+  static void loadRewarded() {
+    RewardedAd.load(
+        adUnitId: rewardedAdUnitId,
+        request: const AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            _rewardedAd = ad;
+          },
+
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('RewardedAd failed to load: $error');
+          },
+        ));
+  }
+
+  static void showRewarded() {
+    _rewardedAd?.show(
+        onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+      loadRewarded();
+    });
   }
 }

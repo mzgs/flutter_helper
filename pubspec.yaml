@@ -1,6 +1,6 @@
 name: mzgs_flutter_helper
 description: Flutter helper library for ui, file download , list files, in app purchase and subscription
-version: 0.0.104
+version: 0.0.105
 homepage: https://github.com/mzgs/flutter_helper
 
 # dart pub publish -f
@@ -32,7 +32,7 @@ dependencies:
   permission_handler: ^11.0.0
   applovin_max: ^3.3.0
   html: ^0.15.4
-  google_mobile_ads: ^3.1.0
+  google_mobile_ads: ^4.0.0
   share_plus: ^7.2.1
   event_bus: ^2.0.0
 

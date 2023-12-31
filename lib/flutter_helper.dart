@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:mzgs_flutter_helper/AdmobHelper.dart';
 import 'package:mzgs_flutter_helper/applovin_helper.dart';
 import 'package:mzgs_flutter_helper/web.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -1278,8 +1279,16 @@ class RemoteConfig {
     _counterValues[name] = _counterValues[name] ?? 0;
 
     if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
-      print("interstitial showed: $name");
       ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_$name");
+    }
+  }
+
+  static void showAdmobInterstitialCounter(String name,
+      {int defaultValue = 3}) {
+    _counterValues[name] = _counterValues[name] ?? 0;
+
+    if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
+      AdmobHelper.showInterstitial();
     }
   }
 }

@@ -158,6 +158,22 @@ class AdmobHelper {
           // Called when an ad is successfully received.
           onAdLoaded: (ad) {
             _rewardedAd = ad;
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                  loadRewarded();
+                });
           },
 
           // Called when an ad request failed.
@@ -170,6 +186,5 @@ class AdmobHelper {
   static void showRewarded() {
     _rewardedAd?.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {});
-    loadRewarded();
   }
 }

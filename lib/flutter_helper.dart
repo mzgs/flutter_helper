@@ -1251,22 +1251,18 @@ class RemoteConfig {
   static final _counterValues = {};
   static var app = {};
 
-  static Future init(String iosAppID) async {
+  static Future init(String iosAppID,
+      {url =
+          "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"}) async {
     var packageName = await Helper.getPackageName();
     if (isApple) {
       packageName = iosAppID;
     }
-    app = (await HttpHelper.getJsonFromUrl(
-                "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
-            packageName] ??
-        {};
+    app = (await HttpHelper.getJsonFromUrl(url))[packageName] ?? {};
 
     Timer.periodic(const Duration(hours: 1), (Timer timer) {
       Future.delayed(Duration.zero, () async {
-        app = (await HttpHelper.getJsonFromUrl(
-                    "https://raw.githubusercontent.com/mzgs/Android-Json-Data/master/data.json"))[
-                packageName] ??
-            {};
+        app = (await HttpHelper.getJsonFromUrl(url))[packageName] ?? {};
       });
     });
   }

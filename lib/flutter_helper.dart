@@ -917,13 +917,11 @@ class DailyCredits {
     return has;
   }
 
-  static void consumeCredit({bool setPurchaseAnalytic = false}) {
+  static void consumeCredit() {
     credits--;
     Pref.set("credit", credits);
 
-    if (setPurchaseAnalytic) {
-      PurchaseHelper.setAnalyticData("dailyCredits", DailyCredits.credits);
-    }
+    PurchaseHelper.setAnalyticData("dailyCredits", DailyCredits.credits);
   }
 
   static void addCredits(int creditToAdd) {

@@ -7,6 +7,7 @@ import 'package:mzgs_flutter_helper/flutter_helper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Paywall1 extends StatefulWidget {
   @override
@@ -146,6 +147,10 @@ class _Paywall1State extends State<Paywall1> {
 
     PurchaseHelper.setAnalyticData(
         "installed_hour", Helper.getElapsedTimeInHours());
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appVersion = packageInfo.version;
+    PurchaseHelper.setAnalyticData("version", appVersion);
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {

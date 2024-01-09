@@ -144,8 +144,9 @@ class Helper {
       return;
     }
 
-    var count = ActionCounter.get(rateCounterName);
     ActionCounter.increase(rateCounterName);
+    var count = ActionCounter.get(rateCounterName);
+
     if (showWithCounts.contains(count)) {
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();

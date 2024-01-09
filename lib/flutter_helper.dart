@@ -134,7 +134,9 @@ class Helper {
     return position;
   }
 
-  static void showInAppRate({List<int> showWithCounts = const []}) async {
+  static void showInAppRate(
+      {List<int> showWithCounts = const [],
+      rateCounterName = "inapprate"}) async {
     if (showWithCounts.isEmpty) {
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();
@@ -142,8 +144,8 @@ class Helper {
       return;
     }
 
-    var count = ActionCounter.get("inapprate");
-    ActionCounter.increase("inapprate");
+    var count = ActionCounter.get(rateCounterName);
+    ActionCounter.increase(rateCounterName);
     if (showWithCounts.contains(count)) {
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();

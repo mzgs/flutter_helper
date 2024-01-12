@@ -98,7 +98,7 @@ class _Paywall1State extends State<Paywall1> {
               discount: p.subscriptionPeriodNumberIOS == "0"
                   ? "off".trArgs(["80"])
                   : (p.subscriptionPeriodUnitIOS == "YEAR" && !hasLifetime)
-                      ? "off".trArgs(["70"])
+                      ? "off".trArgs(["84"])
                       : ""),
         );
       });

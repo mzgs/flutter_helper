@@ -1259,13 +1259,17 @@ class RemoteConfig {
     if (isApple) {
       packageName = iosAppID;
     }
-    app = (await HttpHelper.getJsonFromUrl(url))[packageName] ?? {};
 
-    Timer.periodic(const Duration(hours: 1), (Timer timer) {
-      Future.delayed(Duration.zero, () async {
-        app = (await HttpHelper.getJsonFromUrl(url))[packageName] ?? {};
+    try {
+      app = (await HttpHelper.getJsonFromUrl(url, timeout: 10))[packageName] ??
+          {};
+
+      Timer.periodic(const Duration(hours: 1), (Timer timer) {
+        Future.delayed(Duration.zero, () async {
+          app = (await HttpHelper.getJsonFromUrl(url))[packageName] ?? {};
+        });
       });
-    });
+    } catch (e) {}
   }
 
   static get(String key, defaultValue) {

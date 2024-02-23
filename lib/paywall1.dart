@@ -309,7 +309,9 @@ class _Paywall1State extends State<Paywall1> {
               ),
             ),
           ),
-          SizedBox(height: context.heightPercent(2)), // Add some spacing
+          SizedBox(height: 8),
+          Text("Cancel at anytime", textAlign: TextAlign.center),
+          SizedBox(height: context.heightPercent(1)), // Add some spacing
 
           // Three Text Buttons
           Row(

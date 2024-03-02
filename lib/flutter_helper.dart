@@ -1166,6 +1166,7 @@ class PurchaseHelper {
 
     for (var item in items) {
       products[item.productId!] = item;
+      print(item);
     }
   }
 

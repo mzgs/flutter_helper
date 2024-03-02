@@ -96,7 +96,7 @@ class _Paywall1State extends State<Paywall1> {
               duration: duration,
               price: p.localizedPrice!,
               discount: p.subscriptionPeriodNumberIOS == "0"
-                  ? "off".trArgs(["80"])
+                  ? "off".trArgs(["84"])
                   : (p.subscriptionPeriodUnitIOS == "YEAR" && !hasLifetime)
                       ? "off".trArgs(["84"])
                       : ""),
@@ -151,6 +151,8 @@ class _Paywall1State extends State<Paywall1> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String appVersion = packageInfo.version;
     PurchaseHelper.setAnalyticData("version", appVersion);
+    PurchaseHelper.setAnalyticData(
+        "trial", selectedItem!.introductoryPricePaymentModeIOS);
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
@@ -224,7 +226,9 @@ class _Paywall1State extends State<Paywall1> {
                         children: [
                           SizedBox(height: 12),
                           Text(
-                            PurchaseHelper.paywall.title,
+                            RemoteConfig.get("premiumTitle", "pr1")
+                                .toString()
+                                .tr,
                             style: TextStyle(
                               fontSize: context.isTablet ? 32 : 24.0,
                               fontWeight: FontWeight.bold,
@@ -287,12 +291,12 @@ class _Paywall1State extends State<Paywall1> {
                           strokeWidth: 3,
                         ),
                       )
-                    : Icon(CupertinoIcons.check_mark,
-                        size: context.widthPercent(6)),
-                label: Text('CONTINUE'.tr,
+                    : SizedBox(),
+                label: Text(
+                    RemoteConfig.get("buttonText", "btn1").toString().tr,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: context.widthPercent(6))),
+                        fontSize: context.widthPercent(4))),
                 onPressed: _isLoading
                     ? null
                     : () {
@@ -310,12 +314,16 @@ class _Paywall1State extends State<Paywall1> {
             ),
           ),
           SizedBox(height: 8),
-          Text("Cancel at anytime", textAlign: TextAlign.center),
-          SizedBox(height: context.heightPercent(1)), // Add some spacing
+          Text(
+            "Cancel Anytime".tr,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xFF555555)),
+          ),
+          SizedBox(height: 4), // Add some spacing
 
           // Three Text Buttons
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               TextButton(
                 onPressed: () {
@@ -421,9 +429,7 @@ class PurchaseItemCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: PurchaseHelper.paywall.items.length == 2 ? 24 : 18,
-                horizontal: 24),
+            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -459,7 +465,7 @@ class PurchaseItemCard extends StatelessWidget {
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                   child: Text(
                     item.discount,
                     style: TextStyle(

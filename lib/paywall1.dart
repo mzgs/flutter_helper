@@ -154,6 +154,8 @@ class _Paywall1State extends State<Paywall1> {
     PurchaseHelper.setAnalyticData(
         "trial", selectedItem!.introductoryPricePaymentModeIOS);
 
+    PurchaseHelper.setAnalyticData("deviceId", await Helper.getDeviceId());
+
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
         "platform": Platform.operatingSystem,

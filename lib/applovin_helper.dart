@@ -43,11 +43,13 @@ class ApplovinHelper {
       return;
     }
 
-    Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
+    MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
 
     if (PurchaseHelper.isPremium) {
       return;
     }
+
+    MaxCMPError? error = await AppLovinMAX.showCmpForExistingUser();
 
     if (interstitialID != "") {
       initializeInterstitialAds();

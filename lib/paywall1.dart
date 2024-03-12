@@ -155,6 +155,10 @@ class _Paywall1State extends State<Paywall1> {
         "trial", selectedItem!.introductoryPricePaymentModeIOS);
 
     PurchaseHelper.setAnalyticData("deviceId", await Helper.getDeviceId());
+    PurchaseHelper.setAnalyticData(
+        "transactionId", productItem?.transactionId ?? "");
+    PurchaseHelper.setAnalyticData("originalTransactionId",
+        productItem?.originalTransactionIdentifierIOS ?? "");
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
@@ -274,6 +278,7 @@ class _Paywall1State extends State<Paywall1> {
               ),
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Align(
@@ -315,13 +320,16 @@ class _Paywall1State extends State<Paywall1> {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 10),
           Text(
-            "Cancel Anytime".tr,
+            (RemoteConfig.get("show3dayFree", false)
+                    ? "3 DAYS FREE".tr + " - "
+                    : "") +
+                "Cancel Anytime".tr,
             textAlign: TextAlign.center,
             style: TextStyle(color: Color(0xFF555555)),
           ),
-          SizedBox(height: 4), // Add some spacing
+          SizedBox(height: 6), // Add some spacing
 
           // Three Text Buttons
           Row(
@@ -370,7 +378,7 @@ class _Paywall1State extends State<Paywall1> {
               ),
             ],
           ),
-          SizedBox(height: context.heightPercent(6))
+          SizedBox(height: context.heightPercent(3))
         ],
       ),
     );

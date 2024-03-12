@@ -7,7 +7,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
 class AdmobHelper {
-  static InterstitialAd? _interstitialAd;
   static String interstitialAdUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/1033173712'
       : 'ca-app-pub-3940256099942544/4411468910';
@@ -119,6 +118,8 @@ class AdmobHelper {
       return;
     }
 
+    print("showInterstitial");
+
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
@@ -126,10 +127,28 @@ class AdmobHelper {
         // Called when an ad is successfully received.
         onAdLoaded: (ad) {
           print('ADMOB: $ad loaded.');
-          // Keep a reference to the ad so you can show it later.
-          _interstitialAd = ad;
-          _interstitialAd?.show();
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+              // Called when the ad showed the full screen content.
+              onAdShowedFullScreenContent: (ad) {},
+              // Called when an impression occurs on the ad.
+              onAdImpression: (ad) {},
+              // Called when the ad failed to show full screen content.
+              onAdFailedToShowFullScreenContent: (ad, err) {
+                // Dispose the ad here to free resources.
+                ad.dispose();
+              },
+              // Called when the ad dismissed full screen content.
+              onAdDismissedFullScreenContent: (ad) {
+                // Dispose the ad here to free resources.
+                ad.dispose();
+              },
+              // Called when a click is recorded for an ad.
+              onAdClicked: (ad) {});
+
+          ad.show();
         },
+
         // Called when an ad request failed.
         onAdFailedToLoad: (LoadAdError error) {
           print('ADMOB: InterstitialAd failed to load: $error');
@@ -151,8 +170,7 @@ class AdmobHelper {
         onAdLoaded: (ad) {
           print('ADMOB: $ad loaded.');
           // Keep a reference to the ad so you can show it later.
-          _interstitialAd = ad;
-          _interstitialAd?.show();
+          ad.show();
         },
         // Called when an ad request failed.
         onAdFailedToLoad: (LoadAdError error) {
@@ -179,12 +197,9 @@ class AdmobHelper {
                 // Called when the ad failed to show full screen content.
                 onAdFailedToShowFullScreenContent: (ad, err) {
                   // Dispose the ad here to free resources.
-                  ad.dispose();
                 },
                 // Called when the ad dismissed full screen content.
                 onAdDismissedFullScreenContent: (ad) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
                   loadRewarded();
                 });
           },

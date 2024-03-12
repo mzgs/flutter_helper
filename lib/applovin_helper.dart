@@ -43,13 +43,19 @@ class ApplovinHelper {
       return;
     }
 
+    AppLovinMAX.setTermsAndPrivacyPolicyFlowEnabled(true);
+    AppLovinMAX.setPrivacyPolicyUrl(SettingsHelper.privacyUrl);
+// Terms of Service URL is optional
+    AppLovinMAX.setTermsOfServiceUrl(SettingsHelper.termsUrl);
+
     MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
+    print(sdkConfiguration?.consentFlowUserGeography);
+
+    // MaxCMPError? error = await AppLovinMAX.showCmpForExistingUser();
 
     if (PurchaseHelper.isPremium) {
       return;
     }
-
-    MaxCMPError? error = await AppLovinMAX.showCmpForExistingUser();
 
     if (interstitialID != "") {
       initializeInterstitialAds();
@@ -57,6 +63,12 @@ class ApplovinHelper {
 
     if (rewardedID != "") {
       initializeRewardedAds();
+    }
+  }
+
+  static void showDebugger() {
+    if (kDebugMode) {
+      AppLovinMAX.showMediationDebugger();
     }
   }
 

@@ -36,6 +36,7 @@ class TranslateHelper {
         "pr4": "Try Premium Free",
         "btn1": "CONTINUE",
         "btn2": "START FREE TRIAL",
+        "btn3": "START 3 DAYS FREE TRIAL",
         "Watch ad": "Watch ad",
         "CONTINUE": "CONTINUE",
         "3 DAYS FREE": "3 DAYS FREE",
@@ -56,6 +57,7 @@ class TranslateHelper {
         "premiumuse": "You are using the premium version of this app."
       },
       "tr": {
+        "btn3": "3 GÜN ÜCRETSİZ BAŞLA",
         "Settings": "Ayarlar",
         "Remove Limits": "Limitleri Kaldır",
         "amazingapp": "Bu harika uygulamayı burada kontrol et",
@@ -107,6 +109,7 @@ class TranslateHelper {
         "premiumuse": "Bu uygulamanın premium versiyonunu kullanıyorsunuz."
       },
       "fr": {
+        "btn3": "ESSAI 3 JOURS GRATUIT",
         "Settings": "Paramètres",
         "Remove Limits": "Supprimer les limites",
         "amazingapp": "Découvrez cette application incroyable à",
@@ -159,6 +162,7 @@ class TranslateHelper {
         "premiumuse": "Vous utilisez la version premium de cette application."
       },
       "es": {
+        "btn3": "PRUEBA 3 DÍAS GRATIS",
         "Settings": "Configuraciones",
         "Remove Limits": "Eliminar límites",
         "amazingapp": "Mira esta increíble aplicación en",
@@ -210,6 +214,7 @@ class TranslateHelper {
         "premiumuse": "Estás usando la versión premium de esta aplicación."
       },
       "de": {
+        "btn3": "3 TAGE TEST GRATIS",
         "Settings": "Einstellungen",
         "Remove Limits": "Limits entfernen",
         "amazingapp": "Schau dir diese erstaunliche App an unter",
@@ -261,6 +266,7 @@ class TranslateHelper {
         "premiumuse": "Sie nutzen die Premium-Version dieser App."
       },
       "it": {
+        "btn3": "PROVA 3 GIORNI GRATIS",
         "Settings": "Impostazioni",
         "Remove Limits": "Rimuovi limiti",
         "amazingapp": "Dai un'occhiata a questa incredibile app su",
@@ -312,6 +318,7 @@ class TranslateHelper {
         "premiumuse": "Stai utilizzando la versione premium di questa app."
       },
       "ja": {
+        "btn3": "3日間無料",
         "Settings": "設定",
         "Remove Limits": "制限を解除",
         "amazingapp": "この素晴らしいアプリをチェックしてください",
@@ -363,6 +370,7 @@ class TranslateHelper {
         "premiumuse": "このアプリのプレミアムバージョンを使用しています。"
       },
       "ar": {
+        "btn3": "تجربة 3 أيام مجانا",
         "Settings": "الإعدادات",
         "Remove Limits": "إزالة الحدود",
         "amazingapp": "تحقق من هذا التطبيق المدهش في",
@@ -414,6 +422,7 @@ class TranslateHelper {
         "premiumuse": "أنت تستخدم النسخة المميزة من هذا التطبيق."
       },
       "ru": {
+        "btn3": "3 ДНЯ БЕСПЛАТНО",
         "Settings": "Настройки",
         "Remove Limits": "Убрать ограничения",
         "amazingapp": "Проверьте это удивительное приложение в",
@@ -466,6 +475,7 @@ class TranslateHelper {
         "premiumuse": "Вы используете премиум версию этого приложения."
       },
       "zh": {
+        "btn3": "3日试用",
         "Settings": "设置",
         "Remove Limits": "移除限制",
         "amazingapp": "在这里查看这个惊人的应用",
@@ -517,6 +527,7 @@ class TranslateHelper {
         "premiumuse": "您正在使用这个应用的高级版。"
       },
       "pt": {
+        "btn3": "TESTE 3 DIAS GRÁTIS",
         "Settings": "Configurações",
         "Remove Limits": "Remover Limites",
         "amazingapp": "Confira este incrível aplicativo em",
@@ -568,6 +579,7 @@ class TranslateHelper {
         "premiumuse": "Você está usando a versão premium deste aplicativo."
       },
       "hi": {
+        "btn3": "3 दिन मुफ्त",
         "Settings": "सेटिंग्स",
         "Remove Limits": "सीमाओं को हटा दें",
         "amazingapp": "इस अद्भुत ऐप को देखें",
@@ -619,6 +631,7 @@ class TranslateHelper {
         "premiumuse": "आप इस ऐप का प्रीमियम संस्करण उपयोग कर रहे हैं।"
       },
       "ms": {
+        "btn3": "CUBA 3 HARI PERCUMA",
         "Settings": "Tetapan",
         "Remove Limits": "Keluarkan Had",
         "amazingapp": "Semak aplikasi hebat ini di",
@@ -671,6 +684,7 @@ class TranslateHelper {
         "premiumuse": "Anda menggunakan versi premium aplikasi ini."
       },
       "ko": {
+        "btn3": "3일 무료 사용",
         "Settings": "설정",
         "Remove Limits": "제한 제거",
         "amazingapp": "이 놀라운 앱을 확인하세요",
@@ -722,6 +736,7 @@ class TranslateHelper {
         "premiumuse": "이 앱의 프리미엄 버전을 사용 중입니다."
       },
       "id": {
+        "btn3": "COBA 3 HARI GRATIS",
         "Settings": "Pengaturan",
         "Remove Limits": "Hapus Batas",
         "amazingapp": "Lihat aplikasi menakjubkan ini di",
@@ -773,6 +788,7 @@ class TranslateHelper {
         "premiumuse": "Anda menggunakan versi premium aplikasi ini."
       },
       "nl": {
+        "btn3": "3 DAGEN GRATIS PROBEREN",
         "Settings": "Instellingen",
         "Remove Limits": "Limieten verwijderen",
         "amazingapp": "Bekijk deze geweldige app op",

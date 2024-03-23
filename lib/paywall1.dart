@@ -341,7 +341,7 @@ class _Paywall1State extends State<Paywall1> {
                       title: 'Terms'.tr);
                 },
                 child: Text(
-                  "Terms".tr,
+                  "Terms",
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -356,7 +356,7 @@ class _Paywall1State extends State<Paywall1> {
                       title: 'Privacy'.tr);
                 },
                 child: Text(
-                  "Privacy".tr,
+                  "Privacy",
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -370,7 +370,7 @@ class _Paywall1State extends State<Paywall1> {
                   Helper.restorePurchase(closePage: context);
                 },
                 child: Text(
-                  "Restore".tr,
+                  "Restore",
                   style: TextStyle(
                     color: Colors.grey,
                   ),

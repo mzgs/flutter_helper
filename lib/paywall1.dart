@@ -111,10 +111,7 @@ class _Paywall1State extends State<Paywall1> {
       // purchase success
       if (productItem?.transactionStateIOS == TransactionState.purchased ||
           productItem?.purchaseStateAndroid == PurchaseState.purchased) {
-        List<PurchasedItem>? history =
-            await (FlutterInappPurchase.instance.getPurchaseHistory()) ?? [];
-
-        FlutterInappPurchase.instance.finishTransaction(history[0]);
+        await FlutterInappPurchase.instance.finishTransaction(productItem!);
 
         itemPurchasedSuccess(productItem);
       }
@@ -148,13 +145,9 @@ class _Paywall1State extends State<Paywall1> {
     PurchaseHelper.setAnalyticData(
         "installed_hour", Helper.getElapsedTimeInHours());
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String appVersion = packageInfo.version;
-    PurchaseHelper.setAnalyticData("version", appVersion);
     PurchaseHelper.setAnalyticData(
         "trial", selectedItem!.introductoryPricePaymentModeIOS);
 
-    PurchaseHelper.setAnalyticData("deviceId", await Helper.getDeviceId());
     PurchaseHelper.setAnalyticData(
         "transactionId", productItem?.transactionId ?? "");
     PurchaseHelper.setAnalyticData("originalTransactionId",
@@ -176,6 +169,8 @@ class _Paywall1State extends State<Paywall1> {
         "asa": PurchaseHelper.asaData
       });
     } catch (e) {}
+
+    Helper.updateUser(transactionId: productItem?.transactionId ?? "");
 
     // hideBanner();
   }

@@ -53,6 +53,44 @@ class Helper {
     ActionCounter.increaseAndSetPurchaseAnalyticData("session");
   }
 
+  static updateUser({String transactionId = ""}) async {
+    var iosDeviceInfo = await DeviceInfoPlugin().iosInfo;
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appVersion = packageInfo.version;
+    String deviceId = iosDeviceInfo.identifierForVendor ?? "";
+
+    PurchaseHelper.setAnalyticData("version", appVersion);
+    PurchaseHelper.setAnalyticData("deviceId", deviceId);
+
+    HttpHelper.postRequest("https://apps.mzgs.net/inappuser/update-user", {
+      "device_id": deviceId,
+      "first_seen": Pref.get("installation_time", 0) / 1000,
+      "last_seen": DateTime.now().millisecondsSinceEpoch / 1000,
+      "device_name": iosDeviceInfo.utsname.machine,
+      "os_info": "${iosDeviceInfo.systemName} ${iosDeviceInfo.systemVersion}",
+      "app_version": appVersion,
+      "country": Get.deviceLocale?.countryCode ?? "",
+      "lang": Get.deviceLocale?.languageCode ?? "",
+      "original_transaction_id": transactionId,
+      "asa": PurchaseHelper.asaData,
+      "package_name": await Helper.getPackageName(),
+      "stats": PurchaseHelper.analyticData
+    });
+  }
+
+  static Future<String> getDeviceName() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.model; // Or any other property that makes sense
+    } else if (Platform.isIOS) {
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.utsname.machine;
+    }
+    return "Unknown";
+  }
+
   static Color Hex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
     if (hexColor.length == 6) {
@@ -224,7 +262,8 @@ class HttpHelper {
         await getStringFromUrl(url, headers: headers, timeout: timeout));
   }
 
-  static Future<http.Response> postRequest(String url, Map<String, String> body,
+  static Future<http.Response> postRequest(
+      String url, Map<String, dynamic> body,
       {Map<String, String>? headers, int timeout = 30}) async {
     var initalHeaders = {'Content-Type': 'application/json'};
 
@@ -1082,9 +1121,10 @@ class PurchaseHelper {
     await setProducts();
 
     if (!kDebugMode) {
-      setAsaData();
-      PurchaseHelper.checkSubscription();
+      await setAsaData();
     }
+
+    PurchaseHelper.checkSubscription();
 
     setIpData();
   }
@@ -1241,7 +1281,7 @@ class PurchaseHelper {
     return false;
   }
 
-  static void setAsaData() async {
+  static Future setAsaData() async {
     try {
       var token = await FlutterAsaAttribution.instance.attributionToken();
       // print("mzgs token: " + token.toString());
@@ -1252,6 +1292,7 @@ class PurchaseHelper {
   }
 
   static setIpData() async {
+    return;
     var ipData = await HttpHelper.getJsonFromUrl("http://ip-api.com/json");
     var country = ipData['countryCode'];
     var ip = ipData['query'];

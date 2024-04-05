@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 import 'package:get/get.dart';
@@ -108,12 +109,17 @@ class _Paywall1State extends State<Paywall1> {
   void initListeners() {
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
+      print("listen MZGS");
+      print(productItem?.transactionStateIOS);
+
       // purchase success
       if (productItem?.transactionStateIOS == TransactionState.purchased ||
           productItem?.purchaseStateAndroid == PurchaseState.purchased) {
-        await FlutterInappPurchase.instance.finishTransaction(productItem!);
+        if (productItem != null) {
+          await FlutterInappPurchase.instance.finishTransaction(productItem);
 
-        itemPurchasedSuccess(productItem);
+          itemPurchasedSuccess(productItem);
+        }
       }
 
       if (mounted) {
@@ -141,6 +147,10 @@ class _Paywall1State extends State<Paywall1> {
     UI.showSuccessDialog("premiumDesc".tr, title: "Payment successful".tr);
 
     eventBus.fire(EventObject("purchase_success", ""));
+
+    if (kDebugMode) {
+      return;
+    }
 
     PurchaseHelper.setAnalyticData(
         "installed_hour", Helper.getElapsedTimeInHours());

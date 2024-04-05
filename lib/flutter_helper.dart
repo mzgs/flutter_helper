@@ -1122,11 +1122,10 @@ class PurchaseHelper {
 
     if (!kDebugMode) {
       await setAsaData();
+      PurchaseHelper.checkSubscription();
     }
 
-    PurchaseHelper.checkSubscription();
-
-    setIpData();
+    // setIpData();
   }
 
   static Future checkSubscription() async {
@@ -1196,6 +1195,7 @@ class PurchaseHelper {
 
         var check = await FlutterInappPurchase.instance
             .checkSubscribed(sku: key, duration: Duration(days: days));
+
         if (check) {
           setPremium(true);
           return;
@@ -1257,8 +1257,8 @@ class PurchaseHelper {
   }
 
   static Future<List<PurchasedItem>> getPurchaseHistory() async {
-    List<PurchasedItem>? history =
-        await FlutterInappPurchase.instance.getPurchaseHistory();
+    var history = await FlutterInappPurchase.instance.getPurchaseHistory();
+
     return history ?? [];
   }
 

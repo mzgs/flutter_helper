@@ -5,6 +5,8 @@ class TranslateHelper {
   static Map<String, Map<String, String>> getHelperTranslations() {
     return {
       "en": {
+        "Weekly": "Weekly",
+        "Yearly": "Yearly",
         "Settings": "Settings",
         "Remove Limits": "Remove Limits",
         "amazingapp": "Check out this amazing app at",
@@ -57,6 +59,8 @@ class TranslateHelper {
         "premiumuse": "You are using the premium version of this app."
       },
       "tr": {
+        "Weekly": "Haftalık",
+        "Yearly": "Yıllık",
         "btn3": "3 GÜN ÜCRETSİZ BAŞLA",
         "Settings": "Ayarlar",
         "Remove Limits": "Limitleri Kaldır",
@@ -109,6 +113,8 @@ class TranslateHelper {
         "premiumuse": "Bu uygulamanın premium versiyonunu kullanıyorsunuz."
       },
       "fr": {
+        "Weekly": "Hebdomadaire",
+        "Yearly": "Annuel",
         "btn3": "ESSAI 3 JOURS GRATUIT",
         "Settings": "Paramètres",
         "Remove Limits": "Supprimer les limites",
@@ -162,6 +168,8 @@ class TranslateHelper {
         "premiumuse": "Vous utilisez la version premium de cette application."
       },
       "es": {
+        "Weekly": "Semanal",
+        "Yearly": "Anual",
         "btn3": "PRUEBA 3 DÍAS GRATIS",
         "Settings": "Configuraciones",
         "Remove Limits": "Eliminar límites",
@@ -214,6 +222,8 @@ class TranslateHelper {
         "premiumuse": "Estás usando la versión premium de esta aplicación."
       },
       "de": {
+        "Weekly": "Wöchentlich",
+        "Yearly": "Jährlich",
         "btn3": "3 TAGE TEST GRATIS",
         "Settings": "Einstellungen",
         "Remove Limits": "Limits entfernen",
@@ -266,6 +276,8 @@ class TranslateHelper {
         "premiumuse": "Sie nutzen die Premium-Version dieser App."
       },
       "it": {
+        "Weekly": "Settimanale",
+        "Yearly": "Annuale",
         "btn3": "PROVA 3 GIORNI GRATIS",
         "Settings": "Impostazioni",
         "Remove Limits": "Rimuovi limiti",
@@ -318,6 +330,8 @@ class TranslateHelper {
         "premiumuse": "Stai utilizzando la versione premium di questa app."
       },
       "ja": {
+        "Weekly": "週刊",
+        "Yearly": "年間",
         "btn3": "3日間無料",
         "Settings": "設定",
         "Remove Limits": "制限を解除",
@@ -370,6 +384,8 @@ class TranslateHelper {
         "premiumuse": "このアプリのプレミアムバージョンを使用しています。"
       },
       "ar": {
+        "Weekly": "أسبوعي",
+        "Yearly": "سنوي",
         "btn3": "تجربة 3 أيام مجانا",
         "Settings": "الإعدادات",
         "Remove Limits": "إزالة الحدود",
@@ -422,6 +438,8 @@ class TranslateHelper {
         "premiumuse": "أنت تستخدم النسخة المميزة من هذا التطبيق."
       },
       "ru": {
+        "Weekly": "Еженедельно",
+        "Yearly": "Ежегодно",
         "btn3": "3 ДНЯ БЕСПЛАТНО",
         "Settings": "Настройки",
         "Remove Limits": "Убрать ограничения",
@@ -475,6 +493,8 @@ class TranslateHelper {
         "premiumuse": "Вы используете премиум версию этого приложения."
       },
       "zh": {
+        "Weekly": "周刊",
+        "Yearly": "年刊",
         "btn3": "3日试用",
         "Settings": "设置",
         "Remove Limits": "移除限制",
@@ -527,6 +547,8 @@ class TranslateHelper {
         "premiumuse": "您正在使用这个应用的高级版。"
       },
       "pt": {
+        "Weekly": "Semanal",
+        "Yearly": "Anual",
         "btn3": "TESTE 3 DIAS GRÁTIS",
         "Settings": "Configurações",
         "Remove Limits": "Remover Limites",
@@ -579,6 +601,8 @@ class TranslateHelper {
         "premiumuse": "Você está usando a versão premium deste aplicativo."
       },
       "hi": {
+        "Weekly": "साप्ताहिक",
+        "Yearly": "वार्षिक",
         "btn3": "3 दिन मुफ्त",
         "Settings": "सेटिंग्स",
         "Remove Limits": "सीमाओं को हटा दें",
@@ -631,6 +655,8 @@ class TranslateHelper {
         "premiumuse": "आप इस ऐप का प्रीमियम संस्करण उपयोग कर रहे हैं।"
       },
       "ms": {
+        "Weekly": "Mingguan",
+        "Yearly": "Tahunan",
         "btn3": "CUBA 3 HARI PERCUMA",
         "Settings": "Tetapan",
         "Remove Limits": "Keluarkan Had",
@@ -684,6 +710,8 @@ class TranslateHelper {
         "premiumuse": "Anda menggunakan versi premium aplikasi ini."
       },
       "ko": {
+        "Weekly": "주간",
+        "Yearly": "연간",
         "btn3": "3일 무료 사용",
         "Settings": "설정",
         "Remove Limits": "제한 제거",
@@ -736,6 +764,8 @@ class TranslateHelper {
         "premiumuse": "이 앱의 프리미엄 버전을 사용 중입니다."
       },
       "id": {
+        "Weekly": "Mingguan",
+        "Yearly": "Tahunan",
         "btn3": "COBA 3 HARI GRATIS",
         "Settings": "Pengaturan",
         "Remove Limits": "Hapus Batas",
@@ -788,6 +818,8 @@ class TranslateHelper {
         "premiumuse": "Anda menggunakan versi premium aplikasi ini."
       },
       "nl": {
+        "Weekly": "Wekelijks",
+        "Yearly": "Jaarlijks",
         "btn3": "3 DAGEN GRATIS PROBEREN",
         "Settings": "Instellingen",
         "Remove Limits": "Limieten verwijderen",

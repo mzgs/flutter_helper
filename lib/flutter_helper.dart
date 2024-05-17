@@ -22,8 +22,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:storekit2helper/storekit2helper.dart';
 import 'paywall1.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 
@@ -63,7 +63,7 @@ class Helper {
     PurchaseHelper.setAnalyticData("version", appVersion);
     PurchaseHelper.setAnalyticData("deviceId", deviceId);
 
-    HttpHelper.postRequest("https://apps.mzgs.net/inappuser/update-user", {
+    var data = {
       "device_id": deviceId,
       "first_seen": Pref.get("installation_time", 0) / 1000,
       "last_seen": DateTime.now().millisecondsSinceEpoch / 1000,
@@ -72,11 +72,18 @@ class Helper {
       "app_version": appVersion,
       "country": Get.deviceLocale?.countryCode ?? "",
       "lang": Get.deviceLocale?.languageCode ?? "",
-      "original_transaction_id": transactionId,
+      "purchase_history":
+          jsonEncode((await Storekit2Helper.fetchPurchaseHistory())),
       "asa": PurchaseHelper.asaData,
       "package_name": await Helper.getPackageName(),
       "stats": PurchaseHelper.analyticData
-    });
+    };
+
+    if (transactionId != "") {
+      data["original_transaction_id"] = transactionId;
+    }
+
+    HttpHelper.postRequest("https://apps.mzgs.net/inappuser/update-user", data);
   }
 
   static Future<String> getDeviceName() async {
@@ -1099,7 +1106,7 @@ class PurchaseHelper {
   static List<String> productsIds = [];
 
   static var isPremium = false;
-  static Map<String, IAPItem> products = {};
+  static List<ProductDetail> products = [];
 
   static Paywall paywall = Paywall("name", "app.png", "title", [], []);
 
@@ -1110,116 +1117,31 @@ class PurchaseHelper {
       return;
     }
 
-    isPremium = Pref.get("is_premium", false);
-
     if (NO_PURCHASE_ANDROID && isAndroid) {
       setPremium(true);
       return;
     }
 
-    await FlutterInappPurchase.instance.initialize();
-    await setProducts();
+    Storekit2Helper.initialize();
 
-    if (!kDebugMode) {
-      await setAsaData();
-      PurchaseHelper.checkSubscription();
+    var hasActiveSubscription = await Storekit2Helper.hasActiveSubscription();
+
+    if (RemoteConfig.get("all_premium", false)) {
+      hasActiveSubscription = true;
     }
 
-    // setIpData();
-  }
+    setPremium(hasActiveSubscription);
 
-  static Future checkSubscription() async {
-    if (RemoteConfig.get("is_premium", false)) {
-      setPremium(true);
+    if (hasActiveSubscription) {
       return;
     }
-
-    var history = await getPurchaseHistory();
-
-// check lifetime ------------------
-    String lifetimeId = "";
-    for (var entry in products.entries) {
-      String key = entry.key;
-      IAPItem item = entry.value;
-      if (item.subscriptionPeriodNumberIOS == "0") {
-        lifetimeId = key;
-      }
-    }
-
-    for (var element in history) {
-      if (element.productId == lifetimeId) {
-        setPremium(true);
-        print("lifetime restored");
-        return;
-      }
-    }
-    // check lifetime end -----------
-
-    if (isAndroid) {
-      for (var id in productsIds) {
-        var p = await checkSubscribedAndroid(sku: id);
-
-        if (p) {
-          setPremium(true);
-          break;
-        }
-      }
-
-      return;
-    }
-
-    try {
-      for (var entry in products.entries) {
-        String key = entry.key;
-        IAPItem item = entry.value;
-
-        var pUnit = item.subscriptionPeriodUnitIOS;
-        var pNumber = int.parse(item.subscriptionPeriodNumberIOS!);
-        var days = 0;
-
-        switch (pUnit) {
-          case "DAY":
-            days = pNumber;
-            break;
-          case "MONTH":
-            days = pNumber * 30;
-            break;
-          case "YEAR":
-            days = pNumber * 360;
-            break;
-          default:
-        }
-        if (days == 0) {
-          continue;
-        }
-
-        var check = await FlutterInappPurchase.instance
-            .checkSubscribed(sku: key, duration: Duration(days: days));
-
-        if (check) {
-          setPremium(true);
-          return;
-        }
-      }
-
-      setPremium(false);
-    } catch (e) {
-      print("checkSubscription error: $e");
-    }
+    products = await Storekit2Helper.fetchProducts(productsIds);
+    setAsaData();
   }
 
   static setPremium(bool value) {
     isPremium = value;
     Pref.set("is_premium", isPremium);
-  }
-
-  static Future<void> setProducts() async {
-    List<IAPItem> items =
-        await FlutterInappPurchase.instance.getSubscriptions(productsIds);
-
-    for (var item in items) {
-      products[item.productId!] = item;
-    }
   }
 
   static void showPaywall({analyticKey = ""}) async {
@@ -1229,9 +1151,6 @@ class PurchaseHelper {
 
     if (isPremium) {
       return;
-    }
-    if (products.isEmpty) {
-      await setProducts();
     }
 
     if (products.isEmpty) {
@@ -1243,42 +1162,10 @@ class PurchaseHelper {
     Get.to(() => Paywall1());
   }
 
-  static void showPaywallOnce() {
-    if (isPremium) {
-      return;
-    }
-    bool isShowedPurchaseFirstTime =
-        Pref.get("isShowedPurchaseFirstTime", false);
-
-    if (!isShowedPurchaseFirstTime) {
-      Pref.set("isShowedPurchaseFirstTime", true);
-      showPaywall();
-    }
-  }
-
-  static Future<List<PurchasedItem>> getPurchaseHistory() async {
-    var history = await FlutterInappPurchase.instance.getPurchaseHistory();
-
-    return history ?? [];
-  }
-
   static void setAnalyticData(String key, value) {
     var data = jsonDecode(analyticData);
     data[key] = value;
     analyticData = jsonEncode(data);
-  }
-
-  static Future<bool> checkSubscribedAndroid({
-    required String sku,
-  }) async {
-    var purchases =
-        await FlutterInappPurchase.instance.getAvailablePurchases() ?? [];
-
-    for (var purchase in purchases) {
-      if (purchase.productId == sku) return true;
-    }
-
-    return false;
   }
 
   static Future setAsaData() async {

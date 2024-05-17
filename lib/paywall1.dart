@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -7,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:storekit2helper/storekit2helper.dart';
 
 class Paywall1 extends StatefulWidget {
   @override
@@ -20,10 +18,6 @@ class _Paywall1State extends State<Paywall1> {
       PurchaseHelper.paywall.selectedIndex; // Initially selected item index
   var _isLoading = false;
 
-  StreamSubscription? _purchaseUpdatedSubscription;
-  StreamSubscription? _purchaseErrorSubscription;
-  IAPItem? selectedItem;
-
   List<PurchaseItem> purchaseItems = [];
 
   List<Widget> features = [];
@@ -33,7 +27,6 @@ class _Paywall1State extends State<Paywall1> {
     // TODO: implement initState
     super.initState();
 
-    initListeners();
     setProducts();
     setFeatures();
   }
@@ -48,98 +41,25 @@ class _Paywall1State extends State<Paywall1> {
     });
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _purchaseUpdatedSubscription?.cancel();
-    _purchaseErrorSubscription?.cancel();
-  }
-
   void setProducts() {
-    Map<String, IAPItem> products = PurchaseHelper.products;
+    var products = PurchaseHelper.products;
 
-    bool hasLifetime = false;
-    for (var item in PurchaseHelper.paywall.items) {
-      var p = products[item]!;
-      if (p.subscriptionPeriodNumberIOS == "0") {
-        hasLifetime = true;
-      }
+    for (var p in products) {
+      purchaseItems.add(PurchaseItem(
+          duration: p.periodTitle.tr,
+          price: p.localizedPrice,
+          discount: p.periodUnit == "Year" ? "off".trArgs(["84"]) : ""));
     }
 
-    for (var item in PurchaseHelper.paywall.items) {
-      var p = products[item]!;
-
-      var duration = "";
-      if (p.subscriptionPeriodUnitIOS == "DAY") {
-        duration =
-            p.subscriptionPeriodNumberIOS == "0" ? "Lifetime".tr : "1 Week".tr;
-      }
-
-      if (p.subscriptionPeriodUnitIOS == "MONTH") {
-        duration = "month".trArgs([p.subscriptionPeriodNumberIOS!]);
-      }
-
-      if (p.subscriptionPeriodUnitIOS == "YEAR") {
-        duration = "1 Year".tr;
-      }
-
-      if (p.subscriptionPeriodAndroid == "P1W") {
-        duration = "1 Week".tr;
-      }
-      if (p.subscriptionPeriodAndroid == "P1Y") {
-        duration = "1 Year".tr;
-      }
-
-      setState(() {
-        purchaseItems.add(
-          PurchaseItem(
-              duration: duration,
-              price: p.localizedPrice!,
-              discount: p.subscriptionPeriodNumberIOS == "0"
-                  ? "off".trArgs(["84"])
-                  : (p.subscriptionPeriodUnitIOS == "YEAR" && !hasLifetime)
-                      ? "off".trArgs(["84"])
-                      : ""),
-        );
-      });
-    }
+    setState(() {});
   }
 
-  void initListeners() {
-    _purchaseUpdatedSubscription =
-        FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
-      print("listen MZGS");
-      print(productItem?.transactionStateIOS);
-
-      // purchase success
-      if (productItem?.transactionStateIOS == TransactionState.purchased ||
-          productItem?.purchaseStateAndroid == PurchaseState.purchased) {
-        if (productItem != null) {
-          await FlutterInappPurchase.instance.finishTransaction(productItem);
-
-          itemPurchasedSuccess(productItem);
-        }
-      }
-
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    });
-
-    _purchaseErrorSubscription =
-        FlutterInappPurchase.purchaseError.listen((purchaseError) {
-      print('purchase-error: $purchaseError');
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
-  void itemPurchasedSuccess(PurchasedItem? productItem) async {
+  void itemPurchasedSuccess(
+      ProductDetail product, Map<String, dynamic>? transaction) async {
     PurchaseHelper.setPremium(true);
+
+    int transactionId = transaction?["transactionId"] ?? 0;
+    int originalTransactionId = transaction?["originalTransactionId"] ?? 0;
 
     if (mounted) {
       context.closeActivity();
@@ -148,31 +68,29 @@ class _Paywall1State extends State<Paywall1> {
 
     eventBus.fire(EventObject("purchase_success", ""));
 
-    if (kDebugMode) {
-      return;
-    }
+    // if (kDebugMode) {
+    //   return;
+    // }
 
     PurchaseHelper.setAnalyticData(
         "installed_hour", Helper.getElapsedTimeInHours());
 
-    PurchaseHelper.setAnalyticData(
-        "trial", selectedItem!.introductoryPricePaymentModeIOS);
+    PurchaseHelper.setAnalyticData("trial", product.introductoryOffer);
 
+    PurchaseHelper.setAnalyticData("transactionId", transactionId);
     PurchaseHelper.setAnalyticData(
-        "transactionId", productItem?.transactionId ?? "");
-    PurchaseHelper.setAnalyticData("originalTransactionId",
-        productItem?.originalTransactionIdentifierIOS ?? "");
+        "originalTransactionId", originalTransactionId);
 
     try {
       HttpHelper.postRequest("https://apps.mzgs.net/add-payment", {
         "platform": Platform.operatingSystem,
         "date":
             DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc()),
-        "subscription_id": selectedItem!.productId.toString(),
-        "price": selectedItem!.price.toString(),
+        "subscription_id": product.productId.toString(),
+        "price": product.price.toString(),
         "country": Get.deviceLocale?.countryCode ?? "",
         "lang": Get.deviceLocale?.languageCode ?? "",
-        "localePrice": selectedItem!.localizedPrice.toString(),
+        "localePrice": product.localizedPrice.toString(),
         "package_name": (await Helper.getPackageName()),
         "app_name": (await Helper.getAppName()),
         "data": PurchaseHelper.analyticData,
@@ -180,7 +98,7 @@ class _Paywall1State extends State<Paywall1> {
       });
     } catch (e) {}
 
-    Helper.updateUser(transactionId: productItem?.transactionId ?? "");
+    Helper.updateUser(transactionId: transactionId.toString());
 
     // hideBanner();
   }
@@ -316,11 +234,23 @@ class _Paywall1State extends State<Paywall1> {
                           _isLoading = true;
                         });
 
-                        selectedItem = PurchaseHelper.products[
-                            PurchaseHelper.productsIds[selectedIndex]];
+                        //TODO: purchase
 
-                        FlutterInappPurchase.instance
-                            .requestPurchase(selectedItem!.productId!);
+                        var selectedProduct =
+                            PurchaseHelper.products[selectedIndex];
+
+                        Storekit2Helper.buyProduct(selectedProduct.productId,
+                            (success, transaction, errorMessage) {
+                          if (success) {
+                            itemPurchasedSuccess(selectedProduct, transaction);
+                          } else {
+                            if (mounted) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          }
+                        });
                       },
               ),
             ),

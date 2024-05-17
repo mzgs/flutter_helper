@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gdpr_dialog/gdpr_dialog.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mzgs_flutter_helper/flutter_helper.dart';
 
@@ -53,11 +52,11 @@ class AdmobHelper {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      GdprDialog.instance
-          .showDialog(isForTest: isTest, testDeviceId: testDeviceId)
-          .then((onValue) {
-        print('result === $onValue');
-      });
+      // GdprDialog.instance
+      //     .showDialog(isForTest: isTest, testDeviceId: testDeviceId)
+      //     .then((onValue) {
+      //   print('result === $onValue');
+      // });
     });
   }
 

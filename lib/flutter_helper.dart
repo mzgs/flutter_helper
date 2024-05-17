@@ -15,7 +15,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:mzgs_flutter_helper/AdmobHelper.dart';
-import 'package:mzgs_flutter_helper/applovin_helper.dart';
 import 'package:mzgs_flutter_helper/web.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -408,6 +407,7 @@ class UI {
         ),
       ),
       child: Card(
+        color: Colors.white,
         elevation: 0,
         child: tile2,
       ),
@@ -673,7 +673,7 @@ class UI {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(backgroundColor: color),
       onPressed: () {
-        ApplovinHelper.ShowRewarded();
+        AdmobHelper.showRewarded();
         onPressed();
       },
       icon: Icon(icon),
@@ -1221,7 +1221,7 @@ class RemoteConfig {
     _counterValues[name] = _counterValues[name] ?? 0;
 
     if (++_counterValues[name] % (app[name] ?? defaultValue) == 0) {
-      ApplovinHelper.ShowInterstitial(name: "INTERSTITIAL_$name");
+      AdmobHelper.showInterstitial();
     }
   }
 

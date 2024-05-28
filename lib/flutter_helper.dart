@@ -41,7 +41,7 @@ class EventObject {
 }
 
 late GetStorage getStorage;
-late CloudKit cloudKit;
+CloudKit cloudKit = CloudKit("");
 
 EventBus eventBus = EventBus();
 

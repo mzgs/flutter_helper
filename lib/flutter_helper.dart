@@ -51,10 +51,10 @@ class Helper {
     getStorage = GetStorage();
 
     saveInstallationTime();
-    ActionCounter.increaseAndSetPurchaseAnalyticData("session");
+    ActionCounter.increase("session");
   }
 
-  static initicloud(String containerIdentifier) {
+  static initIcloud(String containerIdentifier) {
     cloudKit = CloudKit(containerIdentifier);
   }
 
@@ -977,6 +977,8 @@ class OneTimeCreditsIcloud {
     } else {
       credits = await _getCreditsFromICloud();
     }
+
+    PurchaseHelper.setAnalyticData("oneTimeCredits_$creditKey", credits);
   }
 
   Future<bool> _isFirstTime() async {
@@ -1062,6 +1064,8 @@ class DailyCreditsIcloud {
     } else {
       credits = await _getCreditsFromICloud();
     }
+
+    PurchaseHelper.setAnalyticData("dailyCredits_$creditKey", credits);
   }
 
   Future<bool> _isNewDay(int today) async {
@@ -1428,18 +1432,17 @@ class RemoteConfig {
 }
 
 class ActionCounter {
+  static void initAnalyticData(List<String> keys) {
+    for (var key in keys) {
+      PurchaseHelper.setAnalyticData(key, get(key));
+    }
+  }
+
   static void increase(String key) {
     var oldValue = Pref.get(key, 0);
     Pref.set(key, ++oldValue);
-  }
 
-  static void SetAnalytic(String key) {
     PurchaseHelper.setAnalyticData(key, get(key));
-  }
-
-  static void increaseAndSetPurchaseAnalyticData(String key) {
-    increase(key);
-    SetAnalytic(key);
   }
 
   static int get(String key) {

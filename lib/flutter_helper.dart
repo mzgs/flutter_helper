@@ -46,6 +46,8 @@ var iCloudStorage = CKKVStorage();
 
 EventBus eventBus = EventBus();
 
+DateTime _startTime = DateTime.now();
+
 class Helper {
   static Future init() async {
     await GetStorage.init();
@@ -86,6 +88,25 @@ class Helper {
     }
 
     HttpHelper.postRequest("https://apps.mzgs.net/inappuser/update-user", data);
+  }
+
+  static void onPause() async {
+    final currentTime = DateTime.now();
+    final usageDuration = currentTime.difference(_startTime);
+
+    var oldDuration = await iCloudStorage.getString("usageHours") ?? "0.0";
+
+    var newDuration = double.parse(oldDuration) +
+        double.parse((usageDuration.inSeconds / 3600).toStringAsFixed(3));
+
+    iCloudStorage.writeString(key: "usageHours", value: newDuration.toString());
+    PurchaseHelper.setAnalyticData("usageHours", newDuration);
+
+    Helper.updateUser();
+  }
+
+  static void onResume() {
+    _startTime = DateTime.now();
   }
 
   static Future<String> getDeviceName() async {

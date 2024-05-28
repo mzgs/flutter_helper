@@ -3,7 +3,6 @@ library flutter_helper;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:cloud_kit/cloud_kit.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +25,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:storekit2helper/storekit2helper.dart';
 import 'paywall1.dart';
 import 'package:rating_dialog/rating_dialog.dart';
+import 'package:icloud_kv_storage/icloud_kv_storage.dart';
 
 // mzgs_flutter_helper:
 //       path: /Users/mustafa/Developer/Flutter/flutter_helper
@@ -41,7 +41,8 @@ class EventObject {
 }
 
 late GetStorage getStorage;
-late CloudKit cloudKit;
+
+var iCloudStorage = CKKVStorage();
 
 EventBus eventBus = EventBus();
 
@@ -962,83 +963,66 @@ class SettingsHelper {
 
 class OneTimeCreditsIcloud {
   int credits = 0;
-  String creditKey;
+  final String creditKey;
 
-  OneTimeCreditsIcloud(int initialCredits, this.creditKey) {
+  OneTimeCreditsIcloud(int initialCredits, String key)
+      : creditKey = "oneTimeCredits_$key" {
     _init(initialCredits);
   }
 
-  void _init(int initialCredits) async {
-    creditKey = "oneTimeCredits_$creditKey";
-    bool isFirstTime = await _isFirstTime();
-
-    if (isFirstTime) {
-      await _setInitialCredits(initialCredits);
+  Future<void> _init(int initialCredits) async {
+    if (await _isFirstTime()) {
+      await _setCreditsToICloud(initialCredits);
       credits = initialCredits;
     } else {
       credits = await _getCreditsFromICloud();
     }
-
     PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
   Future<bool> _isFirstTime() async {
     try {
-      final value = await cloudKit.get(creditKey);
-      return value == null;
+      return (await iCloudStorage.getString(creditKey)) == null;
     } catch (e) {
       print("Failed to check first-time status: '${e.toString()}'.");
       return true;
     }
   }
 
-  Future<void> _setInitialCredits(int initialCredits) async {
-    try {
-      await cloudKit.save(creditKey, initialCredits.toString());
-    } catch (e) {
-      print("Failed to set initial credits: '${e.toString()}'.");
-    }
-  }
-
-  bool hasCredit() {
-    if (PurchaseHelper.isPremium) {
-      return true;
-    }
-    var has = credits > 0;
-
-    if (!has) {
-      PurchaseHelper.showPaywall(analyticKey: creditKey);
-    }
-    return has;
-  }
-
-  void consumeCredit() async {
-    credits--;
-    await _setCreditsToICloud(credits);
-    PurchaseHelper.setAnalyticData(creditKey, credits);
-  }
-
-  void addCredits(int creditToAdd) async {
-    credits += creditToAdd;
-    await _setCreditsToICloud(credits);
-  }
-
   Future<void> _setCreditsToICloud(int credits) async {
     try {
-      await cloudKit.save(creditKey, credits.toString());
+      await iCloudStorage.writeString(
+          key: creditKey, value: credits.toString());
     } catch (e) {
       print("Failed to set credits to iCloud: '${e.toString()}'.");
     }
   }
 
+  bool hasCredit() {
+    if (PurchaseHelper.isPremium) return true;
+    if (credits <= 0) {
+      PurchaseHelper.showPaywall(analyticKey: creditKey);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> consumeCredit() async {
+    if (--credits >= 0) {
+      await _setCreditsToICloud(credits);
+      PurchaseHelper.setAnalyticData(creditKey, credits);
+    }
+  }
+
+  Future<void> addCredits(int creditToAdd) async {
+    credits += creditToAdd;
+    await _setCreditsToICloud(credits);
+  }
+
   Future<int> _getCreditsFromICloud() async {
     try {
-      final value = await cloudKit.get(creditKey);
-      if (value != null) {
-        return int.parse(value);
-      } else {
-        return 0;
-      }
+      final value = await iCloudStorage.getString(creditKey);
+      return value != null ? int.parse(value) : 0;
     } catch (e) {
       print("Failed to get credits from iCloud: '${e.toString()}'.");
       return 0;
@@ -1056,7 +1040,7 @@ class DailyCreditsIcloud {
 
   void _init(int maxCredits) async {
     creditKey = "dailyCredits_$creditKey";
-    int today = await _getServerTimestamp();
+    String today = await _getServerDate();
     bool isNewDay = await _isNewDay(today);
 
     if (isNewDay) {
@@ -1069,9 +1053,9 @@ class DailyCreditsIcloud {
     PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
-  Future<bool> _isNewDay(int today) async {
+  Future<bool> _isNewDay(String today) async {
     try {
-      final value = await cloudKit.get("$creditKey$today");
+      final value = await iCloudStorage.getString("$creditKey$today");
       return value == null;
     } catch (e) {
       print("Failed to check new day: '${e.toString()}'.");
@@ -1079,9 +1063,9 @@ class DailyCreditsIcloud {
     }
   }
 
-  Future<void> _setNewDayCredits(int maxCredits, int today) async {
+  Future<void> _setNewDayCredits(int maxCredits, String today) async {
     try {
-      await cloudKit.save("$creditKey$today", 'true');
+      await iCloudStorage.writeString(key: "$creditKey$today", value: 'true');
       await _setCreditsToICloud(maxCredits);
     } catch (e) {
       print("Failed to set new day credits: '${e.toString()}'.");
@@ -1113,7 +1097,8 @@ class DailyCreditsIcloud {
 
   Future<void> _setCreditsToICloud(int credits) async {
     try {
-      await cloudKit.save(creditKey, credits.toString());
+      await iCloudStorage.writeString(
+          key: creditKey, value: credits.toString());
     } catch (e) {
       print("Failed to set credits to iCloud: '${e.toString()}'.");
     }
@@ -1121,7 +1106,7 @@ class DailyCreditsIcloud {
 
   Future<int> _getCreditsFromICloud() async {
     try {
-      final value = await cloudKit.get(creditKey);
+      final value = await iCloudStorage.getString(creditKey);
       if (value != null) {
         return int.parse(value);
       } else {
@@ -1133,20 +1118,20 @@ class DailyCreditsIcloud {
     }
   }
 
-  Future<int> _getServerTimestamp() async {
+  Future<String> _getServerDate() async {
     try {
       final response = await http
           .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final datetime = DateTime.parse(data['utc_datetime']);
-        return datetime.millisecondsSinceEpoch;
+        return DateFormat('yyyyMMdd').format(datetime);
       } else {
-        throw Exception('Failed to fetch server timestamp');
+        throw Exception('Failed to fetch server date');
       }
     } catch (e) {
-      print("Failed to fetch server timestamp: '${e.toString()}'.");
-      return DateTime.now().millisecondsSinceEpoch;
+      print("Failed to fetch server date: '${e.toString()}'.");
+      return DateFormat('yyyyMMdd').format(DateTime.now());
     }
   }
 }

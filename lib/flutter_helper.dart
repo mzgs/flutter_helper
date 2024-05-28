@@ -3,6 +3,7 @@ library flutter_helper;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_kit/cloud_kit.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,6 +41,7 @@ class EventObject {
 }
 
 late GetStorage getStorage;
+late CloudKit cloudKit;
 
 EventBus eventBus = EventBus();
 
@@ -50,6 +52,10 @@ class Helper {
 
     saveInstallationTime();
     ActionCounter.increaseAndSetPurchaseAnalyticData("session");
+  }
+
+  static initicloud(String containerIdentifier) {
+    cloudKit = CloudKit(containerIdentifier);
   }
 
   static updateUser({String transactionId = ""}) async {
@@ -951,6 +957,192 @@ class SettingsHelper {
       const SizedBox(height: 16),
       SettingsHelper.buyPremiumAndRestoreButton()
     ];
+  }
+}
+
+class OneTimeCreditsIcloud {
+  int credits = 0;
+  String creditKey;
+
+  OneTimeCreditsIcloud(int initialCredits, this.creditKey) {
+    _init(initialCredits);
+  }
+
+  void _init(int initialCredits) async {
+    bool isFirstTime = await _isFirstTime();
+
+    if (isFirstTime) {
+      await _setInitialCredits(initialCredits);
+      credits = initialCredits;
+    } else {
+      credits = await _getCreditsFromICloud();
+    }
+  }
+
+  Future<bool> _isFirstTime() async {
+    try {
+      final value = await cloudKit.get("onetimecredit_$creditKey");
+      return value == null;
+    } catch (e) {
+      print("Failed to check first-time status: '${e.toString()}'.");
+      return true;
+    }
+  }
+
+  Future<void> _setInitialCredits(int initialCredits) async {
+    try {
+      await cloudKit.save(
+          "onetimecredit_$creditKey", initialCredits.toString());
+    } catch (e) {
+      print("Failed to set initial credits: '${e.toString()}'.");
+    }
+  }
+
+  bool hasCredit() {
+    if (PurchaseHelper.isPremium) {
+      return true;
+    }
+    var has = credits > 0;
+
+    if (!has) {
+      PurchaseHelper.showPaywall(analyticKey: "no_credits_$creditKey");
+    }
+    return has;
+  }
+
+  void consumeCredit() async {
+    credits--;
+    await _setCreditsToICloud(credits);
+    PurchaseHelper.setAnalyticData("oneTimeCredits_$creditKey", credits);
+  }
+
+  void addCredits(int creditToAdd) async {
+    credits += creditToAdd;
+    await _setCreditsToICloud(credits);
+  }
+
+  Future<void> _setCreditsToICloud(int credits) async {
+    try {
+      await cloudKit.save("onetimecredit_$creditKey", credits.toString());
+    } catch (e) {
+      print("Failed to set credits to iCloud: '${e.toString()}'.");
+    }
+  }
+
+  Future<int> _getCreditsFromICloud() async {
+    try {
+      final value = await cloudKit.get("onetimecredit_$creditKey");
+      if (value != null) {
+        return int.parse(value);
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("Failed to get credits from iCloud: '${e.toString()}'.");
+      return 0;
+    }
+  }
+}
+
+class DailyCreditsIcloud {
+  int credits = 0;
+  String creditKey;
+
+  DailyCreditsIcloud(int maxCredits, this.creditKey) {
+    _init(maxCredits);
+  }
+
+  void _init(int maxCredits) async {
+    String today = await _getServerDate();
+    bool isNewDay = await _isNewDay(today);
+
+    if (isNewDay) {
+      await _setNewDayCredits(maxCredits, today);
+      credits = maxCredits;
+    } else {
+      credits = await _getCreditsFromICloud();
+    }
+  }
+
+  Future<bool> _isNewDay(String today) async {
+    try {
+      final value = await cloudKit.get("$creditKey$today");
+      return value == null;
+    } catch (e) {
+      print("Failed to check new day: '${e.toString()}'.");
+      return true;
+    }
+  }
+
+  Future<void> _setNewDayCredits(int maxCredits, String today) async {
+    try {
+      await cloudKit.save("$creditKey$today", 'true');
+      await _setCreditsToICloud(maxCredits);
+    } catch (e) {
+      print("Failed to set new day credits: '${e.toString()}'.");
+    }
+  }
+
+  bool hasCredit() {
+    if (PurchaseHelper.isPremium) {
+      return true;
+    }
+    var has = credits > 0;
+
+    if (!has) {
+      PurchaseHelper.showPaywall(analyticKey: "no_credits_$creditKey");
+    }
+    return has;
+  }
+
+  void consumeCredit() async {
+    credits--;
+    await _setCreditsToICloud(credits);
+    PurchaseHelper.setAnalyticData("dailyCredits_$creditKey", credits);
+  }
+
+  void addCredits(int creditToAdd) async {
+    credits += creditToAdd;
+    await _setCreditsToICloud(credits);
+  }
+
+  Future<void> _setCreditsToICloud(int credits) async {
+    try {
+      await cloudKit.save(creditKey, credits.toString());
+    } catch (e) {
+      print("Failed to set credits to iCloud: '${e.toString()}'.");
+    }
+  }
+
+  Future<int> _getCreditsFromICloud() async {
+    try {
+      final value = await cloudKit.get(creditKey);
+      if (value != null) {
+        return int.parse(value);
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("Failed to get credits from iCloud: '${e.toString()}'.");
+      return 0;
+    }
+  }
+
+  Future<String> _getServerDate() async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final datetime = DateTime.parse(data['utc_datetime']);
+        return DateFormat('yyyy-MM-dd').format(datetime);
+      } else {
+        throw Exception('Failed to fetch server date');
+      }
+    } catch (e) {
+      print("Failed to fetch server date: '${e.toString()}'.");
+      return DateFormat('yyyy-MM-dd').format(DateTime.now());
+    }
   }
 }
 

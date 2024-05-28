@@ -55,10 +55,6 @@ class Helper {
     ActionCounter.increase("session");
   }
 
-  static initIcloud(String containerIdentifier) {
-    cloudKit = CloudKit(containerIdentifier);
-  }
-
   static updateUser({String transactionId = ""}) async {
     var iosDeviceInfo = await DeviceInfoPlugin().iosInfo;
 

@@ -1032,8 +1032,16 @@ class OneTimeCreditsIcloud {
   }
 
   Future<void> addCredits(int creditToAdd) async {
-    credits += creditToAdd;
-    await _setCreditsToICloud(credits);
+    if (kDebugMode) {
+      credits += creditToAdd;
+      await _setCreditsToICloud(credits);
+    }
+  }
+
+  void removeKeyFromIcloud() async {
+    if (kDebugMode) {
+      iCloudStorage.delete(creditKey);
+    }
   }
 
   Future<int> _getCreditsFromICloud() async {
@@ -1108,8 +1116,17 @@ class DailyCreditsIcloud {
   }
 
   void addCredits(int creditToAdd) async {
-    credits += creditToAdd;
-    await _setCreditsToICloud(credits);
+    if (kDebugMode) {
+      credits += creditToAdd;
+      await _setCreditsToICloud(credits);
+    }
+  }
+
+  void removeKeyFromIcloud() async {
+    if (kDebugMode) {
+      String today = await _getServerDate();
+      iCloudStorage.delete("$creditKey$today");
+    }
   }
 
   Future<void> _setCreditsToICloud(int credits) async {

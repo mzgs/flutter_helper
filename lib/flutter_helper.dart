@@ -969,6 +969,7 @@ class OneTimeCreditsIcloud {
   }
 
   void _init(int initialCredits) async {
+    creditKey = "oneTimeCredits_$creditKey";
     bool isFirstTime = await _isFirstTime();
 
     if (isFirstTime) {
@@ -978,12 +979,12 @@ class OneTimeCreditsIcloud {
       credits = await _getCreditsFromICloud();
     }
 
-    PurchaseHelper.setAnalyticData("oneTimeCredits_$creditKey", credits);
+    PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
   Future<bool> _isFirstTime() async {
     try {
-      final value = await cloudKit.get("onetimecredit_$creditKey");
+      final value = await cloudKit.get(creditKey);
       return value == null;
     } catch (e) {
       print("Failed to check first-time status: '${e.toString()}'.");
@@ -993,8 +994,7 @@ class OneTimeCreditsIcloud {
 
   Future<void> _setInitialCredits(int initialCredits) async {
     try {
-      await cloudKit.save(
-          "onetimecredit_$creditKey", initialCredits.toString());
+      await cloudKit.save(creditKey, initialCredits.toString());
     } catch (e) {
       print("Failed to set initial credits: '${e.toString()}'.");
     }
@@ -1007,7 +1007,7 @@ class OneTimeCreditsIcloud {
     var has = credits > 0;
 
     if (!has) {
-      PurchaseHelper.showPaywall(analyticKey: "no_credits_$creditKey");
+      PurchaseHelper.showPaywall(analyticKey: creditKey);
     }
     return has;
   }
@@ -1015,7 +1015,7 @@ class OneTimeCreditsIcloud {
   void consumeCredit() async {
     credits--;
     await _setCreditsToICloud(credits);
-    PurchaseHelper.setAnalyticData("oneTimeCredits_$creditKey", credits);
+    PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
   void addCredits(int creditToAdd) async {
@@ -1025,7 +1025,7 @@ class OneTimeCreditsIcloud {
 
   Future<void> _setCreditsToICloud(int credits) async {
     try {
-      await cloudKit.save("onetimecredit_$creditKey", credits.toString());
+      await cloudKit.save(creditKey, credits.toString());
     } catch (e) {
       print("Failed to set credits to iCloud: '${e.toString()}'.");
     }
@@ -1033,7 +1033,7 @@ class OneTimeCreditsIcloud {
 
   Future<int> _getCreditsFromICloud() async {
     try {
-      final value = await cloudKit.get("onetimecredit_$creditKey");
+      final value = await cloudKit.get(creditKey);
       if (value != null) {
         return int.parse(value);
       } else {
@@ -1055,6 +1055,7 @@ class DailyCreditsIcloud {
   }
 
   void _init(int maxCredits) async {
+    creditKey = "dailyCredits_$creditKey";
     int today = await _getServerTimestamp();
     bool isNewDay = await _isNewDay(today);
 
@@ -1065,7 +1066,7 @@ class DailyCreditsIcloud {
       credits = await _getCreditsFromICloud();
     }
 
-    PurchaseHelper.setAnalyticData("dailyCredits_$creditKey", credits);
+    PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
   Future<bool> _isNewDay(int today) async {
@@ -1102,7 +1103,7 @@ class DailyCreditsIcloud {
   void consumeCredit() async {
     credits--;
     await _setCreditsToICloud(credits);
-    PurchaseHelper.setAnalyticData("dailyCredits_$creditKey", credits);
+    PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
   void addCredits(int creditToAdd) async {

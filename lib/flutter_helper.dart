@@ -41,7 +41,7 @@ class EventObject {
 }
 
 late GetStorage getStorage;
-CloudKit cloudKit = CloudKit("");
+late CloudKit cloudKit;
 
 EventBus eventBus = EventBus();
 
@@ -1053,7 +1053,7 @@ class DailyCreditsIcloud {
   }
 
   void _init(int maxCredits) async {
-    String today = await _getServerDate();
+    int today = await _getServerTimestamp();
     bool isNewDay = await _isNewDay(today);
 
     if (isNewDay) {
@@ -1064,7 +1064,7 @@ class DailyCreditsIcloud {
     }
   }
 
-  Future<bool> _isNewDay(String today) async {
+  Future<bool> _isNewDay(int today) async {
     try {
       final value = await cloudKit.get("$creditKey$today");
       return value == null;
@@ -1074,7 +1074,7 @@ class DailyCreditsIcloud {
     }
   }
 
-  Future<void> _setNewDayCredits(int maxCredits, String today) async {
+  Future<void> _setNewDayCredits(int maxCredits, int today) async {
     try {
       await cloudKit.save("$creditKey$today", 'true');
       await _setCreditsToICloud(maxCredits);
@@ -1128,20 +1128,20 @@ class DailyCreditsIcloud {
     }
   }
 
-  Future<String> _getServerDate() async {
+  Future<int> _getServerTimestamp() async {
     try {
       final response = await http
           .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final datetime = DateTime.parse(data['utc_datetime']);
-        return DateFormat('yyyy-MM-dd').format(datetime);
+        return datetime.millisecondsSinceEpoch;
       } else {
-        throw Exception('Failed to fetch server date');
+        throw Exception('Failed to fetch server timestamp');
       }
     } catch (e) {
-      print("Failed to fetch server date: '${e.toString()}'.");
-      return DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Failed to fetch server timestamp: '${e.toString()}'.");
+      return DateTime.now().millisecondsSinceEpoch;
     }
   }
 }

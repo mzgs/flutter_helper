@@ -1299,6 +1299,7 @@ class Paywall {
   Color selectedColor = const Color.fromARGB(255, 95, 171, 247);
   Color checkColor = Colors.green;
   Color closeColor = Colors.grey;
+  Color restoreColor = Colors.grey;
 
   Paywall(
     this.name,

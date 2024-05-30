@@ -134,7 +134,7 @@ class _Paywall1State extends State<Paywall1> {
                           child: Text(
                             "Restore",
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 202, 202, 202),
+                              color: PurchaseHelper.paywall.restoreColor,
                             ),
                           ),
                         ),

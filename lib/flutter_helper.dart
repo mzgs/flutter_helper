@@ -1031,9 +1031,9 @@ class OneTimeCreditsIcloud {
     }
   }
 
-  Future<void> addCredits(int creditToAdd) async {
+  Future<void> setCredits(int creditToSet) async {
     if (kDebugMode) {
-      credits += creditToAdd;
+      credits = creditToSet;
       await _setCreditsToICloud(credits);
     }
   }
@@ -1115,9 +1115,9 @@ class DailyCreditsIcloud {
     PurchaseHelper.setAnalyticData(creditKey, credits);
   }
 
-  void addCredits(int creditToAdd) async {
+  void setCredits(int creditToSet) async {
     if (kDebugMode) {
-      credits += creditToAdd;
+      credits = creditToSet;
       await _setCreditsToICloud(credits);
     }
   }

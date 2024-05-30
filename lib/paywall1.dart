@@ -18,7 +18,7 @@ class _Paywall1State extends State<Paywall1> {
       PurchaseHelper.paywall.selectedIndex; // Initially selected item index
   var _isLoading = false;
 
-  List<PurchaseItem> purchaseItems = [];
+  // List<PurchaseItem> purchaseItems = [];
 
   List<Widget> features = [];
 
@@ -27,7 +27,6 @@ class _Paywall1State extends State<Paywall1> {
     // TODO: implement initState
     super.initState();
 
-    setProducts();
     setFeatures();
   }
 
@@ -39,19 +38,6 @@ class _Paywall1State extends State<Paywall1> {
         }
       });
     });
-  }
-
-  void setProducts() {
-    var products = PurchaseHelper.products;
-
-    for (var p in products) {
-      purchaseItems.add(PurchaseItem(
-          duration: p.periodTitle.tr,
-          price: p.localizedPrice,
-          discount: p.periodUnit == "Year" ? "off".trArgs(["84"]) : ""));
-    }
-
-    setState(() {});
   }
 
   void itemPurchasedSuccess(
@@ -138,6 +124,21 @@ class _Paywall1State extends State<Paywall1> {
                           },
                         ),
                       ),
+                      Positioned(
+                        top: 40,
+                        right: 10,
+                        child: TextButton(
+                          onPressed: () {
+                            Helper.restorePurchase(closePage: context);
+                          },
+                          child: Text(
+                            "Restore",
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 202, 202, 202),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   Transform.translate(
@@ -150,7 +151,7 @@ class _Paywall1State extends State<Paywall1> {
                         ),
                         color: Colors.white,
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
                           SizedBox(height: 12),
@@ -159,10 +160,10 @@ class _Paywall1State extends State<Paywall1> {
                                 .toString()
                                 .tr,
                             style: TextStyle(
-                              fontSize: context.isTablet ? 32 : 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+                                fontSize: context.isTablet ? 38 : 28.0,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -1),
+                            textAlign: TextAlign.left,
                           ),
                           SizedBox(height: 10.0),
                           Center(
@@ -177,7 +178,7 @@ class _Paywall1State extends State<Paywall1> {
                           ListView.builder(
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(0),
-                            itemCount: purchaseItems.length,
+                            itemCount: PurchaseHelper.products.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
@@ -186,7 +187,7 @@ class _Paywall1State extends State<Paywall1> {
                                   });
                                 },
                                 child: PurchaseItemCard(
-                                  item: purchaseItems[index],
+                                  item: PurchaseHelper.products[index],
                                   isSelected: selectedIndex == index,
                                 ),
                               );
@@ -205,55 +206,65 @@ class _Paywall1State extends State<Paywall1> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Align(
-              alignment: Alignment.center,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    minimumSize: Size.fromHeight(context.heightPercent(6.5)),
-                    backgroundColor: PurchaseHelper.paywall.btnColor,
-                    foregroundColor: Colors.white),
-                icon: _isLoading
-                    ? Container(
-                        width: 24,
-                        height: 24,
-                        padding: const EdgeInsets.all(2.0),
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 3,
-                        ),
-                      )
-                    : SizedBox(),
-                label: Text(
-                    RemoteConfig.get("buttonText", "btn1").toString().tr,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: context.widthPercent(4))),
-                onPressed: _isLoading
-                    ? null
-                    : () {
-                        setState(() {
-                          _isLoading = true;
-                        });
+                alignment: Alignment.center,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            _isLoading = true;
+                          });
 
-                        //TODO: purchase
+                          var selectedProduct =
+                              PurchaseHelper.products[selectedIndex];
 
-                        var selectedProduct =
-                            PurchaseHelper.products[selectedIndex];
-
-                        Storekit2Helper.buyProduct(selectedProduct.productId,
-                            (success, transaction, errorMessage) {
-                          if (success) {
-                            itemPurchasedSuccess(selectedProduct, transaction);
-                          } else {
-                            if (mounted) {
-                              setState(() {
-                                _isLoading = false;
-                              });
+                          Storekit2Helper.buyProduct(selectedProduct.productId,
+                              (success, transaction, errorMessage) {
+                            if (success) {
+                              itemPurchasedSuccess(
+                                  selectedProduct, transaction);
+                            } else {
+                              if (mounted) {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
                             }
-                          }
-                        });
-                      },
-              ),
-            ),
+                          });
+                        },
+                  child: Container(
+                    width: double.infinity,
+                    height: context.heightPercent(6.5),
+                    decoration: BoxDecoration(
+                      color: PurchaseHelper.paywall.btnColor,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Center(
+                      child: _isLoading
+                          ? Container(
+                              width: 24,
+                              height: 24,
+                              padding: const EdgeInsets.all(2.0),
+                              child: const CupertinoActivityIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              (PurchaseHelper.products[selectedIndex].isTrial
+                                      ? RemoteConfig.get(
+                                          "buttonTextTrial", "btn2")
+                                      : RemoteConfig.get("buttonText", "btn1"))
+                                  .toString()
+                                  .tr,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: context.widthPercent(5)),
+                            ),
+                    ),
+                  ),
+                )),
           ),
           SizedBox(height: 10),
 
@@ -289,18 +300,6 @@ class _Paywall1State extends State<Paywall1> {
                       ),
                     ),
                   ),
-                  Text('|', style: TextStyle(color: Colors.grey)),
-                  TextButton(
-                    onPressed: () {
-                      Helper.restorePurchase(closePage: context);
-                    },
-                    child: Text(
-                      "Restore",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               Padding(
@@ -321,15 +320,23 @@ class _Paywall1State extends State<Paywall1> {
 
   Widget feature(String text) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           CupertinoIcons.check_mark_circled_solid,
           color: PurchaseHelper.paywall.checkColor,
+          size: context.isTablet ? 28.0 : 20.0,
         ),
-        SizedBox(width: 5.0),
-        Text(
-          text,
-          style: TextStyle(fontSize: context.isTablet ? 24 : 16.0),
+        SizedBox(width: 10.0),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: context.isTablet ? 24 : 16.0,
+              fontWeight: FontWeight.w500,
+              color: CupertinoColors.black,
+            ),
+          ),
         ),
       ],
     );
@@ -349,7 +356,7 @@ class PurchaseItem {
 }
 
 class PurchaseItemCard extends StatelessWidget {
-  final PurchaseItem item;
+  final ProductDetail item;
   final bool isSelected;
 
   PurchaseItemCard({
@@ -359,9 +366,8 @@ class PurchaseItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Card(
+    return Stack(children: [
+      Card(
           margin: EdgeInsets.symmetric(
               vertical: PurchaseHelper.paywall.items.length == 2 ? 10 : 5.0),
           shape: RoundedRectangleBorder(
@@ -374,54 +380,91 @@ class PurchaseItemCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      item.duration,
-                      style: TextStyle(
-                        fontSize: context.isTablet ? 26 : 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.isTrial ? "free3".tr : item.periodTitle.tr,
+                          style: TextStyle(
+                              fontSize: context.isTablet ? 28 : 20.0,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.5),
+                        ),
+                        Text(
+                          item.isTrial
+                              ? "${"then".tr} ${item.localizedPrice} / ${item.periodTitle.tr}"
+                              : item.localizedPrice,
+                          style: TextStyle(
+                            fontSize: context.isTablet
+                                ? item.isTrial
+                                    ? 24
+                                    : 28
+                                : item.isTrial
+                                    ? 14
+                                    : 16.0,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      item.price,
-                      style: TextStyle(
-                        fontSize: context.isTablet ? 28 : 16.0,
+                    if (item.periodTitle == "Yearly")
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 4.0),
+                        child: Text(
+                          "off".trArgs(["70"]),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.isTablet ? 18 : 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ],
             ),
-          ),
-        ),
-        item.discount.isEmpty
-            ? SizedBox()
-            : Positioned(
-                top: 0,
-                right: 10.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                  child: Text(
-                    item.discount,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.isTablet ? 18 : 12.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+          )),
+      Positioned(
+        right: 0,
+        top: 8,
+        child: item.isTrial
+            ? Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF10A37F),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-              ),
-      ],
-    );
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.checkmark_shield_fill,
+                      color: Colors.white,
+                      size: context.isTablet ? 26 : 18,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      "No payment now".tr,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.isTablet ? 18 : 13.0,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox(),
+      )
+    ]);
   }
 }

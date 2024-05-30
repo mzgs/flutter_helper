@@ -302,6 +302,17 @@ class _Paywall1State extends State<Paywall1> {
                   ),
                 ],
               ),
+              if (PurchaseHelper.paywall.showInfoLink)
+                TextButton(
+                    onPressed: () {
+                      Get.snackbar("Info", PurchaseHelper.paywall.infoText,
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.black,
+                          colorText: Colors.white,
+                          duration: const Duration(seconds: 10));
+                    },
+                    child:
+                        Text("Limits", style: TextStyle(color: Colors.grey))),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Text(

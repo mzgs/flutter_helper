@@ -2,6 +2,7 @@ library flutter_helper;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:event_bus/event_bus.dart';
@@ -1294,6 +1295,8 @@ class Paywall {
   List<String> features;
   List<String> items;
   int selectedIndex = 0;
+  bool showInfoLink = false;
+  String infoText = "";
   String image;
   Color btnColor = Colors.blue;
   Color selectedColor = const Color.fromARGB(255, 95, 171, 247);

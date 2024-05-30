@@ -1352,6 +1352,7 @@ class PurchaseHelper {
       return;
     }
     products = await Storekit2Helper.fetchProducts(productsIds);
+
     setAsaData();
   }
 

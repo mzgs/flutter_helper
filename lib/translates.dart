@@ -36,6 +36,7 @@ class TranslateHelper {
         "pr2": "Full Access",
         "pr3": "Try Premium",
         "pr4": "Try Premium Free",
+        "pr5": "Unlock Unlimited Access",
         "btn1": "CONTINUE",
         "btn2": "START FREE TRIAL",
         "btn3": "START 3 DAYS FREE TRIAL",

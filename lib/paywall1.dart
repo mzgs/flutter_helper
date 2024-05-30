@@ -155,7 +155,7 @@ class _Paywall1State extends State<Paywall1> {
                         children: [
                           SizedBox(height: 12),
                           Text(
-                            RemoteConfig.get("premiumTitle", "pr1")
+                            RemoteConfig.get("premiumTitle", "pr5")
                                 .toString()
                                 .tr,
                             style: TextStyle(
@@ -256,59 +256,59 @@ class _Paywall1State extends State<Paywall1> {
             ),
           ),
           SizedBox(height: 10),
-          Text(
-            (RemoteConfig.get("show3dayFree", false)
-                    ? "3 DAYS FREE".tr + " - "
-                    : "") +
-                "Cancel Anytime".tr,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF555555)),
-          ),
-          SizedBox(height: 6), // Add some spacing
 
           // Three Text Buttons
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
-                onPressed: () {
-                  Helper.openUrlInWebview(SettingsHelper.termsUrl,
-                      title: 'Terms'.tr);
-                },
-                child: Text(
-                  "Terms",
-                  style: TextStyle(
-                    color: Colors.grey,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Helper.openUrlInWebview(SettingsHelper.termsUrl,
+                          title: 'Terms'.tr);
+                    },
+                    child: Text(
+                      "Terms",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
                   ),
-                ),
+                  Text('|', style: TextStyle(color: Colors.grey)),
+                  TextButton(
+                    onPressed: () {
+                      Helper.openUrlInWebview(SettingsHelper.privacyUrl,
+                          title: 'Privacy'.tr);
+                    },
+                    child: Text(
+                      "Privacy",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  Text('|', style: TextStyle(color: Colors.grey)),
+                  TextButton(
+                    onPressed: () {
+                      Helper.restorePurchase(closePage: context);
+                    },
+                    child: Text(
+                      "Restore",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                  width:
-                      context.widthPercent(5)), // Add spacing between buttons
-              TextButton(
-                onPressed: () {
-                  Helper.openUrlInWebview(SettingsHelper.privacyUrl,
-                      title: 'Privacy'.tr);
-                },
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
                 child: Text(
-                  "Privacy",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-              SizedBox(
-                  width:
-                      context.widthPercent(5)), // Add spacing between buttons
-              TextButton(
-                onPressed: () {
-                  Helper.restorePurchase(closePage: context);
-                },
-                child: Text(
-                  "Restore",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                  "Cancel Anytime",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
                 ),
               ),
             ],
@@ -323,7 +323,7 @@ class _Paywall1State extends State<Paywall1> {
     return Row(
       children: [
         Icon(
-          Icons.check_circle_rounded,
+          CupertinoIcons.check_mark_circled_solid,
           color: PurchaseHelper.paywall.checkColor,
         ),
         SizedBox(width: 5.0),

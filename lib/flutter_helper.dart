@@ -1516,6 +1516,8 @@ class ActionCounter {
       keyList.add(key);
       Pref.set('keyList', jsonEncode(keyList));
     }
+
+    logEvent(key);
   }
 
   static keys() {

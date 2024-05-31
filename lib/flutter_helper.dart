@@ -1482,8 +1482,8 @@ class RemoteConfig {
 
 class ActionCounter {
   static void initAnalyticData() {
-    var keys = (jsonDecode(Pref.get('keyList', "[]")) as List<dynamic>);
-    for (var key in keys) {
+    var keyList = keys();
+    for (var key in keyList) {
       PurchaseHelper.setAnalyticData(key, get(key));
     }
   }
@@ -1493,11 +1493,15 @@ class ActionCounter {
     Pref.set(key, ++oldValue);
     PurchaseHelper.setAnalyticData(key, get(key));
 
-    var keyList = (jsonDecode(Pref.get('keyList', "[]")) as List<dynamic>);
+    var keyList = keys();
     if (!keyList.contains(key)) {
       keyList.add(key);
       Pref.set('keyList', jsonEncode(keyList));
     }
+  }
+
+  static keys() {
+    return (jsonDecode(Pref.get('keyList', "[]")) as List<dynamic>);
   }
 
   static int get(String key) {

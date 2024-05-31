@@ -68,6 +68,9 @@ class Helper {
     PurchaseHelper.setAnalyticData("version", appVersion);
     PurchaseHelper.setAnalyticData("deviceId", deviceId);
 
+    var oldDuration = await iCloudStorage.getString("usageMinutes") ?? "0";
+    PurchaseHelper.setAnalyticData("usageMinutes", oldDuration);
+
     var data = {
       "device_id": deviceId,
       "first_seen": Pref.get("installation_time", 0) / 1000,
@@ -95,13 +98,14 @@ class Helper {
     final currentTime = DateTime.now();
     final usageDuration = currentTime.difference(_startTime);
 
-    var oldDuration = await iCloudStorage.getString("usageHours") ?? "0.0";
+    var oldDuration = await iCloudStorage.getString("usageMinutes") ?? "0";
 
     var newDuration = double.parse(oldDuration) +
-        double.parse((usageDuration.inSeconds / 3600).toStringAsFixed(3));
+        double.parse((usageDuration.inSeconds / 60).toStringAsFixed(2));
 
-    iCloudStorage.writeString(key: "usageHours", value: newDuration.toString());
-    PurchaseHelper.setAnalyticData("usageHours", newDuration);
+    iCloudStorage.writeString(
+        key: "usageMinutes", value: newDuration.toString());
+    PurchaseHelper.setAnalyticData("usageMinutes", newDuration);
 
     Helper.updateUser();
   }

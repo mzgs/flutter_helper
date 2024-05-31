@@ -230,8 +230,12 @@ class _Paywall1State extends State<Paywall1> {
                                   _isLoading = false;
                                 });
                               }
+
+                              logEvent("paywall_continue_cancelled");
                             }
                           });
+
+                          logEvent("paywall_continue_btn_clicked");
                         },
                   child: Container(
                     width: double.infinity,

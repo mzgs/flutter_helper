@@ -27,6 +27,8 @@ import 'package:storekit2helper/storekit2helper.dart';
 import 'paywall1.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:icloud_kv_storage/icloud_kv_storage.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // mzgs_flutter_helper:
 //       path: /Users/mustafa/Developer/Flutter/flutter_helper
@@ -34,6 +36,7 @@ import 'package:icloud_kv_storage/icloud_kv_storage.dart';
 bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
 final InAppReview inAppReview = InAppReview.instance;
+late FirebaseAnalytics analytics;
 
 class EventObject {
   String message;
@@ -48,6 +51,10 @@ var iCloudStorage = CKKVStorage();
 EventBus eventBus = EventBus();
 
 DateTime _startTime = DateTime.now();
+
+void logEvent(String name, {Map<String, Object?>? parameters}) {
+  analytics.logEvent(name: name, parameters: parameters);
+}
 
 class Helper {
   static Future init() async {
@@ -92,6 +99,11 @@ class Helper {
     }
 
     HttpHelper.postRequest("https://apps.mzgs.net/inappuser/update-user", data);
+  }
+
+  static Future initFirebase() async {
+    await Firebase.initializeApp();
+    analytics = FirebaseAnalytics.instance;
   }
 
   static void onPause() async {
@@ -1407,6 +1419,8 @@ class PurchaseHelper {
     }
 
     PurchaseHelper.setAnalyticData("paywall_location", analyticKey);
+
+    logEvent("paywall_showed_$analyticKey");
 
     Get.to(() => Paywall1());
   }

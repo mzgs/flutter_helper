@@ -61,7 +61,6 @@ class Helper {
     getStorage = GetStorage();
 
     saveInstallationTime();
-    ActionCounter.increase("session");
   }
 
   static updateUser({String transactionId = ""}) async {
@@ -103,6 +102,8 @@ class Helper {
   static Future initFirebase() async {
     await Firebase.initializeApp();
     analytics = FirebaseAnalytics.instance;
+
+    ActionCounter.increase("session");
   }
 
   static void onPause() async {

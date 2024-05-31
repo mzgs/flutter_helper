@@ -121,6 +121,7 @@ class _Paywall1State extends State<Paywall1> {
                           ),
                           onPressed: () {
                             context.closeActivity();
+                            logEvent("paywall_close_clicked");
                           },
                         ),
                       ),

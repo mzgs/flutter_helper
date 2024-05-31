@@ -265,6 +265,7 @@ class Helper {
     if (showWithCounts.isEmpty) {
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();
+        logEvent("inapp_review_showed");
       }
       return;
     }
@@ -842,6 +843,7 @@ class UI {
         ? GestureDetector(
             onTap: () {
               PurchaseHelper.showPaywall(analyticKey: "PRO");
+              logEvent("pro_button_clicked");
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -929,6 +931,7 @@ class SettingsHelper {
       "Share with Friends".tr,
       onTap: () {
         Helper.shareApp(appID, context);
+        logEvent("settings_share");
       },
     );
   }
@@ -938,8 +941,9 @@ class SettingsHelper {
       Icons.star,
       Colors.green,
       "Rate Us".tr,
-      onTap: () => {
-        Helper.rateApp(appID)
+      onTap: () {
+        Helper.rateApp(appID);
+        logEvent("settings_rate_us");
         // Helper.inAppRate()
       },
     );

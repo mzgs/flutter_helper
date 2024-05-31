@@ -131,6 +131,45 @@ class Helper {
     return Color(int.parse(hexColor, radix: 16));
   }
 
+  Future<String> getServerTimestamp() async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final datetime = DateTime.parse(data['utc_datetime']);
+        return DateFormat('yyyyMMdd').format(datetime);
+      } else {
+        throw Exception('Failed to fetch server date');
+      }
+    } catch (e) {
+      print("Failed to fetch server date: '${e.toString()}'.");
+      return DateFormat('yyyyMMdd').format(DateTime.now());
+    }
+  }
+
+  static Future<int> getUnixTimeServer() async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['unixtime'];
+      } else {
+        return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      }
+    } catch (e) {
+      return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    }
+  }
+
+  static String convertUnixTimeToYYYYMMDD(int unixTime) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(unixTime * 1000);
+    final dateFormat = DateFormat('yyyyMMdd');
+    return dateFormat.format(dateTime);
+  }
+
   static Future<String> getPackageName() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.packageName;
@@ -1066,7 +1105,8 @@ class DailyCreditsIcloud {
 
   void _init(int maxCredits) async {
     creditKey = "dailyCredits_$creditKey";
-    String today = await _getServerDate();
+    String today =
+        Helper.convertUnixTimeToYYYYMMDD(await Helper.getUnixTimeServer());
     bool isNewDay = await _isNewDay(today);
 
     if (isNewDay) {
@@ -1125,7 +1165,8 @@ class DailyCreditsIcloud {
 
   void removeKeyFromIcloud() async {
     if (kDebugMode) {
-      String today = await _getServerDate();
+      String today =
+          Helper.convertUnixTimeToYYYYMMDD(await Helper.getUnixTimeServer());
       iCloudStorage.delete("$creditKey$today");
     }
   }
@@ -1150,23 +1191,6 @@ class DailyCreditsIcloud {
     } catch (e) {
       print("Failed to get credits from iCloud: '${e.toString()}'.");
       return 0;
-    }
-  }
-
-  Future<String> _getServerDate() async {
-    try {
-      final response = await http
-          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final datetime = DateTime.parse(data['utc_datetime']);
-        return DateFormat('yyyyMMdd').format(datetime);
-      } else {
-        throw Exception('Failed to fetch server date');
-      }
-    } catch (e) {
-      print("Failed to fetch server date: '${e.toString()}'.");
-      return DateFormat('yyyyMMdd').format(DateTime.now());
     }
   }
 }

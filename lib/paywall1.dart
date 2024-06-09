@@ -18,6 +18,10 @@ class _Paywall1State extends State<Paywall1> {
       PurchaseHelper.paywall.selectedIndex; // Initially selected item index
   var _isLoading = false;
 
+  Color bgColor = PurchaseHelper.paywall.bgColor;
+
+  Color textColor = PurchaseHelper.paywall.textColor;
+
   // List<PurchaseItem> purchaseItems = [];
 
   List<Widget> features = [];
@@ -92,6 +96,7 @@ class _Paywall1State extends State<Paywall1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -102,7 +107,7 @@ class _Paywall1State extends State<Paywall1> {
                   Stack(
                     children: [
                       Container(
-                        height: context.heightPercent(40),
+                        height: context.heightPercent(32),
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
@@ -125,21 +130,6 @@ class _Paywall1State extends State<Paywall1> {
                           },
                         ),
                       ),
-                      Positioned(
-                        top: 40,
-                        right: 10,
-                        child: TextButton(
-                          onPressed: () {
-                            Helper.restorePurchase(closePage: context);
-                          },
-                          child: Text(
-                            "Restore",
-                            style: TextStyle(
-                              color: PurchaseHelper.paywall.restoreColor,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   Transform.translate(
@@ -150,21 +140,28 @@ class _Paywall1State extends State<Paywall1> {
                           topLeft: Radius.circular(20.0),
                           topRight: Radius.circular(20.0),
                         ),
-                        color: Colors.white,
+                        color: bgColor,
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
                           SizedBox(height: 12),
                           Text(
-                            RemoteConfig.get("premiumTitle", "pr5")
-                                .toString()
-                                .tr,
+                            PurchaseHelper.products[selectedIndex].isTrial
+                                ? RemoteConfig.get(
+                                        "premiumTitleforTrial", "pr4")
+                                    .toString()
+                                    .tr
+                                : RemoteConfig.get("premiumTitle", "pr5")
+                                    .toString()
+                                    .tr,
                             style: TextStyle(
-                                fontSize: context.isTablet ? 38 : 28.0,
+                                color: textColor,
+                                fontSize: context.isTablet ? 42 : 32.0,
                                 fontWeight: FontWeight.bold,
+                                height: 1.1,
                                 letterSpacing: -1),
-                            textAlign: TextAlign.left,
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 10.0),
                           Center(
@@ -255,17 +252,21 @@ class _Paywall1State extends State<Paywall1> {
                                 color: Colors.white,
                               ),
                             )
-                          : Text(
-                              (PurchaseHelper.products[selectedIndex].isTrial
-                                      ? RemoteConfig.get(
-                                          "buttonTextTrial", "btn2")
-                                      : RemoteConfig.get("buttonText", "btn1"))
-                                  .toString()
-                                  .tr,
-                              style: TextStyle(
+                          : FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Text(
+                                (PurchaseHelper.products[selectedIndex].isTrial
+                                        ? RemoteConfig.get(
+                                            "buttonTextTrial", "btn4")
+                                        : RemoteConfig.get(
+                                            "buttonText", "btn1"))
+                                    .toString()
+                                    .tr,
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: context.widthPercent(5)),
+                                ),
+                              ),
                             ),
                     ),
                   ),
@@ -307,23 +308,18 @@ class _Paywall1State extends State<Paywall1> {
                   ),
                 ],
               ),
-              if (PurchaseHelper.paywall.showInfoLink)
-                TextButton(
-                    onPressed: () {
-                      Get.snackbar("Info", PurchaseHelper.paywall.infoText,
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.black,
-                          colorText: Colors.white,
-                          duration: const Duration(seconds: 10));
-                    },
-                    child:
-                        Text("Limits", style: TextStyle(color: Colors.grey))),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
-                child: Text(
-                  "Cancel Anytime",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
+                child: TextButton(
+                  onPressed: () {
+                    Helper.restorePurchase(closePage: context);
+                  },
+                  child: Text(
+                    "Restore",
+                    style: TextStyle(
+                      color: PurchaseHelper.paywall.restoreColor,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -341,16 +337,16 @@ class _Paywall1State extends State<Paywall1> {
         Icon(
           CupertinoIcons.check_mark_circled_solid,
           color: PurchaseHelper.paywall.checkColor,
-          size: context.isTablet ? 28.0 : 20.0,
+          size: context.isTablet ? 32.0 : 24.0,
         ),
         SizedBox(width: 10.0),
         Expanded(
           child: Text(
             text,
             style: TextStyle(
-              fontSize: context.isTablet ? 24 : 16.0,
+              fontSize: context.isTablet ? 28 : 20.0,
               fontWeight: FontWeight.w500,
-              color: CupertinoColors.black,
+              color: textColor,
             ),
           ),
         ),
@@ -382,8 +378,12 @@ class PurchaseItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool showdaysFree =
+        item.isTrial && RemoteConfig.get("show3DaysFreeInTrial", false);
+
     return Stack(children: [
       Card(
+          color: PurchaseHelper.paywall.bgColor,
           margin: EdgeInsets.symmetric(
               vertical: PurchaseHelper.paywall.items.length == 2 ? 10 : 5.0),
           shape: RoundedRectangleBorder(
@@ -407,22 +407,24 @@ class PurchaseItemCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.isTrial ? "free3".tr : item.periodTitle.tr,
+                          showdaysFree ? "free3".tr : item.periodTitle.tr,
                           style: TextStyle(
+                              color: PurchaseHelper.paywall.textColor,
                               fontSize: context.isTablet ? 28 : 20.0,
                               fontWeight: FontWeight.w500,
                               letterSpacing: -0.5),
                         ),
                         Text(
-                          item.isTrial
+                          showdaysFree
                               ? "${"then".tr} ${item.localizedPrice} / ${item.periodTitle.tr}"
                               : item.localizedPrice,
                           style: TextStyle(
+                            color: PurchaseHelper.paywall.textColor,
                             fontSize: context.isTablet
-                                ? item.isTrial
+                                ? showdaysFree
                                     ? 24
                                     : 28
-                                : item.isTrial
+                                : showdaysFree
                                     ? 14
                                     : 16.0,
                           ),
@@ -445,42 +447,71 @@ class PurchaseItemCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                      )
+                    else if (item.isTrial)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF10A37F),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 4.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.checkmark_shield_fill,
+                              color: Colors.white,
+                              size: context.isTablet ? 26 : 18,
+                            ),
+                            SizedBox(width: 2),
+                            Text(
+                              "free3".tr,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: context.isTablet ? 18 : 12.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                   ],
                 ),
               ],
             ),
           )),
-      Positioned(
-        right: 0,
-        top: 8,
-        child: item.isTrial
-            ? Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF10A37F),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      CupertinoIcons.checkmark_shield_fill,
-                      color: Colors.white,
-                      size: context.isTablet ? 26 : 18,
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      "No payment now".tr,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: context.isTablet ? 18 : 13.0,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              )
-            : SizedBox(),
-      )
+      if (RemoteConfig.get("showNoPaymentNow", false))
+        Positioned(
+          right: 0,
+          top: 8,
+          child: item.isTrial
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF10A37F),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        CupertinoIcons.checkmark_shield_fill,
+                        color: Colors.white,
+                        size: context.isTablet ? 26 : 18,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        "No payment now".tr,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.isTablet ? 18 : 13.0,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(),
+        )
     ]);
   }
 }

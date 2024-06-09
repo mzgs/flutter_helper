@@ -1338,15 +1338,18 @@ class Paywall {
   String title;
   List<String> features;
   List<String> items;
-  int selectedIndex = 0;
-  bool showInfoLink = false;
-  String infoText = "";
+  int selectedIndex;
+  bool showInfoLink;
+  String infoText;
   String image;
-  Color btnColor = Colors.blue;
-  Color selectedColor = const Color.fromARGB(255, 95, 171, 247);
-  Color checkColor = Colors.green;
-  Color closeColor = Colors.grey;
-  Color restoreColor = Colors.grey;
+  Color btnColor;
+  Color selectedColor;
+  Color checkColor;
+  Color closeColor;
+  Color restoreColor;
+  bool darkMode;
+  late Color bgColor;
+  late Color textColor;
 
   Paywall(
     this.name,
@@ -1354,12 +1357,19 @@ class Paywall {
     this.title,
     this.features,
     this.items, {
-    Color btnColor = Colors.blue,
-    Color selectedColor = const Color(0xFF81A1C1),
-    Color checkColor = Colors.green,
-    Color closeColor = Colors.grey,
-    int selectedIndex = 0,
-  });
+    this.btnColor = Colors.blue,
+    this.selectedColor = const Color.fromARGB(255, 95, 171, 247),
+    this.checkColor = Colors.green,
+    this.closeColor = Colors.grey,
+    this.restoreColor = Colors.grey,
+    this.selectedIndex = 0,
+    this.showInfoLink = false,
+    this.infoText = "",
+    this.darkMode = false,
+  }) {
+    bgColor = darkMode ? CupertinoColors.black : CupertinoColors.white;
+    textColor = darkMode ? CupertinoColors.white : CupertinoColors.black;
+  }
 }
 
 class PurchaseHelper {
@@ -1426,7 +1436,7 @@ class PurchaseHelper {
 
     logEvent("paywall_showed_$analyticKey");
 
-    Get.to(() => Paywall1());
+    Get.to(() => Paywall1(), transition: Transition.downToUp);
   }
 
   static void setAnalyticData(String key, value) {

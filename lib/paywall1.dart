@@ -257,7 +257,9 @@ class _Paywall1State extends State<Paywall1> {
                               child: Text(
                                 (PurchaseHelper.products[selectedIndex].isTrial
                                     ? RemoteConfig.get(
-                                        "buttonTextTrial", "btn4")
+                                            "buttonTextTrial", "btn4")
+                                        .toString()
+                                        .tr
                                     : "btn1".tr),
                                 style: TextStyle(
                                   color: Colors.white,

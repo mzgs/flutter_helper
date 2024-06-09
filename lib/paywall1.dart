@@ -256,12 +256,9 @@ class _Paywall1State extends State<Paywall1> {
                               fit: BoxFit.fitWidth,
                               child: Text(
                                 (PurchaseHelper.products[selectedIndex].isTrial
-                                        ? RemoteConfig.get(
-                                            "buttonTextTrial", "btn4")
-                                        : RemoteConfig.get(
-                                            "buttonText", "btn1"))
-                                    .toString()
-                                    .tr,
+                                    ? RemoteConfig.get(
+                                        "buttonTextTrial", "btn4")
+                                    : "btn1".tr),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,

@@ -380,6 +380,22 @@ class PurchaseItemCard extends StatelessWidget {
     bool showdaysFree =
         item.isTrial && RemoteConfig.get("show3DaysFreeInTrial", false);
 
+    String topRightLabelText = "";
+    Color topRightLabelColor = Color(0xFF10A37F);
+    IconData? topRightLabelIcon;
+
+    if (RemoteConfig.get("showNoPaymentNow", true) && item.isTrial) {
+      topRightLabelText = "No payment now".tr;
+      topRightLabelIcon = CupertinoIcons.checkmark_shield_fill;
+    } else if (RemoteConfig.get("show3DaysFreeLabelTopRight", true) &&
+        item.isTrial) {
+      topRightLabelText = "free3".tr;
+      topRightLabelIcon = CupertinoIcons.checkmark_shield_fill;
+    } else if (item.periodTitle == "Yearly") {
+      topRightLabelText = "off".trArgs(["70"]);
+      topRightLabelColor = CupertinoColors.systemRed;
+    }
+
     return Stack(children: [
       Card(
           color: PurchaseHelper.paywall.bgColor,
@@ -430,86 +446,43 @@ class PurchaseItemCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (item.periodTitle == "Yearly")
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 4.0),
-                        child: Text(
-                          "off".trArgs(["70"]),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.isTablet ? 18 : 12.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    else if (item.isTrial)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF10A37F),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 4.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              CupertinoIcons.checkmark_shield_fill,
-                              color: Colors.white,
-                              size: context.isTablet ? 26 : 18,
-                            ),
-                            SizedBox(width: 2),
-                            Text(
-                              "free3".tr,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: context.isTablet ? 18 : 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
                   ],
                 ),
               ],
             ),
           )),
-      if (RemoteConfig.get("showNoPaymentNow", false))
+      if (topRightLabelText.isNotEmpty)
         Positioned(
           right: 0,
-          top: 8,
-          child: item.isTrial
-              ? Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFF10A37F),
-                    borderRadius: BorderRadius.circular(20.0),
+          top: 11,
+          child: Container(
+            decoration: BoxDecoration(
+              color: topRightLabelColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+            child: Row(
+              children: [
+                if (topRightLabelIcon != null)
+                  Icon(
+                    topRightLabelIcon,
+                    color: Colors.white,
+                    size: context.isTablet ? 26 : 18,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        CupertinoIcons.checkmark_shield_fill,
-                        color: Colors.white,
-                        size: context.isTablet ? 26 : 18,
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        "No payment now".tr,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.isTablet ? 18 : 13.0,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                )
-              : SizedBox(),
+                SizedBox(width: 4),
+                Text(
+                  topRightLabelText,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.isTablet ? 18 : 13.0,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
         )
     ]);
   }

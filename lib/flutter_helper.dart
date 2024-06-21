@@ -35,7 +35,7 @@ import 'package:firebase_core/firebase_core.dart';
 bool isApple = Platform.isIOS || Platform.isMacOS;
 bool isAndroid = Platform.isAndroid;
 final InAppReview inAppReview = InAppReview.instance;
-late FirebaseAnalytics analytics;
+FirebaseAnalytics? analytics;
 
 class EventObject {
   String message;
@@ -52,7 +52,10 @@ EventBus eventBus = EventBus();
 DateTime _startTime = DateTime.now();
 
 void logEvent(String name, {Map<String, Object?>? parameters}) {
-  analytics.logEvent(name: name, parameters: parameters);
+  if (analytics == null) {
+    return;
+  }
+  analytics!.logEvent(name: name, parameters: parameters);
 }
 
 class Helper {

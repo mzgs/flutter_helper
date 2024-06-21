@@ -13,6 +13,7 @@ class TranslateHelper {
         "Remaining": "Remaining",
         "Daily Limit": "Daily Limit",
         "Share with Friends": "Share with Friends",
+        "Best Value": "Best Value",
         "Rate Us": "Rate Us",
         "Submit": "Submit",
         "Loading": "Loading...",

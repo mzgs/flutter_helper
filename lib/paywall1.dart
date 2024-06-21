@@ -422,27 +422,22 @@ class PurchaseItemCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          showdaysFree ? "free3".tr : item.periodTitle.tr,
+                          item.isTrial
+                              ? "free3".tr
+                              : item.periodTitle == "Yearly"
+                                  ? "Best Value".tr
+                                  : "",
                           style: TextStyle(
                               color: PurchaseHelper.paywall.textColor,
-                              fontSize: context.isTablet ? 28 : 20.0,
-                              fontWeight: FontWeight.w500,
+                              fontSize: context.isTablet ? 24 : 15.0,
                               letterSpacing: -0.5),
                         ),
                         Text(
-                          showdaysFree
-                              ? "${"then".tr} ${item.localizedPrice} / ${item.periodTitle.tr}"
-                              : item.localizedPrice,
+                          "${item.localizedPrice} / ${item.periodTitle.tr}",
                           style: TextStyle(
-                            color: PurchaseHelper.paywall.textColor,
-                            fontSize: context.isTablet
-                                ? showdaysFree
-                                    ? 24
-                                    : 28
-                                : showdaysFree
-                                    ? 14
-                                    : 16.0,
-                          ),
+                              color: PurchaseHelper.paywall.textColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: context.isTablet ? 28 : 20),
                         ),
                       ],
                     ),

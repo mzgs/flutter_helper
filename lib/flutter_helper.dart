@@ -127,6 +127,7 @@ class Helper {
 
   static void onResume() {
     _startTime = DateTime.now();
+    Helper.updateUser();
   }
 
   static Future<String> getDeviceName() async {
@@ -1095,10 +1096,8 @@ class OneTimeCreditsIcloud {
   }
 
   Future<void> setCredits(int creditToSet) async {
-    if (kDebugMode) {
-      credits = creditToSet;
-      await _setCreditsToICloud(credits);
-    }
+    credits = creditToSet;
+    await _setCreditsToICloud(credits);
   }
 
   void removeKeyFromIcloud() async {
@@ -1180,10 +1179,8 @@ class DailyCreditsIcloud {
   }
 
   void setCredits(int creditToSet) async {
-    if (kDebugMode) {
-      credits = creditToSet;
-      await _setCreditsToICloud(credits);
-    }
+    credits = creditToSet;
+    await _setCreditsToICloud(credits);
   }
 
   void removeKeyFromIcloud() async {
@@ -1251,10 +1248,8 @@ class DailyCredits {
   }
 
   static void addCredits(int creditToAdd) {
-    if (kDebugMode) {
-      credits = creditToAdd;
-      Pref.set("credit", credits);
-    }
+    credits = creditToAdd;
+    Pref.set("credit", credits);
   }
 }
 

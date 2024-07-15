@@ -51,11 +51,10 @@ EventBus eventBus = EventBus();
 
 DateTime _startTime = DateTime.now();
 
-void logEvent(String name, {Map<String, Object?>? parameters}) {
-  if (analytics == null) {
-    return;
+void logEvent(String name, {Map<String, Object>? parameters}) {
+  if (analytics != null) {
+    analytics!.logEvent(name: name, parameters: parameters);
   }
-  analytics!.logEvent(name: name, parameters: parameters);
 }
 
 class Helper {

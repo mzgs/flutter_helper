@@ -150,36 +150,22 @@ class Helper {
     return Color(int.parse(hexColor, radix: 16));
   }
 
-  Future<String> getServerTimestamp() async {
-    try {
-      final response = await http
-          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final datetime = DateTime.parse(data['utc_datetime']);
-        return DateFormat('yyyyMMdd').format(datetime);
-      } else {
-        throw Exception('Failed to fetch server date');
-      }
-    } catch (e) {
-      print("Failed to fetch server date: '${e.toString()}'.");
-      return DateFormat('yyyyMMdd').format(DateTime.now());
-    }
-  }
-
   static Future<int> getUnixTimeServer() async {
+    return DateTime.now().millisecondsSinceEpoch ~/ 1000;
     try {
       final response = await http
-          .get(Uri.parse('https://worldtimeapi.org/api/timezone/Etc/UTC'));
+          .get(Uri.parse(
+              RemoteConfig.get("time_url", "https://api.mzgs.net/time.php")))
+          .timeout(Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['unixtime'];
+        return int.parse(response.body);
       } else {
         return DateTime.now().millisecondsSinceEpoch ~/ 1000;
       }
     } catch (e) {
       return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      ;
     }
   }
 
@@ -1606,5 +1592,62 @@ extension BuildContextExt on BuildContext {
     } else {
       SystemNavigator.pop();
     }
+  }
+}
+
+class RatingSupportScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(
+        Duration(seconds: RemoteConfig.get("waitForOnboardingRate", 0)), () {
+      Helper.showInAppRate();
+    });
+
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+                child: Image.asset(
+              "assets/rating.png",
+              width: 256,
+            )),
+            SizedBox(height: 30),
+            Center(
+              child: Text(
+                "Support Us!".tr,
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'partof'.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+            SizedBox(height: 40),
+            if (RemoteConfig.get("ratingSupportShow5Star", true))
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(5, (index) {
+                  return Expanded(
+                    child: Icon(
+                      Icons.star_rate_rounded,
+                      color: Colors.amber,
+                      size: 64,
+                    ),
+                  );
+                }),
+              ),
+            SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
   }
 }

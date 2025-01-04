@@ -5,6 +5,8 @@ class TranslateHelper {
   static Map<String, Map<String, String>> getHelperTranslations() {
     return {
       "en": {
+        "Support Us!": "Support Us!",
+        "partof": "Be part of our growth story by giving us a rating.",
         "Weekly": "Weekly",
         "Yearly": "Yearly",
         "Settings": "Settings",
@@ -64,6 +66,8 @@ class TranslateHelper {
         "premiumuse": "You are using the premium version of this app."
       },
       "tr": {
+        "Support Us!": "Bizi Destekleyin!",
+        "partof": "Bize bir puan vererek büyüme hikayemizin bir parçası olun.",
         "Weekly": "Haftalık",
         "Yearly": "Yıllık",
         "Settings": "Ayarlar",
@@ -122,6 +126,9 @@ class TranslateHelper {
         "premiumuse": "Bu uygulamanın premium sürümünü kullanıyorsunuz."
       },
       "fr": {
+        "Support Us!": "Soutenez-nous!",
+        "partof":
+            "Faites partie de notre histoire de croissance en nous donnant une note.",
         "Weekly": "Hebdomadaire",
         "Yearly": "Annuel",
         "Settings": "Paramètres",
@@ -181,6 +188,9 @@ class TranslateHelper {
         "premiumuse": "Vous utilisez la version premium de cette application."
       },
       "es": {
+        "Support Us!": "¡Apóyanos!",
+        "partof":
+            "Sé parte de nuestra historia de crecimiento dándonos una calificación.",
         "Weekly": "Semanal",
         "Yearly": "Anual",
         "Settings": "Configuración",
@@ -239,6 +249,9 @@ class TranslateHelper {
         "premiumuse": "Estás usando la versión premium de esta aplicación."
       },
       "de": {
+        "Support Us!": "Unterstützen Sie uns!",
+        "partof":
+            "Werden Sie Teil unserer Erfolgsgeschichte, indem Sie uns eine Bewertung geben.",
         "Weekly": "Wöchentlich",
         "Yearly": "Jährlich",
         "Settings": "Einstellungen",
@@ -297,6 +310,9 @@ class TranslateHelper {
         "premiumuse": "Du verwendest die Premium-Version dieser App."
       },
       "it": {
+        "Support Us!": "Sosteneteci!",
+        "partof":
+            "Fai parte della nostra storia di crescita dandoci una valutazione.",
         "Weekly": "Settimanale",
         "Yearly": "Annuale",
         "Settings": "Impostazioni",
@@ -355,6 +371,8 @@ class TranslateHelper {
         "premiumuse": "Stai usando la versione premium di questa app."
       },
       "ja": {
+        "Support Us!": "サポートしてください！",
+        "partof": "私たちに評価を与えることで、成長ストーリーの一部になりましょう。",
         "Weekly": "毎週",
         "Yearly": "毎年",
         "FREE": "無料",
@@ -413,6 +431,8 @@ class TranslateHelper {
         "premiumuse": "現在プレミアムバージョンのアプリを使用しています。"
       },
       "ar": {
+        "Support Us!": "ادعمنا!",
+        "partof": "كن جزءًا من قصة نمونا من خلال إعطائنا تقييمًا.",
         "Weekly": "أسبوعي",
         "Yearly": "سنوي",
         "Settings": "الإعدادات",
@@ -471,6 +491,8 @@ class TranslateHelper {
         "premiumuse": "أنت تستخدم الإصدار المتميز من هذا التطبيق."
       },
       "ru": {
+        "Support Us!": "Поддержите нас!",
+        "partof": "Станьте частью нашей истории роста, оценив нас.",
         "Weekly": "Еженедельно",
         "Yearly": "Ежегодно",
         "Settings": "Настройки",
@@ -530,6 +552,8 @@ class TranslateHelper {
         "premiumuse": "Вы используете премиум-версию этого приложения."
       },
       "zh": {
+        "Support Us!": "支持我们！",
+        "partof": "通过给我们评分，成为我们成长故事的一部分。",
         "Weekly": "每周",
         "Yearly": "每年",
         "FREE": "免费",
@@ -588,6 +612,9 @@ class TranslateHelper {
         "premiumuse": "您正在使用此应用程序的高级版。"
       },
       "pt": {
+        "Support Us!": "Apoie-nos!",
+        "partof":
+            "Faça parte da nossa história de crescimento dando-nos uma classificação.",
         "Weekly": "Semanalmente",
         "FREE": "GRÁTIS",
         "Rate": "Avaliar",
@@ -646,6 +673,8 @@ class TranslateHelper {
         "premiumuse": "Você está usando a versão premium deste aplicativo."
       },
       "hi": {
+        "Support Us!": "हमें समर्थन दें!",
+        "partof": "हमें रेटिंग देकर हमारी विकास कहानी का हिस्सा बनें।",
         "Weekly": "साप्ताहिक",
         "Yearly": "वार्षिक",
         "Settings": "सेटिंग्स",
@@ -704,6 +733,9 @@ class TranslateHelper {
         "premiumuse": "आप इस ऐप के प्रीमियम संस्करण का उपयोग कर रहे हैं।"
       },
       "ms": {
+        "Support Us!": "Sokong Kami!",
+        "partof":
+            "Jadilah sebahagian daripada kisah pertumbuhan kami dengan memberi kami penilaian.",
         "Weekly": "Mingguan",
         "Yearly": "Tahunan",
         "Settings": "Tetapan",
@@ -763,6 +795,8 @@ class TranslateHelper {
         "premiumuse": "Anda sedang menggunakan versi premium aplikasi ini."
       },
       "ko": {
+        "Support Us!": "저희를 도와주세요!",
+        "partof": "저희에게 평점을 주어 성장 스토리의 일부가 되세요.",
         "Weekly": "주간",
         "Yearly": "연간",
         "Settings": "설정",
@@ -821,6 +855,9 @@ class TranslateHelper {
         "premiumuse": "프리미엄 버전 앱을 사용 중입니다."
       },
       "id": {
+        "Support Us!": "Dukung Kami!",
+        "partof":
+            "Jadilah bagian dari cerita pertumbuhan kami dengan memberikan kami penilaian.",
         "Weekly": "Mingguan",
         "Yearly": "Tahunan",
         "Settings": "Pengaturan",
@@ -879,6 +916,9 @@ class TranslateHelper {
         "premiumuse": "Anda sedang menggunakan versi premium aplikasi ini."
       },
       "nl": {
+        "Support Us!": "Steun ons!",
+        "partof":
+            "Maak deel uit van ons groeiverhaal door ons een beoordeling te geven.",
         "Weekly": "Wekelijks",
         "FREE": "GRATIS",
         "Rate": "Beoordeel",
